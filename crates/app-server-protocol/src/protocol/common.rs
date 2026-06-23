@@ -8,7 +8,7 @@ use crate::export::GeneratedSchema;
 use crate::export::write_json_schema;
 use crate::protocol::v1;
 use crate::protocol::v2;
-use codex_experimental_api_macros::ExperimentalApi;
+
 use schemars::JsonSchema;
 use serde::Deserialize;
 use serde::Serialize;
@@ -506,7 +506,6 @@ client_request_definitions! {
         serialization: thread_id(params.thread_id),
         response: v2::ThreadUnsubscribeResponse,
     },
-    #[experimental("thread/increment_elicitation")]
     /// Increment the thread-local out-of-band elicitation counter.
     ///
     /// This is used by external helpers to pause timeout accounting while a user
@@ -516,7 +515,6 @@ client_request_definitions! {
         serialization: thread_id(params.thread_id),
         response: v2::ThreadIncrementElicitationResponse,
     },
-    #[experimental("thread/decrement_elicitation")]
     /// Decrement the thread-local out-of-band elicitation counter.
     ///
     /// When the count reaches zero, timeout accounting resumes for the thread.
@@ -550,20 +548,17 @@ client_request_definitions! {
         serialization: thread_id(params.thread_id),
         response: v2::ThreadMetadataUpdateResponse,
     },
-    #[experimental("thread/settings/update")]
     ThreadSettingsUpdate => "thread/settings/update" {
         params: v2::ThreadSettingsUpdateParams,
         inspect_params: true,
         serialization: thread_id(params.thread_id),
         response: v2::ThreadSettingsUpdateResponse,
     },
-    #[experimental("thread/memoryMode/set")]
     ThreadMemoryModeSet => "thread/memoryMode/set" {
         params: v2::ThreadMemoryModeSetParams,
         serialization: thread_id(params.thread_id),
         response: v2::ThreadMemoryModeSetResponse,
     },
-    #[experimental("memory/reset")]
     MemoryReset => "memory/reset" {
         params: #[ts(type = "undefined")] #[serde(skip_serializing_if = "Option::is_none")] Option<()>,
         serialization: global("memory"),
@@ -589,19 +584,16 @@ client_request_definitions! {
         serialization: thread_id(params.thread_id),
         response: v2::ThreadApproveGuardianDeniedActionResponse,
     },
-    #[experimental("thread/backgroundTerminals/clean")]
     ThreadBackgroundTerminalsClean => "thread/backgroundTerminals/clean" {
         params: v2::ThreadBackgroundTerminalsCleanParams,
         serialization: thread_id(params.thread_id),
         response: v2::ThreadBackgroundTerminalsCleanResponse,
     },
-    #[experimental("thread/backgroundTerminals/list")]
     ThreadBackgroundTerminalsList => "thread/backgroundTerminals/list" {
         params: v2::ThreadBackgroundTerminalsListParams,
         serialization: thread_id(params.thread_id),
         response: v2::ThreadBackgroundTerminalsListResponse,
     },
-    #[experimental("thread/backgroundTerminals/terminate")]
     ThreadBackgroundTerminalsTerminate => "thread/backgroundTerminals/terminate" {
         params: v2::ThreadBackgroundTerminalsTerminateParams,
         serialization: thread_id(params.thread_id),
@@ -618,7 +610,6 @@ client_request_definitions! {
         serialization: None,
         response: v2::ThreadListResponse,
     },
-    #[experimental("thread/search")]
     ThreadSearch => "thread/search" {
         params: v2::ThreadSearchParams,
         serialization: None,
@@ -634,14 +625,12 @@ client_request_definitions! {
         serialization: thread_id(params.thread_id),
         response: v2::ThreadReadResponse,
     },
-    #[experimental("thread/turns/list")]
     ThreadTurnsList => "thread/turns/list" {
         params: v2::ThreadTurnsListParams,
         // Explicitly concurrent: this primarily reads append-only rollout storage.
         serialization: None,
         response: v2::ThreadTurnsListResponse,
     },
-    #[experimental("thread/turns/items/list")]
     ThreadTurnsItemsList => "thread/turns/items/list" {
         params: v2::ThreadTurnsItemsListParams,
         // Explicitly concurrent: this primarily reads append-only rollout storage.
@@ -813,37 +802,31 @@ client_request_definitions! {
         serialization: thread_id(params.thread_id),
         response: v2::TurnInterruptResponse,
     },
-    #[experimental("thread/realtime/start")]
     ThreadRealtimeStart => "thread/realtime/start" {
         params: v2::ThreadRealtimeStartParams,
         serialization: thread_id(params.thread_id),
         response: v2::ThreadRealtimeStartResponse,
     },
-    #[experimental("thread/realtime/appendAudio")]
     ThreadRealtimeAppendAudio => "thread/realtime/appendAudio" {
         params: v2::ThreadRealtimeAppendAudioParams,
         serialization: thread_id(params.thread_id),
         response: v2::ThreadRealtimeAppendAudioResponse,
     },
-    #[experimental("thread/realtime/appendText")]
     ThreadRealtimeAppendText => "thread/realtime/appendText" {
         params: v2::ThreadRealtimeAppendTextParams,
         serialization: thread_id(params.thread_id),
         response: v2::ThreadRealtimeAppendTextResponse,
     },
-    #[experimental("thread/realtime/appendSpeech")]
     ThreadRealtimeAppendSpeech => "thread/realtime/appendSpeech" {
         params: v2::ThreadRealtimeAppendSpeechParams,
         serialization: thread_id(params.thread_id),
         response: v2::ThreadRealtimeAppendSpeechResponse,
     },
-    #[experimental("thread/realtime/stop")]
     ThreadRealtimeStop => "thread/realtime/stop" {
         params: v2::ThreadRealtimeStopParams,
         serialization: thread_id(params.thread_id),
         response: v2::ThreadRealtimeStopResponse,
     },
-    #[experimental("thread/realtime/listVoices")]
     ThreadRealtimeListVoices => "thread/realtime/listVoices" {
         params: v2::ThreadRealtimeListVoicesParams,
         serialization: None,
@@ -880,63 +863,53 @@ client_request_definitions! {
         serialization: global("config"),
         response: v2::ExperimentalFeatureEnablementSetResponse,
     },
-    #[experimental("remoteControl/enable")]
     RemoteControlEnable => "remoteControl/enable" {
         params: #[serde(skip_serializing_if = "Option::is_none")] v2::NullableRemoteControlEnableParams,
         serialization: global("remote-control"),
         response: v2::RemoteControlEnableResponse,
     },
-    #[experimental("remoteControl/disable")]
     RemoteControlDisable => "remoteControl/disable" {
         params: #[serde(skip_serializing_if = "Option::is_none")] v2::NullableRemoteControlDisableParams,
         serialization: global("remote-control"),
         response: v2::RemoteControlDisableResponse,
     },
-    #[experimental("remoteControl/status/read")]
     RemoteControlStatusRead => "remoteControl/status/read" {
         params: #[ts(type = "undefined")] #[serde(skip_serializing_if = "Option::is_none")] Option<()>,
         serialization: global_shared_read("remote-control"),
         response: v2::RemoteControlStatusReadResponse,
     },
-    #[experimental("remoteControl/pairing/start")]
     RemoteControlPairingStart => "remoteControl/pairing/start" {
         params: v2::RemoteControlPairingStartParams,
         serialization: global("remote-control-pairing"),
         response: v2::RemoteControlPairingStartResponse,
     },
-    #[experimental("remoteControl/pairing/status")]
     RemoteControlPairingStatus => "remoteControl/pairing/status" {
         params: v2::RemoteControlPairingStatusParams,
         serialization: global_shared_read("remote-control-pairing"),
         response: v2::RemoteControlPairingStatusResponse,
     },
-    #[experimental("remoteControl/client/list")]
     RemoteControlClientsList => "remoteControl/client/list" {
         params: v2::RemoteControlClientsListParams,
         serialization: global_shared_read("remote-control-clients"),
         response: v2::RemoteControlClientsListResponse,
     },
-    #[experimental("remoteControl/client/revoke")]
     RemoteControlClientsRevoke => "remoteControl/client/revoke" {
         params: v2::RemoteControlClientsRevokeParams,
         serialization: global("remote-control-clients"),
         response: v2::RemoteControlClientsRevokeResponse,
     },
-    #[experimental("collaborationMode/list")]
     /// Lists collaboration mode presets.
     CollaborationModeList => "collaborationMode/list" {
         params: v2::CollaborationModeListParams,
         serialization: None,
         response: v2::CollaborationModeListResponse,
     },
-    #[experimental("mock/experimentalMethod")]
     /// Test-only method used to validate experimental gating.
     MockExperimentalMethod => "mock/experimentalMethod" {
         params: v2::MockExperimentalMethodParams,
         serialization: None,
         response: v2::MockExperimentalMethodResponse,
     },
-    #[experimental("environment/add")]
     /// Adds or replaces a remote environment by id for later selection.
     EnvironmentAdd => "environment/add" {
         params: v2::EnvironmentAddParams,
@@ -1065,28 +1038,24 @@ client_request_definitions! {
         serialization: command_process_id(params.process_id),
         response: v2::CommandExecResizeResponse,
     },
-    #[experimental("process/spawn")]
     /// Spawn a standalone process (argv vector) without a Codex sandbox.
     ProcessSpawn => "process/spawn" {
         params: v2::ProcessSpawnParams,
         serialization: process_handle(params.process_handle),
         response: v2::ProcessSpawnResponse,
     },
-    #[experimental("process/writeStdin")]
     /// Write stdin bytes to a running `process/spawn` session or close stdin.
     ProcessWriteStdin => "process/writeStdin" {
         params: v2::ProcessWriteStdinParams,
         serialization: process_handle(params.process_handle),
         response: v2::ProcessWriteStdinResponse,
     },
-    #[experimental("process/kill")]
     /// Terminate a running `process/spawn` session by client-supplied `processHandle`.
     ProcessKill => "process/kill" {
         params: v2::ProcessKillParams,
         serialization: process_handle(params.process_handle),
         response: v2::ProcessKillResponse,
     },
-    #[experimental("process/resizePty")]
     /// Resize a running PTY-backed `process/spawn` session by client-supplied `processHandle`.
     ProcessResizePty => "process/resizePty" {
         params: v2::ProcessResizePtyParams,
@@ -1163,19 +1132,16 @@ client_request_definitions! {
         serialization: None,
         response: FuzzyFileSearchResponse,
     },
-    #[experimental("fuzzyFileSearch/sessionStart")]
     FuzzyFileSearchSessionStart => "fuzzyFileSearch/sessionStart" {
         params: FuzzyFileSearchSessionStartParams,
         serialization: fuzzy_session_id(params.session_id),
         response: FuzzyFileSearchSessionStartResponse,
     },
-    #[experimental("fuzzyFileSearch/sessionUpdate")]
     FuzzyFileSearchSessionUpdate => "fuzzyFileSearch/sessionUpdate" {
         params: FuzzyFileSearchSessionUpdateParams,
         serialization: fuzzy_session_id(params.session_id),
         response: FuzzyFileSearchSessionUpdateResponse,
     },
-    #[experimental("fuzzyFileSearch/sessionStop")]
     FuzzyFileSearchSessionStop => "fuzzyFileSearch/sessionStop" {
         params: FuzzyFileSearchSessionStopParams,
         serialization: fuzzy_session_id(params.session_id),
@@ -1367,7 +1333,6 @@ macro_rules! server_notification_definitions {
             JsonSchema,
             TS,
             Display,
-            ExperimentalApi,
         )]
         #[allow(clippy::large_enum_variant)]
         #[serde(tag = "method", content = "params", rename_all = "camelCase")]
@@ -1493,7 +1458,6 @@ server_request_definitions! {
         response: v2::AttestationGenerateResponse,
     },
 
-    #[experimental("currentTime/read")]
     /// Read the current time from an external clock owned by the client.
     CurrentTimeRead => "currentTime/read" {
         params: v2::CurrentTimeReadParams,
@@ -1610,7 +1574,6 @@ server_notification_definitions! {
     ThreadNameUpdated => "thread/name/updated" (v2::ThreadNameUpdatedNotification),
     ThreadGoalUpdated => "thread/goal/updated" (v2::ThreadGoalUpdatedNotification),
     ThreadGoalCleared => "thread/goal/cleared" (v2::ThreadGoalClearedNotification),
-    #[experimental("thread/settings/updated")]
     ThreadSettingsUpdated => "thread/settings/updated" (v2::ThreadSettingsUpdatedNotification),
     ThreadTokenUsageUpdated => "thread/tokenUsage/updated" (v2::ThreadTokenUsageUpdatedNotification),
     TurnStarted => "turn/started" (v2::TurnStartedNotification),
@@ -1631,10 +1594,8 @@ server_notification_definitions! {
     /// Stream base64-encoded stdout/stderr chunks for a running `command/exec` session.
     CommandExecOutputDelta => "command/exec/outputDelta" (v2::CommandExecOutputDeltaNotification),
     /// Stream base64-encoded stdout/stderr chunks for a running `process/spawn` session.
-    #[experimental("process/outputDelta")]
     ProcessOutputDelta => "process/outputDelta" (v2::ProcessOutputDeltaNotification),
     /// Final exit notification for a `process/spawn` session.
-    #[experimental("process/exited")]
     ProcessExited => "process/exited" (v2::ProcessExitedNotification),
     CommandExecutionOutputDelta => "item/commandExecution/outputDelta" (v2::CommandExecutionOutputDeltaNotification),
     TerminalInteraction => "item/commandExecution/terminalInteraction" (v2::TerminalInteractionNotification),
@@ -1659,7 +1620,6 @@ server_notification_definitions! {
     ContextCompacted => "thread/compacted" (v2::ContextCompactedNotification),
     ModelRerouted => "model/rerouted" (v2::ModelReroutedNotification),
     ModelVerification => "model/verification" (v2::ModelVerificationNotification),
-    #[experimental("turn/moderationMetadata")]
     TurnModerationMetadata => "turn/moderationMetadata" (v2::TurnModerationMetadataNotification),
     ModelSafetyBufferingUpdated => "model/safetyBuffering/updated" (v2::ModelSafetyBufferingUpdatedNotification),
     Warning => "warning" (v2::WarningNotification),
@@ -1668,21 +1628,13 @@ server_notification_definitions! {
     ConfigWarning => "configWarning" (v2::ConfigWarningNotification),
     FuzzyFileSearchSessionUpdated => "fuzzyFileSearch/sessionUpdated" (FuzzyFileSearchSessionUpdatedNotification),
     FuzzyFileSearchSessionCompleted => "fuzzyFileSearch/sessionCompleted" (FuzzyFileSearchSessionCompletedNotification),
-    #[experimental("thread/realtime/started")]
     ThreadRealtimeStarted => "thread/realtime/started" (v2::ThreadRealtimeStartedNotification),
-    #[experimental("thread/realtime/itemAdded")]
     ThreadRealtimeItemAdded => "thread/realtime/itemAdded" (v2::ThreadRealtimeItemAddedNotification),
-    #[experimental("thread/realtime/transcript/delta")]
     ThreadRealtimeTranscriptDelta => "thread/realtime/transcript/delta" (v2::ThreadRealtimeTranscriptDeltaNotification),
-    #[experimental("thread/realtime/transcript/done")]
     ThreadRealtimeTranscriptDone => "thread/realtime/transcript/done" (v2::ThreadRealtimeTranscriptDoneNotification),
-    #[experimental("thread/realtime/outputAudio/delta")]
     ThreadRealtimeOutputAudioDelta => "thread/realtime/outputAudio/delta" (v2::ThreadRealtimeOutputAudioDeltaNotification),
-    #[experimental("thread/realtime/sdp")]
     ThreadRealtimeSdp => "thread/realtime/sdp" (v2::ThreadRealtimeSdpNotification),
-    #[experimental("thread/realtime/error")]
     ThreadRealtimeError => "thread/realtime/error" (v2::ThreadRealtimeErrorNotification),
-    #[experimental("thread/realtime/closed")]
     ThreadRealtimeClosed => "thread/realtime/closed" (v2::ThreadRealtimeClosedNotification),
 
     /// Notifies the user of world-writable directories on Windows, which cannot be protected by the sandbox.
@@ -1694,6 +1646,12 @@ server_notification_definitions! {
     #[strum(serialize = "account/login/completed")]
     AccountLoginCompleted(v2::AccountLoginCompletedNotification),
 
+}
+
+impl crate::experimental_api::ExperimentalApi for ServerNotification {
+    fn experimental_reason(&self) -> Option<&'static str> {
+        None
+    }
 }
 
 client_notification_definitions! {

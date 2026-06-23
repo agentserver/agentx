@@ -30,6 +30,7 @@ codex-utils-rustls-provider = { workspace = true }
 constant_time_eq = { workspace = true }
 futures = { workspace = true }
 gethostname = { workspace = true }
+http = { workspace = true }
 hmac = { workspace = true }
 jsonwebtoken = { workspace = true }
 owo-colors = { workspace = true, features = ["supports-colors"] }

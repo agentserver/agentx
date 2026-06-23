@@ -292,10 +292,7 @@ impl Inner {
             self.fail(message).await;
             return;
         };
-        let uses_registry_backoff = matches!(
-            self.reconnect_strategy.as_ref(),
-            Some(ExecServerReconnectStrategy::NoiseRendezvous { .. })
-        );
+        let uses_registry_backoff = false;
         let mut registry_retry_attempt = 0;
         let last_error = loop {
             match timeout_at(deadline, self.resume_once(&session_id)).await {

@@ -1,5 +1,5 @@
 use super::SandboxPolicy;
-use codex_experimental_api_macros::ExperimentalApi;
+
 use schemars::JsonSchema;
 use serde::Deserialize;
 use serde::Serialize;
@@ -24,7 +24,7 @@ pub struct CommandExecTerminalSize {
 /// The final `command/exec` response is deferred until the process exits and is
 /// sent only after all `command/exec/outputDelta` notifications for that
 /// connection have been emitted.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
 pub struct CommandExecParams {
@@ -103,7 +103,6 @@ pub struct CommandExecParams {
     ///
     /// Defaults to the user's configured permissions when omitted. Cannot be
     /// combined with `sandboxPolicy`.
-    #[experimental("command/exec.permissionProfile")]
     #[ts(optional = nullable)]
     pub permission_profile: Option<String>,
 }
@@ -210,4 +209,10 @@ pub struct CommandExecOutputDeltaNotification {
     /// `true` on the final streamed chunk for a stream when `outputBytesCap`
     /// truncated later output on that stream.
     pub cap_reached: bool,
+}
+
+impl crate::experimental_api::ExperimentalApi for CommandExecParams {
+    fn experimental_reason(&self) -> Option<&'static str> {
+        None
+    }
 }

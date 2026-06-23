@@ -22,16 +22,16 @@ use crate::token_data::TokenData;
 use codex_agent_identity::AgentIdentityJwtClaims;
 use codex_agent_identity::decode_agent_identity_jwt;
 use codex_app_server_protocol::AuthMode;
-use codex_config::types::AuthCredentialsStoreMode;
-pub use codex_config::types::AuthKeyringBackendKind;
-use codex_keyring_store::DefaultKeyringStore;
-use codex_keyring_store::KeyringStore;
+use crate::stubs::AuthCredentialsStoreMode;
+pub use crate::stubs::AuthKeyringBackendKind;
+use crate::stubs::DefaultKeyringStore;
+use crate::stubs::KeyringStore;
 use codex_protocol::account::PlanType as AccountPlanType;
-use codex_secrets::LocalSecretsNamespace;
-use codex_secrets::SecretName;
-use codex_secrets::SecretScope;
-use codex_secrets::SecretsBackendKind;
-use codex_secrets::SecretsManager;
+use crate::stubs::LocalSecretsNamespace;
+use crate::stubs::SecretName;
+use crate::stubs::SecretScope;
+use crate::stubs::SecretsBackendKind;
+use crate::stubs::SecretsManager;
 use once_cell::sync::Lazy;
 
 /// Expected structure for $CODEX_HOME/auth.json.

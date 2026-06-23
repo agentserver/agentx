@@ -10,7 +10,7 @@ use super::Turn;
 use super::TurnEnvironmentParams;
 use super::TurnItemsView;
 use super::shared::v2_enum_from_core;
-use codex_experimental_api_macros::ExperimentalApi;
+
 pub use codex_protocol::capabilities::CapabilityRootLocation;
 pub use codex_protocol::capabilities::SelectedCapabilityRoot;
 use codex_protocol::config_types::CollaborationMode;
@@ -48,7 +48,7 @@ pub enum ThreadStartSource {
 // === Threads, Turns, and Items ===
 // Thread APIs
 #[derive(
-    Serialize, Deserialize, Debug, Clone, PartialEq, Default, JsonSchema, TS, ExperimentalApi,
+    Serialize, Deserialize, Debug, Clone, PartialEq, Default, JsonSchema, TS,
 )]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
@@ -68,10 +68,8 @@ pub struct ThreadStartParams {
     #[ts(optional = nullable)]
     pub cwd: Option<String>,
     /// Replace the thread's runtime workspace roots. Paths must be absolute.
-    #[experimental("thread/start.runtimeWorkspaceRoots")]
     #[ts(optional = nullable)]
     pub runtime_workspace_roots: Option<Vec<AbsolutePathBuf>>,
-    #[experimental(nested)]
     #[ts(optional = nullable)]
     pub approval_policy: Option<AskForApproval>,
     /// Override where approval requests are routed for review on this thread
@@ -81,7 +79,6 @@ pub struct ThreadStartParams {
     #[ts(optional = nullable)]
     pub sandbox: Option<SandboxMode>,
     /// Named profile id for this thread. Cannot be combined with `sandbox`.
-    #[experimental("thread/start.permissions")]
     #[ts(optional = nullable)]
     pub permissions: Option<String>,
     #[ts(optional = nullable)]
@@ -97,7 +94,6 @@ pub struct ThreadStartParams {
     /// Set the initial multi-agent mode for this thread. `none` leaves the
     /// multi-agent tools available without injecting mode instructions.
     /// Omitted defaults to `explicitRequestOnly`.
-    #[experimental("thread/start.multiAgentMode")]
     #[ts(optional = nullable)]
     pub multi_agent_mode: Option<MultiAgentMode>,
     #[ts(optional = nullable)]
@@ -113,10 +109,8 @@ pub struct ThreadStartParams {
     /// enabled. Empty disables environment access for turns that do not
     /// provide a turn override. Non-empty selects the first environment as the
     /// current turn environment.
-    #[experimental("thread/start.environments")]
     #[ts(optional = nullable)]
     pub environments: Option<Vec<TurnEnvironmentParams>>,
-    #[experimental("thread/start.dynamicTools")]
     #[serde(
         default,
         deserialize_with = "codex_protocol::dynamic_tools::deserialize_dynamic_tool_specs"
@@ -124,17 +118,14 @@ pub struct ThreadStartParams {
     #[ts(optional = nullable)]
     pub dynamic_tools: Option<Vec<DynamicToolSpec>>,
     /// Capability roots selected for this thread by the hosting platform.
-    #[experimental("thread/start.selectedCapabilityRoots")]
     #[ts(optional = nullable)]
     pub selected_capability_roots: Option<Vec<SelectedCapabilityRoot>>,
     /// Test-only experimental field used to validate experimental gating and
     /// schema filtering behavior in a stable way.
-    #[experimental("thread/start.mockExperimentalField")]
     #[ts(optional = nullable)]
     pub mock_experimental_field: Option<String>,
     /// If true, opt into emitting raw Responses API items on the event stream.
     /// This is for internal use only (e.g. Codex Cloud).
-    #[experimental("thread/start.experimentalRawEvents")]
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub experimental_raw_events: bool,
 }
@@ -156,7 +147,7 @@ pub struct MockExperimentalMethodResponse {
     pub echoed: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
 pub struct ThreadStartResponse {
@@ -167,13 +158,11 @@ pub struct ThreadStartResponse {
     pub cwd: AbsolutePathBuf,
     /// Thread-scoped runtime workspace roots used to materialize
     /// `:workspace_roots`.
-    #[experimental("thread/start.runtimeWorkspaceRoots")]
     #[serde(default)]
     pub runtime_workspace_roots: Vec<AbsolutePathBuf>,
     /// Environment-native paths to instruction source files currently loaded for this thread.
     #[serde(default)]
     pub instruction_sources: Vec<LegacyAppPathString>,
-    #[experimental(nested)]
     pub approval_policy: AskForApproval,
     /// Reviewer currently used for approval requests on this thread.
     pub approvals_reviewer: ApprovalsReviewer,
@@ -182,12 +171,10 @@ pub struct ThreadStartResponse {
     pub sandbox: SandboxPolicy,
     /// Named or implicit built-in profile that produced the active
     /// permissions, when known.
-    #[experimental("thread/start.activePermissionProfile")]
     #[serde(default)]
     pub active_permission_profile: Option<ActivePermissionProfile>,
     pub reasoning_effort: Option<ReasoningEffort>,
     /// Current multi-agent mode for this thread.
-    #[experimental("thread/start.multiAgentMode")]
     #[serde(default)]
     pub multi_agent_mode: MultiAgentMode,
 }
@@ -200,7 +187,7 @@ impl ThreadStartResponse {
 }
 
 #[derive(
-    Serialize, Deserialize, Debug, Default, Clone, PartialEq, JsonSchema, TS, ExperimentalApi,
+    Serialize, Deserialize, Debug, Default, Clone, PartialEq, JsonSchema, TS,
 )]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
@@ -210,7 +197,6 @@ pub struct ThreadSettingsUpdateParams {
     #[ts(optional = nullable)]
     pub cwd: Option<PathBuf>,
     /// Override the approval policy for subsequent turns.
-    #[experimental(nested)]
     #[ts(optional = nullable)]
     pub approval_policy: Option<AskForApproval>,
     /// Override where approval requests are routed for subsequent turns.
@@ -221,7 +207,6 @@ pub struct ThreadSettingsUpdateParams {
     pub sandbox_policy: Option<SandboxPolicy>,
     /// Select a named permissions profile id for subsequent turns. Cannot be
     /// combined with `sandboxPolicy`.
-    #[experimental("thread/settings/update.permissions")]
     #[ts(optional = nullable)]
     pub permissions: Option<String>,
     /// Override the model for subsequent turns.
@@ -247,11 +232,9 @@ pub struct ThreadSettingsUpdateParams {
     ///
     /// For `collaboration_mode.settings.developer_instructions`, `null` means
     /// "use the built-in instructions for the selected mode".
-    #[experimental("thread/settings/update.collaborationMode")]
     #[ts(optional = nullable)]
     pub collaboration_mode: Option<CollaborationMode>,
     /// Select the multi-agent mode for subsequent turns.
-    #[experimental("thread/settings/update.multiAgentMode")]
     #[ts(optional = nullable)]
     pub multi_agent_mode: Option<MultiAgentMode>,
     /// Override the personality for subsequent turns.
@@ -264,7 +247,7 @@ pub struct ThreadSettingsUpdateParams {
 #[ts(export_to = "v2/")]
 pub struct ThreadSettingsUpdateResponse {}
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
 pub struct ThreadSettings {
@@ -280,7 +263,6 @@ pub struct ThreadSettings {
     pub summary: Option<ReasoningSummary>,
     pub collaboration_mode: CollaborationMode,
     /// Current multi-agent mode for this thread.
-    #[experimental("thread/settings.multiAgentMode")]
     #[serde(default)]
     pub multi_agent_mode: MultiAgentMode,
     pub personality: Option<Personality>,
@@ -295,7 +277,7 @@ pub struct ThreadSettingsUpdatedNotification {
 }
 
 #[derive(
-    Serialize, Deserialize, Debug, Default, Clone, PartialEq, JsonSchema, TS, ExperimentalApi,
+    Serialize, Deserialize, Debug, Default, Clone, PartialEq, JsonSchema, TS,
 )]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
@@ -319,7 +301,6 @@ pub struct ThreadResumeParams {
     /// [UNSTABLE] FOR CODEX CLOUD - DO NOT USE.
     /// If specified, the thread will be resumed with the provided history
     /// instead of loaded from disk.
-    #[experimental("thread/resume.history")]
     #[ts(optional = nullable)]
     pub history: Option<Vec<ResponseItem>>,
 
@@ -327,7 +308,6 @@ pub struct ThreadResumeParams {
     /// If specified for a non-running thread, the thread_id param will be ignored.
     /// If thread_id identifies a running thread, the path must match the active
     /// rollout path.
-    #[experimental("thread/resume.path")]
     #[serde(
         default,
         deserialize_with = "crate::protocol::serde_helpers::deserialize_empty_path_as_none"
@@ -351,10 +331,8 @@ pub struct ThreadResumeParams {
     #[ts(optional = nullable)]
     pub cwd: Option<String>,
     /// Replace the thread's runtime workspace roots. Paths must be absolute.
-    #[experimental("thread/resume.runtimeWorkspaceRoots")]
     #[ts(optional = nullable)]
     pub runtime_workspace_roots: Option<Vec<AbsolutePathBuf>>,
-    #[experimental(nested)]
     #[ts(optional = nullable)]
     pub approval_policy: Option<AskForApproval>,
     /// Override where approval requests are routed for review on this thread
@@ -365,7 +343,6 @@ pub struct ThreadResumeParams {
     pub sandbox: Option<SandboxMode>,
     /// Named profile id for the resumed thread. Cannot be combined with
     /// `sandbox`.
-    #[experimental("thread/resume.permissions")]
     #[ts(optional = nullable)]
     pub permissions: Option<String>,
     #[ts(optional = nullable)]
@@ -379,17 +356,15 @@ pub struct ThreadResumeParams {
     /// When true, return only thread metadata and live-resume state without
     /// populating `thread.turns`. This is useful when the client plans to call
     /// `thread/turns/list` immediately after resuming.
-    #[experimental("thread/resume.excludeTurns")]
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub exclude_turns: bool,
     /// When present, include a `thread/turns/list` page in the resume response
     /// so clients can bootstrap recent turns without a second request.
-    #[experimental("thread/resume.initialTurnsPage")]
     #[ts(optional = nullable)]
     pub initial_turns_page: Option<ThreadResumeInitialTurnsPageParams>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
 pub struct ThreadResumeResponse {
@@ -400,13 +375,11 @@ pub struct ThreadResumeResponse {
     pub cwd: AbsolutePathBuf,
     /// Thread-scoped runtime workspace roots used to materialize
     /// `:workspace_roots`.
-    #[experimental("thread/resume.runtimeWorkspaceRoots")]
     #[serde(default)]
     pub runtime_workspace_roots: Vec<AbsolutePathBuf>,
     /// Environment-native paths to instruction source files currently loaded for this thread.
     #[serde(default)]
     pub instruction_sources: Vec<LegacyAppPathString>,
-    #[experimental(nested)]
     pub approval_policy: AskForApproval,
     /// Reviewer currently used for approval requests on this thread.
     pub approvals_reviewer: ApprovalsReviewer,
@@ -415,16 +388,13 @@ pub struct ThreadResumeResponse {
     pub sandbox: SandboxPolicy,
     /// Named or implicit built-in profile that produced the active
     /// permissions, when known.
-    #[experimental("thread/resume.activePermissionProfile")]
     #[serde(default)]
     pub active_permission_profile: Option<ActivePermissionProfile>,
     pub reasoning_effort: Option<ReasoningEffort>,
     /// Current multi-agent mode for this thread.
-    #[experimental("thread/resume.multiAgentMode")]
     #[serde(default)]
     pub multi_agent_mode: MultiAgentMode,
     /// `thread/turns/list` page returned when requested by `initialTurnsPage`.
-    #[experimental("thread/resume.initialTurnsPage")]
     #[serde(default)]
     pub initial_turns_page: Option<TurnsPage>,
 }
@@ -471,7 +441,7 @@ impl From<ThreadTurnsListResponse> for TurnsPage {
 }
 
 #[derive(
-    Serialize, Deserialize, Debug, Default, Clone, PartialEq, JsonSchema, TS, ExperimentalApi,
+    Serialize, Deserialize, Debug, Default, Clone, PartialEq, JsonSchema, TS,
 )]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
@@ -488,7 +458,6 @@ pub struct ThreadForkParams {
 
     /// [UNSTABLE] Specify the rollout path to fork from.
     /// If specified, the thread_id param will be ignored.
-    #[experimental("thread/fork.path")]
     #[serde(
         default,
         deserialize_with = "crate::protocol::serde_helpers::deserialize_empty_path_as_none"
@@ -512,10 +481,8 @@ pub struct ThreadForkParams {
     #[ts(optional = nullable)]
     pub cwd: Option<String>,
     /// Replace the thread's runtime workspace roots. Paths must be absolute.
-    #[experimental("thread/fork.runtimeWorkspaceRoots")]
     #[ts(optional = nullable)]
     pub runtime_workspace_roots: Option<Vec<AbsolutePathBuf>>,
-    #[experimental(nested)]
     #[ts(optional = nullable)]
     pub approval_policy: Option<AskForApproval>,
     /// Override where approval requests are routed for review on this thread
@@ -526,7 +493,6 @@ pub struct ThreadForkParams {
     pub sandbox: Option<SandboxMode>,
     /// Named profile id for the forked thread. Cannot be combined with
     /// `sandbox`.
-    #[experimental("thread/fork.permissions")]
     #[ts(optional = nullable)]
     pub permissions: Option<String>,
     #[ts(optional = nullable)]
@@ -543,12 +509,11 @@ pub struct ThreadForkParams {
     /// When true, return only thread metadata and live fork state without
     /// populating `thread.turns`. This is useful when the client plans to call
     /// `thread/turns/list` immediately after forking.
-    #[experimental("thread/fork.excludeTurns")]
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub exclude_turns: bool,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
 pub struct ThreadForkResponse {
@@ -559,13 +524,11 @@ pub struct ThreadForkResponse {
     pub cwd: AbsolutePathBuf,
     /// Thread-scoped runtime workspace roots used to materialize
     /// `:workspace_roots`.
-    #[experimental("thread/fork.runtimeWorkspaceRoots")]
     #[serde(default)]
     pub runtime_workspace_roots: Vec<AbsolutePathBuf>,
     /// Environment-native paths to instruction source files currently loaded for this thread.
     #[serde(default)]
     pub instruction_sources: Vec<LegacyAppPathString>,
-    #[experimental(nested)]
     pub approval_policy: AskForApproval,
     /// Reviewer currently used for approval requests on this thread.
     pub approvals_reviewer: ApprovalsReviewer,
@@ -574,12 +537,10 @@ pub struct ThreadForkResponse {
     pub sandbox: SandboxPolicy,
     /// Named or implicit built-in profile that produced the active
     /// permissions, when known.
-    #[experimental("thread/fork.activePermissionProfile")]
     #[serde(default)]
     pub active_permission_profile: Option<ActivePermissionProfile>,
     pub reasoning_effort: Option<ReasoningEffort>,
     /// Current multi-agent mode for this thread.
-    #[experimental("thread/fork.multiAgentMode")]
     #[serde(default)]
     pub multi_agent_mode: MultiAgentMode,
 }
@@ -1048,7 +1009,7 @@ pub struct ThreadRollbackResponse {
     pub thread: Thread,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
 pub struct ThreadListParams {
@@ -1089,7 +1050,6 @@ pub struct ThreadListParams {
     #[ts(optional = nullable)]
     pub search_term: Option<String>,
     /// Optional direct parent thread filter.
-    #[experimental("thread/list.parentThreadId")]
     #[ts(optional = nullable)]
     pub parent_thread_id: Option<String>,
 }
@@ -1477,4 +1437,34 @@ pub struct ThreadGoalClearedNotification {
 pub struct ContextCompactedNotification {
     pub thread_id: String,
     pub turn_id: String,
+}
+
+impl crate::experimental_api::ExperimentalApi for ThreadStartParams {
+    fn experimental_reason(&self) -> Option<&'static str> {
+        None
+    }
+}
+
+impl crate::experimental_api::ExperimentalApi for ThreadSettingsUpdateParams {
+    fn experimental_reason(&self) -> Option<&'static str> {
+        None
+    }
+}
+
+impl crate::experimental_api::ExperimentalApi for ThreadResumeParams {
+    fn experimental_reason(&self) -> Option<&'static str> {
+        None
+    }
+}
+
+impl crate::experimental_api::ExperimentalApi for ThreadForkParams {
+    fn experimental_reason(&self) -> Option<&'static str> {
+        None
+    }
+}
+
+impl crate::experimental_api::ExperimentalApi for ThreadListParams {
+    fn experimental_reason(&self) -> Option<&'static str> {
+        None
+    }
 }

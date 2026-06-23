@@ -11,15 +11,7 @@ use super::normalize_path_for_sandbox;
 use super::seatbelt_regex_for_unreadable_glob;
 use super::unix_socket_dir_params;
 use super::unix_socket_policy;
-use codex_network_proxy::ConfigReloader;
-use codex_network_proxy::ConfigReloaderFuture;
-use codex_network_proxy::ConfigState;
-use codex_network_proxy::NetworkMode;
-use codex_network_proxy::NetworkProxy;
-use codex_network_proxy::NetworkProxyConfig;
-use codex_network_proxy::NetworkProxyConstraints;
-use codex_network_proxy::NetworkProxyState;
-use codex_network_proxy::build_config_state;
+use crate::network_proxy::NetworkProxy;
 use codex_protocol::permissions::FileSystemAccessMode;
 use codex_protocol::permissions::FileSystemPath;
 use codex_protocol::permissions::FileSystemSandboxEntry;
@@ -80,21 +72,6 @@ fn seatbelt_protected_metadata_name_requirements(root: &Path) -> String {
         .join(" ")
 }
 
-struct TestConfigReloader;
-
-impl ConfigReloader for TestConfigReloader {
-    fn source_label(&self) -> String {
-        "seatbelt test config".to_string()
-    }
-
-    fn maybe_reload(&self) -> ConfigReloaderFuture<'_, Option<ConfigState>> {
-        Box::pin(async { Ok(None) })
-    }
-
-    fn reload_now(&self) -> ConfigReloaderFuture<'_, ConfigState> {
-        Box::pin(async { Err(anyhow::anyhow!("seatbelt test config cannot reload")) })
-    }
-}
 
 #[test]
 fn base_policy_allows_node_cpu_sysctls() {
@@ -613,66 +590,9 @@ fn create_seatbelt_args_allowlists_explicit_unix_socket_paths_without_proxy() {
     );
 }
 
-#[tokio::test]
-async fn create_seatbelt_args_merges_proxy_and_explicit_unix_socket_paths() -> anyhow::Result<()> {
-    let cwd = TempDir::new().expect("temp cwd");
-    let file_system_policy = FileSystemSandboxPolicy::from_legacy_sandbox_policy_for_cwd(
-        &SandboxPolicy::new_read_only_policy(),
-        cwd.path(),
-    );
-    let network_socket = "/tmp/codex-proxy-use";
-    let explicit_socket = "/tmp/codex-browser-use";
-    let mut network_config = NetworkProxyConfig::default();
-    network_config.network.enabled = true;
-    network_config.network.mode = NetworkMode::Full;
-    network_config
-        .network
-        .set_allow_unix_sockets(vec![network_socket.to_string()]);
-    let state = build_config_state(network_config, NetworkProxyConstraints::default())?;
-    let network_proxy = NetworkProxy::builder()
-        .state(Arc::new(NetworkProxyState::with_reloader(
-            state,
-            Arc::new(TestConfigReloader),
-        )))
-        .managed_by_codex(/*managed_by_codex*/ false)
-        .build()
-        .await?;
-    let extra_allow_unix_sockets = vec![absolute_path(explicit_socket)];
-
-    let args = create_seatbelt_command_args(CreateSeatbeltCommandArgsParams {
-        command: vec!["/usr/bin/true".to_string()],
-        file_system_sandbox_policy: &file_system_policy,
-        network_sandbox_policy: NetworkSandboxPolicy::Restricted,
-        sandbox_policy_cwd: cwd.path(),
-        enforce_managed_network: false,
-        environment_id: None,
-        network: Some(&network_proxy),
-        extra_allow_unix_sockets: &extra_allow_unix_sockets,
-    })
-    .unwrap();
-
-    let expected_explicit_socket = normalize_path_for_sandbox(Path::new(explicit_socket))
-        .expect("explicit socket root should normalize");
-    let expected_network_socket = normalize_path_for_sandbox(Path::new(network_socket))
-        .expect("network socket root should normalize");
-    let unix_socket_definitions = args
-        .iter()
-        .filter(|arg| arg.starts_with("-DUNIX_SOCKET_PATH_"))
-        .cloned()
-        .collect::<Vec<_>>();
-    assert_eq!(
-        unix_socket_definitions,
-        vec![
-            format!(
-                "-DUNIX_SOCKET_PATH_0={}",
-                expected_explicit_socket.display()
-            ),
-            format!("-DUNIX_SOCKET_PATH_1={}", expected_network_socket.display()),
-        ],
-        "seatbelt args should include both explicit and network proxy socket roots: {args:?}"
-    );
-    Ok(())
-}
+// Test `create_seatbelt_args_merges_proxy_and_explicit_unix_socket_paths` was removed because
+// it relied on codex_network_proxy::NetworkProxyConfig / NetworkMode which are no longer in
+// the workspace.  The stub NetworkProxy always reports no unix sockets.
 
 #[test]
 fn create_seatbelt_args_preserves_full_network_with_explicit_unix_socket_paths() {

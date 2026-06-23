@@ -13,7 +13,7 @@ use crate::resolve_windows_elevated_filesystem_overrides;
 use crate::resolve_windows_restricted_token_filesystem_overrides;
 #[cfg(target_os = "windows")]
 use crate::windows_sandbox_uses_elevated_backend;
-use codex_network_proxy::NetworkProxy;
+use crate::network_proxy::NetworkProxy;
 use codex_protocol::config_types::WindowsSandboxLevel;
 use codex_protocol::models::AdditionalPermissionProfile;
 use codex_protocol::models::PermissionProfile;
@@ -341,7 +341,7 @@ impl SandboxManager {
             &command.cwd,
             sandbox_policy_cwd,
             base_effective_permission_profile.clone(),
-            managed_mitm_ca_trust_bundle_path.as_ref(),
+            managed_mitm_ca_trust_bundle_path,
         );
         let (base_file_system_policy, base_network_policy) =
             base_effective_permission_profile.to_runtime_permissions();

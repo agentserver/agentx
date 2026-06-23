@@ -118,10 +118,8 @@ pub fn resolve_windows_restricted_token_filesystem_overrides(
         );
     }
 
-    let additional_deny_read_paths = codex_windows_sandbox::resolve_windows_deny_read_paths(
-        &file_system_sandbox_policy,
-        sandbox_policy_cwd,
-    )?;
+    // codex_windows_sandbox dropped from this fork; deny-read paths are not computed.
+    let additional_deny_read_paths: Vec<AbsolutePathBuf> = Vec::new();
     if !additional_deny_read_paths.is_empty() {
         return Err(
             "windows unelevated restricted-token sandbox cannot enforce deny-read restrictions directly; refusing to run unsandboxed"
@@ -232,10 +230,8 @@ pub fn resolve_windows_elevated_filesystem_overrides(
         ));
     }
 
-    let additional_deny_read_paths = codex_windows_sandbox::resolve_windows_deny_read_paths(
-        &file_system_sandbox_policy,
-        sandbox_policy_cwd,
-    )?;
+    // codex_windows_sandbox dropped from this fork; deny-read paths are not computed.
+    let additional_deny_read_paths: Vec<AbsolutePathBuf> = Vec::new();
 
     let split_writable_roots =
         file_system_sandbox_policy.get_writable_roots_with_cwd(sandbox_policy_cwd);

@@ -15,8 +15,26 @@ use chrono::Datelike;
 use chrono::Local;
 use chrono::Utc;
 use codex_async_utils::CancelErr;
-use codex_utils_string::truncate_middle_chars;
-use codex_utils_string::truncate_middle_with_token_budget;
+// Inlined from dropped codex_utils_string crate.
+fn truncate_middle_chars(s: &str, max_chars: usize) -> String {
+    let char_count = s.chars().count();
+    if char_count <= max_chars {
+        return s.to_string();
+    }
+    let half = max_chars / 2;
+    let start: String = s.chars().take(half).collect();
+    let end: String = s.chars().rev().take(half).collect();
+    let end: String = end.chars().rev().collect();
+    format!("{start}...{end}")
+}
+
+fn truncate_middle_with_token_budget(s: &str, token_budget: usize) -> (String, usize) {
+    // Approximate: 1 token ≈ 4 bytes. Use char-level middle-truncation.
+    let approx_chars = token_budget.saturating_mul(4);
+    let truncated = truncate_middle_chars(s, approx_chars);
+    let tokens_used = truncated.len() / 4;
+    (truncated, tokens_used)
+}
 use reqwest::StatusCode;
 use serde_json;
 use std::io;

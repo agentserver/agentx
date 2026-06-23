@@ -1,4 +1,4 @@
-use codex_experimental_api_macros::ExperimentalApi;
+
 use codex_protocol::config_types::ApprovalsReviewer as CoreApprovalsReviewer;
 use codex_protocol::config_types::SandboxMode as CoreSandboxMode;
 use codex_protocol::protocol::AskForApproval as CoreAskForApproval;
@@ -155,7 +155,7 @@ impl From<CoreNonSteerableTurnKind> for NonSteerableTurnKind {
 }
 
 #[derive(
-    Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, JsonSchema, TS, ExperimentalApi,
+    Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, JsonSchema, TS,
 )]
 #[serde(rename_all = "kebab-case")]
 #[ts(rename_all = "kebab-case", export_to = "v2/")]
@@ -165,7 +165,6 @@ pub enum AskForApproval {
     UnlessTrusted,
     OnFailure,
     OnRequest,
-    #[experimental("askForApproval.granular")]
     Granular {
         sandbox_approval: bool,
         rules: bool,

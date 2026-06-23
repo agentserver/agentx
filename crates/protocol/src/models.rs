@@ -3,9 +3,6 @@ use std::io;
 use std::num::NonZeroUsize;
 use std::path::Path;
 
-use codex_utils_image::PromptImageMode;
-use codex_utils_image::data_url_from_bytes;
-use codex_utils_image::load_for_prompt_bytes;
 use serde::Deserialize;
 use serde::Deserializer;
 use serde::Serialize;
@@ -22,7 +19,6 @@ use crate::permissions::NetworkSandboxPolicy;
 use crate::protocol::SandboxPolicy;
 use crate::user_input::UserInput;
 use codex_utils_absolute_path::AbsolutePathBuf;
-use codex_utils_image::ImageProcessingError;
 use codex_utils_path_uri::PathUri;
 use schemars::JsonSchema;
 
@@ -1522,31 +1518,46 @@ pub fn local_image_content_items_with_label_number(
     label_number: Option<usize>,
     detail: ImageDetail,
 ) -> Vec<ContentItem> {
-    let mode = match detail {
-        ImageDetail::Original => PromptImageMode::Original,
-        ImageDetail::Auto | ImageDetail::Low | ImageDetail::High => PromptImageMode::ResizeToFit,
+    // Image processing (codex_utils_image) was dropped from this fork.
+    // Encode raw bytes as a base64 data URL without resizing/validation.
+    let mime = {
+        let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
+        match ext.to_ascii_lowercase().as_str() {
+            "jpg" | "jpeg" => "image/jpeg",
+            "png" => "image/png",
+            "gif" => "image/gif",
+            "webp" => "image/webp",
+            _ => "image/png",
+        }
     };
-
-    match load_for_prompt_bytes(path, file_bytes, mode) {
-        Ok(image) => local_image_content_items(path, image.into_data_url(), label_number, detail),
-        Err(err) => match &err {
-            ImageProcessingError::Read { .. }
-            | ImageProcessingError::Encode { .. }
-            | ImageProcessingError::InvalidDataUrl { .. }
-            | ImageProcessingError::ImageTooLarge { .. } => {
-                vec![local_image_error_placeholder(path, &err)]
+    // Use base64 encoding via standard library (no external dep).
+    let encoded = {
+        use std::fmt::Write as _;
+        let mut out = String::with_capacity(file_bytes.len() * 4 / 3 + 4);
+        const CHARS: &[u8] =
+            b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        let chunks = file_bytes.chunks(3);
+        for chunk in chunks {
+            let b0 = chunk[0] as usize;
+            let b1 = chunk.get(1).copied().unwrap_or(0) as usize;
+            let b2 = chunk.get(2).copied().unwrap_or(0) as usize;
+            out.push(CHARS[(b0 >> 2)] as char);
+            out.push(CHARS[((b0 & 3) << 4) | (b1 >> 4)] as char);
+            if chunk.len() > 1 {
+                out.push(CHARS[((b1 & 0xf) << 2) | (b2 >> 6)] as char);
+            } else {
+                out.push('=');
             }
-            ImageProcessingError::Decode { .. } if err.is_invalid_image() => {
-                vec![invalid_image_error_placeholder(path, &err)]
+            if chunk.len() > 2 {
+                out.push(CHARS[b2 & 0x3f] as char);
+            } else {
+                out.push('=');
             }
-            ImageProcessingError::Decode { .. } => {
-                vec![local_image_error_placeholder(path, &err)]
-            }
-            ImageProcessingError::UnsupportedImageFormat { mime } => {
-                vec![unsupported_image_error_placeholder(path, mime)]
-            }
-        },
-    }
+        }
+        out
+    };
+    let image_url = format!("data:{mime};base64,{encoded}");
+    local_image_content_items(path, image_url, label_number, detail)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -1743,12 +1754,16 @@ impl ResponseInputItem {
                                         detail,
                                     )
                                 }
-                                LocalImagePreparation::Defer => local_image_content_items(
-                                    &path,
-                                    data_url_from_bytes("application/octet-stream", &file_bytes),
-                                    Some(image_index),
-                                    detail,
-                                ),
+                                LocalImagePreparation::Defer => {
+                                    // data_url_from_bytes dropped (codex_utils_image removed).
+                                    // Use the same base64 stub as Process path.
+                                    local_image_content_items_with_label_number(
+                                        &path,
+                                        file_bytes,
+                                        Some(image_index),
+                                        detail,
+                                    )
+                                }
                             },
                             Err(err) => vec![local_image_error_placeholder(&path, err)],
                         }

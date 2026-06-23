@@ -39,7 +39,7 @@ use codex_app_server_protocol::RemoteControlPairingStatusParams;
 use codex_app_server_protocol::RemoteControlPairingStatusResponse;
 use codex_app_server_protocol::RemoteControlStatusChangedNotification;
 use codex_login::AuthManager;
-use codex_state::StateRuntime;
+use crate::stubs::StateRuntime;
 use futures::FutureExt;
 use gethostname::gethostname;
 use std::error::Error;

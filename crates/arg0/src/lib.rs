@@ -1,14 +1,16 @@
+mod stubs;
+
 use std::ffi::OsString;
 use std::fs::File;
 use std::future::Future;
 use std::path::Path;
 use std::path::PathBuf;
 
-use codex_apply_patch::CODEX_CORE_APPLY_PATCH_ARG1;
+use crate::stubs::CODEX_CORE_APPLY_PATCH_ARG1;
+use crate::stubs::InstallContext;
+use crate::stubs::find_codex_home;
 use codex_exec_server::CODEX_FS_HELPER_ARG1;
-use codex_install_context::InstallContext;
 use codex_sandboxing::landlock::CODEX_LINUX_SANDBOX_ARG0;
-use codex_utils_home_dir::find_codex_home;
 #[cfg(target_os = "windows")]
 use codex_windows_sandbox::CODEX_WINDOWS_SANDBOX_ARG1;
 #[cfg(unix)]
@@ -82,7 +84,7 @@ pub fn arg0_dispatch() -> Option<Arg0PathEntryGuard> {
             Err(_) => std::process::exit(1),
         };
         let exit_code = runtime.block_on(
-            codex_shell_escalation::run_shell_escalation_execve_wrapper(file, argv),
+            crate::stubs::run_shell_escalation_execve_wrapper(file, argv),
         );
         match exit_code {
             Ok(exit_code) => std::process::exit(exit_code),
@@ -91,10 +93,10 @@ pub fn arg0_dispatch() -> Option<Arg0PathEntryGuard> {
     }
 
     if exe_name == CODEX_LINUX_SANDBOX_ARG0 {
-        // Safety: [`run_main`] never returns.
-        codex_linux_sandbox::run_main();
+        // Safety: [`linux_sandbox_run_main`] never returns.
+        crate::stubs::linux_sandbox_run_main();
     } else if exe_name == APPLY_PATCH_ARG0 || exe_name == MISSPELLED_APPLY_PATCH_ARG0 {
-        codex_apply_patch::main();
+        crate::stubs::apply_patch_main();
     }
 
     let argv1 = args.next().unwrap_or_default();
@@ -106,41 +108,8 @@ pub fn arg0_dispatch() -> Option<Arg0PathEntryGuard> {
         codex_windows_sandbox::run_windows_sandbox_wrapper_main();
     }
     if argv1 == CODEX_CORE_APPLY_PATCH_ARG1 {
-        let patch_arg = args.next().and_then(|s| s.to_str().map(str::to_owned));
-        let exit_code = match patch_arg {
-            Some(patch_arg) => {
-                let mut stdout = std::io::stdout();
-                let mut stderr = std::io::stderr();
-                let cwd = match codex_utils_absolute_path::AbsolutePathBuf::current_dir() {
-                    Ok(cwd) => cwd,
-                    Err(_) => std::process::exit(1),
-                };
-                let runtime = match tokio::runtime::Builder::new_current_thread()
-                    .enable_all()
-                    .build()
-                {
-                    Ok(runtime) => runtime,
-                    Err(_) => std::process::exit(1),
-                };
-                let cwd = cwd.into();
-                match runtime.block_on(codex_apply_patch::apply_patch(
-                    &patch_arg,
-                    &cwd,
-                    &mut stdout,
-                    &mut stderr,
-                    codex_exec_server::LOCAL_FS.as_ref(),
-                    /*sandbox*/ None,
-                )) {
-                    Ok(_) => 0,
-                    Err(_) => 1,
-                }
-            }
-            None => {
-                eprintln!("Error: {CODEX_CORE_APPLY_PATCH_ARG1} requires a UTF-8 PATCH argument.");
-                1
-            }
-        };
-        std::process::exit(exit_code);
+        eprintln!("Error: {CODEX_CORE_APPLY_PATCH_ARG1} is not supported in this build.");
+        std::process::exit(1);
     }
 
     // This modifies the environment, which is not thread-safe, so do this

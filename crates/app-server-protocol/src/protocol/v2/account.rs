@@ -1,5 +1,5 @@
 use crate::protocol::common::AuthMode;
-use codex_experimental_api_macros::ExperimentalApi;
+
 use codex_protocol::account::AmazonBedrockCredentialSource;
 use codex_protocol::account::PlanType;
 use codex_protocol::account::ProviderAccount;
@@ -61,7 +61,7 @@ impl From<ProviderAccount> for Account {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(tag = "type")]
 #[ts(tag = "type")]
 #[ts(export_to = "v2/")]
@@ -84,7 +84,6 @@ pub enum LoginAccountParams {
     ChatgptDeviceCode,
     /// [UNSTABLE] FOR OPENAI INTERNAL USE ONLY - DO NOT USE.
     /// The access token must contain the same scopes that Codex-managed ChatGPT auth tokens have.
-    #[experimental("account/login/start.chatgptAuthTokens")]
     #[serde(rename = "chatgptAuthTokens", rename_all = "camelCase")]
     #[ts(rename = "chatgptAuthTokens", rename_all = "camelCase")]
     ChatgptAuthTokens {
@@ -602,4 +601,10 @@ pub struct AccountLoginCompletedNotification {
     pub login_id: Option<String>,
     pub success: bool,
     pub error: Option<String>,
+}
+
+impl crate::experimental_api::ExperimentalApi for LoginAccountParams {
+    fn experimental_reason(&self) -> Option<&'static str> {
+        None
+    }
 }

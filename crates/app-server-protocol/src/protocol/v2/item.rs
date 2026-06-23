@@ -9,7 +9,7 @@ use super::RequestPermissionProfile;
 use super::UserInput;
 use super::shared::v2_enum_from_core;
 use crate::protocol::item_builders::convert_patch_changes;
-use codex_experimental_api_macros::ExperimentalApi;
+
 use codex_protocol::approvals::GuardianAssessmentAction as CoreGuardianAssessmentAction;
 use codex_protocol::approvals::GuardianAssessmentDecisionSource as CoreGuardianAssessmentDecisionSource;
 use codex_protocol::approvals::GuardianCommandSource as CoreGuardianCommandSource;
@@ -1318,7 +1318,7 @@ pub struct FileChangePatchUpdatedNotification {
     pub changes: Vec<FileUpdateChange>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
 pub struct CommandExecutionRequestApprovalParams {
@@ -1362,7 +1362,6 @@ pub struct CommandExecutionRequestApprovalParams {
     #[ts(optional = nullable)]
     pub command_actions: Option<Vec<CommandAction>>,
     /// Optional additional permissions requested for this command.
-    #[experimental("item/commandExecution/requestApproval.additionalPermissions")]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional = nullable)]
     pub additional_permissions: Option<AdditionalPermissionProfile>,
@@ -1375,7 +1374,6 @@ pub struct CommandExecutionRequestApprovalParams {
     #[ts(optional = nullable)]
     pub proposed_network_policy_amendments: Option<Vec<NetworkPolicyAmendment>>,
     /// Ordered list of decisions the client may present for this prompt.
-    #[experimental("item/commandExecution/requestApproval.availableDecisions")]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional = nullable)]
     pub available_decisions: Option<Vec<CommandExecutionApprovalDecision>>,

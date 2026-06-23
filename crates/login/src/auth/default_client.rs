@@ -12,7 +12,7 @@ pub use codex_client::CodexRequestBuilder;
 use codex_client::build_reqwest_client_for_route;
 use codex_client::build_reqwest_client_with_custom_ca;
 use codex_client::with_chatgpt_cloudflare_cookie_store;
-use codex_terminal_detection::user_agent;
+use crate::stubs::user_agent;
 use reqwest::header::HeaderMap;
 use reqwest::header::HeaderValue;
 use reqwest::header::USER_AGENT;
@@ -42,7 +42,7 @@ pub const DEFAULT_ORIGINATOR: &str = "codex_cli_rs";
 pub const CODEX_INTERNAL_ORIGINATOR_OVERRIDE_ENV_VAR: &str = "CODEX_INTERNAL_ORIGINATOR_OVERRIDE";
 pub const RESIDENCY_HEADER_NAME: &str = "x-openai-internal-codex-residency";
 
-pub use codex_config::ResidencyRequirement;
+pub use crate::stubs::ResidencyRequirement;
 
 #[derive(Debug, Clone)]
 pub struct Originator {

@@ -3,7 +3,7 @@ use super::AskForApproval;
 use super::SandboxMode;
 use super::WindowsSandboxSetupMode;
 use super::shared::default_enabled;
-use codex_experimental_api_macros::ExperimentalApi;
+
 use codex_protocol::config_types::AutoCompactTokenLimitScope;
 use codex_protocol::config_types::ForcedLoginMethod;
 use codex_protocol::config_types::ReasoningSummary;
@@ -238,7 +238,7 @@ impl ForcedChatgptWorkspaceIds {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "snake_case")]
 #[ts(export_to = "v2/")]
 pub struct Config {
@@ -248,11 +248,9 @@ pub struct Config {
     pub model_auto_compact_token_limit: Option<i64>,
     pub model_auto_compact_token_limit_scope: Option<AutoCompactTokenLimitScope>,
     pub model_provider: Option<String>,
-    #[experimental(nested)]
     pub approval_policy: Option<AskForApproval>,
     /// [UNSTABLE] Optional default for where approval requests are routed for
     /// review.
-    #[experimental("config/read.approvalsReviewer")]
     pub approvals_reviewer: Option<ApprovalsReviewer>,
     pub sandbox_mode: Option<SandboxMode>,
     pub sandbox_workspace_write: Option<SandboxWorkspaceWrite>,
@@ -268,7 +266,6 @@ pub struct Config {
     pub model_verbosity: Option<Verbosity>,
     pub service_tier: Option<String>,
     pub analytics: Option<AnalyticsConfig>,
-    #[experimental("config/read.apps")]
     #[serde(default)]
     pub apps: Option<AppsConfig>,
     pub desktop: Option<HashMap<String, JsonValue>>,
@@ -356,24 +353,21 @@ pub struct ConfigReadParams {
     pub cwd: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
 pub struct ConfigReadResponse {
-    #[experimental(nested)]
     pub config: Config,
     pub origins: HashMap<String, ConfigLayerMetadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub layers: Option<Vec<ConfigLayer>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
 pub struct ConfigRequirements {
-    #[experimental(nested)]
     pub allowed_approval_policies: Option<Vec<AskForApproval>>,
-    #[experimental("configRequirements/read.allowedApprovalsReviewers")]
     pub allowed_approvals_reviewers: Option<Vec<ApprovalsReviewer>>,
     pub allowed_sandbox_modes: Option<Vec<SandboxMode>>,
     pub allowed_windows_sandbox_implementations: Option<Vec<WindowsSandboxSetupMode>>,
@@ -385,10 +379,8 @@ pub struct ConfigRequirements {
     pub allow_remote_control: Option<bool>,
     pub computer_use: Option<ComputerUseRequirements>,
     pub feature_requirements: Option<BTreeMap<String, bool>>,
-    #[experimental("configRequirements/read.hooks")]
     pub hooks: Option<ManagedHooksRequirements>,
     pub enforce_residency: Option<ResidencyRequirement>,
-    #[experimental("configRequirements/read.network")]
     pub network: Option<NetworkRequirements>,
 }
 
@@ -521,12 +513,11 @@ pub enum ResidencyRequirement {
     Us,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
 pub struct ConfigRequirementsReadResponse {
     /// Null if no requirements are configured (e.g. no requirements.toml/MDM entries).
-    #[experimental(nested)]
     pub requirements: Option<ConfigRequirements>,
 }
 

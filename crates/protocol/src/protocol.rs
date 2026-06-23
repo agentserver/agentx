@@ -3152,7 +3152,8 @@ impl TruncationPolicy {
     pub fn token_budget(&self) -> usize {
         match self {
             TruncationPolicy::Bytes(bytes) => {
-                usize::try_from(codex_utils_string::approx_tokens_from_byte_count(*bytes))
+                // Inlined from dropped codex_utils_string: 1 token ≈ 4 bytes.
+                usize::try_from(*bytes / 4)
                     .unwrap_or(usize::MAX)
             }
             TruncationPolicy::Tokens(tokens) => *tokens,
@@ -3163,7 +3164,8 @@ impl TruncationPolicy {
         match self {
             TruncationPolicy::Bytes(bytes) => *bytes,
             TruncationPolicy::Tokens(tokens) => {
-                codex_utils_string::approx_bytes_for_tokens(*tokens)
+                // Inlined from dropped codex_utils_string: 1 token ≈ 4 bytes.
+                tokens.saturating_mul(4)
             }
         }
     }

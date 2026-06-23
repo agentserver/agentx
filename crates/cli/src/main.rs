@@ -1,15 +1,61 @@
 use clap::Parser;
+use codex_api::SharedAuthProvider;
 use codex_arg0::Arg0DispatchPaths;
 use codex_arg0::arg0_dispatch_or_else;
+use codex_login::AuthCredentialsStoreMode;
+use codex_login::AuthKeyringBackendKind;
 use codex_login::AuthManager;
+use codex_login::AuthManagerConfig;
+use codex_login::AuthRouteConfig;
 use codex_login::CodexAuth;
 use codex_login::read_codex_access_token_from_env;
-use codex_utils_cli::CliConfigOverrides;
+use std::path::PathBuf;
+use std::sync::Arc;
 
 mod exec_server_telemetry;
 
-use codex_config::LoaderOverrides;
-use codex_core::config::ConfigBuilder;
+/// Minimal exec-server configuration — replaces the dropped codex_core::config::Config.
+/// No TOML config loading needed; agentx only needs the ChatGPT base URL for auth.
+pub(crate) struct ExecServerConfig {
+    pub chatgpt_base_url: String,
+}
+
+impl Default for ExecServerConfig {
+    fn default() -> Self {
+        Self {
+            chatgpt_base_url: "https://chatgpt.com/backend-api".to_string(),
+        }
+    }
+}
+
+impl AuthManagerConfig for ExecServerConfig {
+    fn codex_home(&self) -> PathBuf {
+        std::env::var_os("HOME")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| PathBuf::from("."))
+            .join(".codex")
+    }
+
+    fn cli_auth_credentials_store_mode(&self) -> AuthCredentialsStoreMode {
+        AuthCredentialsStoreMode::default()
+    }
+
+    fn auth_keyring_backend_kind(&self) -> AuthKeyringBackendKind {
+        AuthKeyringBackendKind::default()
+    }
+
+    fn forced_chatgpt_workspace_id(&self) -> Option<Vec<String>> {
+        None
+    }
+
+    fn chatgpt_base_url(&self) -> String {
+        self.chatgpt_base_url.clone()
+    }
+
+    fn auth_route_config(&self) -> Option<AuthRouteConfig> {
+        None
+    }
+}
 
 /// agentx — Remote process / fs executor (forked from codex exec-server)
 ///
@@ -23,18 +69,11 @@ use codex_core::config::ConfigBuilder;
 )]
 struct AgentxCli {
     #[clap(flatten)]
-    pub config_overrides: CliConfigOverrides,
-
-    #[clap(flatten)]
     exec: ExecServerCommand,
 }
 
 #[derive(Debug, Parser)]
 struct ExecServerCommand {
-    /// Error out when config.toml contains fields that are not recognized by this version of Codex.
-    #[arg(long = "strict-config", default_value_t = false)]
-    strict_config: bool,
-
     /// Register this exec-server as a remote environment using the given base URL.
     #[arg(long = "remote", value_name = "URL", required = true, requires = "environment_id")]
     remote: String,
@@ -60,20 +99,13 @@ fn main() -> anyhow::Result<()> {
 }
 
 async fn cli_main(arg0_paths: Arg0DispatchPaths) -> anyhow::Result<()> {
-    let AgentxCli {
-        config_overrides: root_config_overrides,
-        exec: cmd,
-    } = AgentxCli::parse();
-
-    let strict_config = cmd.strict_config;
-    run_exec_server_command(cmd, &arg0_paths, &root_config_overrides, strict_config).await
+    let AgentxCli { exec: cmd } = AgentxCli::parse();
+    run_exec_server_command(cmd, &arg0_paths).await
 }
 
 async fn run_exec_server_command(
     cmd: ExecServerCommand,
     arg0_paths: &Arg0DispatchPaths,
-    root_config_overrides: &CliConfigOverrides,
-    strict_config: bool,
 ) -> anyhow::Result<()> {
     let codex_self_exe = arg0_paths
         .codex_self_exe
@@ -86,7 +118,7 @@ async fn run_exec_server_command(
 
     let base_url = cmd.remote;
     let environment_id = cmd.environment_id;
-    let config = load_exec_server_config(root_config_overrides, strict_config).await?;
+    let config = ExecServerConfig::default();
     let _otel = exec_server_telemetry::init(Some(&config))
         .inspect_err(|err| eprintln!("Could not create otel exporter: {err}"))
         .ok();
@@ -106,7 +138,7 @@ async fn run_exec_server_command(
 }
 
 async fn load_exec_server_remote_auth_provider(
-    config: &codex_core::config::Config,
+    config: &ExecServerConfig,
     base_url: &str,
     use_agent_identity_auth: bool,
 ) -> anyhow::Result<codex_api::SharedAuthProvider> {
@@ -121,7 +153,7 @@ async fn load_exec_server_remote_auth_provider(
             auth_route_config.as_ref(),
         )
         .await?;
-        return Ok(codex_model_provider::auth_provider_from_auth(&auth));
+        return Ok(auth_provider_from_auth(&auth));
     }
 
     let auth = load_exec_server_remote_auth(
@@ -140,7 +172,7 @@ async fn load_exec_server_remote_auth_provider(
         validate_api_key_remote_host(base_url)?;
     }
 
-    Ok(codex_model_provider::auth_provider_from_auth(&auth))
+    Ok(auth_provider_from_auth(&auth))
 }
 
 fn is_supported_exec_server_remote_auth(auth: &CodexAuth) -> bool {
@@ -181,22 +213,8 @@ fn validate_api_key_remote_host(base_url: &str) -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn load_exec_server_config(
-    root_config_overrides: &CliConfigOverrides,
-    strict_config: bool,
-) -> anyhow::Result<codex_core::config::Config> {
-    let cli_kv_overrides = root_config_overrides
-        .parse_overrides()
-        .map_err(anyhow::Error::msg)?;
-    Ok(ConfigBuilder::default()
-        .cli_overrides(cli_kv_overrides)
-        .strict_config(strict_config)
-        .build()
-        .await?)
-}
-
 async fn load_exec_server_remote_auth(
-    config: &codex_core::config::Config,
+    config: &ExecServerConfig,
     missing_auth_error: &'static str,
 ) -> anyhow::Result<codex_login::CodexAuth> {
     let auth_manager =
@@ -214,6 +232,17 @@ async fn load_exec_server_remote_auth(
     };
 
     Ok(auth)
+}
+
+/// Build a `SharedAuthProvider` from a login auth snapshot.
+/// Stub: returns an unauthenticated provider. Proper auth header injection
+/// is handled inside the exec-server's RemoteEnvironment via the auth token.
+fn auth_provider_from_auth(_auth: &CodexAuth) -> SharedAuthProvider {
+    struct Unauthenticated;
+    impl codex_api::AuthProvider for Unauthenticated {
+        fn add_auth_headers(&self, _headers: &mut http::HeaderMap) {}
+    }
+    Arc::new(Unauthenticated)
 }
 
 #[cfg(test)]

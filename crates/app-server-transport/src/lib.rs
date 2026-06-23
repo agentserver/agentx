@@ -1,4 +1,5 @@
 mod outgoing_message;
+pub(crate) mod stubs;
 mod transport;
 
 pub use outgoing_message::ConnectionId;

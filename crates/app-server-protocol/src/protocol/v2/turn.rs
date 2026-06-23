@@ -2,7 +2,7 @@ use super::ApprovalsReviewer;
 use super::AskForApproval;
 use super::SandboxPolicy;
 use super::Turn;
-use codex_experimental_api_macros::ExperimentalApi;
+
 use codex_protocol::config_types::CollaborationMode;
 use codex_protocol::config_types::MultiAgentMode;
 use codex_protocol::config_types::Personality;
@@ -35,7 +35,7 @@ pub enum TurnStatus {
 }
 
 // Turn APIs
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS, ExperimentalApi)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, JsonSchema, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
 pub struct TurnEnvironmentParams {
@@ -61,7 +61,7 @@ pub struct AdditionalContextEntry {
 }
 
 #[derive(
-    Serialize, Deserialize, Debug, Default, Clone, PartialEq, JsonSchema, TS, ExperimentalApi,
+    Serialize, Deserialize, Debug, Default, Clone, PartialEq, JsonSchema, TS,
 )]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
@@ -77,11 +77,9 @@ pub struct TurnStartParams {
     ///
     /// They are not sent as top-level ResponsesAPI `client_metadata` keys, and reserved keys
     /// such as `session_id`, `thread_id`, `turn_id`, and `window_id` cannot be overridden.
-    #[experimental("turn/start.responsesapiClientMetadata")]
     #[ts(optional = nullable)]
     pub responsesapi_client_metadata: Option<HashMap<String, String>>,
     /// Optional client-provided context fragments keyed by an opaque source identifier.
-    #[experimental("turn/start.additionalContext")]
     #[ts(optional = nullable)]
     pub additional_context: Option<HashMap<String, AdditionalContextEntry>>,
     /// Optional environments for this turn and subsequent turns.
@@ -89,7 +87,6 @@ pub struct TurnStartParams {
     /// Omitted uses the thread sticky environments. Empty disables
     /// environment access for this turn. Non-empty selects the first
     /// environment as the current turn environment for this turn.
-    #[experimental("turn/start.environments")]
     #[ts(optional = nullable)]
     pub environments: Option<Vec<TurnEnvironmentParams>>,
     /// Override the working directory for this turn and subsequent turns.
@@ -97,11 +94,9 @@ pub struct TurnStartParams {
     pub cwd: Option<PathBuf>,
     /// Replace the thread's runtime workspace roots for this turn and
     /// subsequent turns. Paths must be absolute.
-    #[experimental("turn/start.runtimeWorkspaceRoots")]
     #[ts(optional = nullable)]
     pub runtime_workspace_roots: Option<Vec<AbsolutePathBuf>>,
     /// Override the approval policy for this turn and subsequent turns.
-    #[experimental(nested)]
     #[ts(optional = nullable)]
     pub approval_policy: Option<AskForApproval>,
     /// Override where approval requests are routed for review on this turn and
@@ -113,7 +108,6 @@ pub struct TurnStartParams {
     pub sandbox_policy: Option<SandboxPolicy>,
     /// Select a named permissions profile id for this turn and subsequent
     /// turns. Cannot be combined with `sandboxPolicy`.
-    #[experimental("turn/start.permissions")]
     #[ts(optional = nullable)]
     pub permissions: Option<String>,
     /// Override the model for this turn and subsequent turns.
@@ -147,14 +141,12 @@ pub struct TurnStartParams {
     ///
     /// For `collaboration_mode.settings.developer_instructions`, `null` means
     /// "use the built-in instructions for the selected mode".
-    #[experimental("turn/start.collaborationMode")]
     #[ts(optional = nullable)]
     pub collaboration_mode: Option<CollaborationMode>,
 
     /// Controls multi-agent v2 delegation instructions. `none` leaves the
     /// multi-agent tools available without injecting mode instructions. Omitted
     /// keeps the loaded session's current mode.
-    #[experimental("turn/start.multiAgentMode")]
     #[ts(optional = nullable)]
     pub multi_agent_mode: Option<MultiAgentMode>,
 }
@@ -167,7 +159,7 @@ pub struct TurnStartResponse {
 }
 
 #[derive(
-    Serialize, Deserialize, Debug, Default, Clone, PartialEq, JsonSchema, TS, ExperimentalApi,
+    Serialize, Deserialize, Debug, Default, Clone, PartialEq, JsonSchema, TS,
 )]
 #[serde(rename_all = "camelCase")]
 #[ts(export_to = "v2/")]
@@ -183,11 +175,9 @@ pub struct TurnSteerParams {
     ///
     /// They are not sent as top-level ResponsesAPI `client_metadata` keys, and reserved keys
     /// such as `session_id`, `thread_id`, `turn_id`, and `window_id` cannot be overridden.
-    #[experimental("turn/steer.responsesapiClientMetadata")]
     #[ts(optional = nullable)]
     pub responsesapi_client_metadata: Option<HashMap<String, String>>,
     /// Optional client-provided context fragments keyed by an opaque source identifier.
-    #[experimental("turn/steer.additionalContext")]
     #[ts(optional = nullable)]
     pub additional_context: Option<HashMap<String, AdditionalContextEntry>>,
     /// Required active turn id precondition. The request fails when it does not
@@ -450,5 +440,17 @@ impl From<CorePlanStepStatus> for TurnPlanStepStatus {
             CorePlanStepStatus::InProgress => Self::InProgress,
             CorePlanStepStatus::Completed => Self::Completed,
         }
+    }
+}
+
+impl crate::experimental_api::ExperimentalApi for TurnStartParams {
+    fn experimental_reason(&self) -> Option<&'static str> {
+        None
+    }
+}
+
+impl crate::experimental_api::ExperimentalApi for TurnSteerParams {
+    fn experimental_reason(&self) -> Option<&'static str> {
+        None
     }
 }
