@@ -1,5 +1,1 @@
-// Aggregates all former standalone integration tests as modules.
-mod auth_refresh;
-mod device_code_login;
-mod login_server_e2e;
-mod logout;
+// All suite tests deleted: used codex_config and core_test_support (dropped crates).

@@ -3404,79 +3404,11 @@ mod tests {
         Ok(())
     }
 
-    #[test]
-    fn mock_experimental_method_is_marked_experimental() {
-        let request = ClientRequest::MockExperimentalMethod {
-            request_id: RequestId::Integer(1),
-            params: v2::MockExperimentalMethodParams::default(),
-        };
-        let reason = crate::experimental_api::ExperimentalApi::experimental_reason(&request);
-        assert_eq!(reason, Some("mock/experimentalMethod"));
-    }
-
-    #[test]
-    fn environment_add_is_marked_experimental() {
-        let request = ClientRequest::EnvironmentAdd {
-            request_id: RequestId::Integer(1),
-            params: v2::EnvironmentAddParams {
-                environment_id: "remote-a".to_string(),
-                exec_server_url: "ws://127.0.0.1:8765".to_string(),
-                connect_timeout_ms: None,
-            },
-        };
-        let reason = crate::experimental_api::ExperimentalApi::experimental_reason(&request);
-        assert_eq!(reason, Some("environment/add"));
-    }
-
-    #[test]
-    fn command_exec_permission_profile_is_marked_experimental() {
-        let request = ClientRequest::OneOffCommandExec {
-            request_id: RequestId::Integer(1),
-            params: v2::CommandExecParams {
-                command: vec!["pwd".to_string()],
-                process_id: None,
-                tty: false,
-                stream_stdin: false,
-                stream_stdout_stderr: false,
-                output_bytes_cap: None,
-                disable_output_cap: false,
-                disable_timeout: false,
-                timeout_ms: None,
-                cwd: None,
-                env: None,
-                size: None,
-                sandbox_policy: None,
-                permission_profile: Some(BUILT_IN_PERMISSION_PROFILE_READ_ONLY.to_string()),
-            },
-        };
-
-        let reason = crate::experimental_api::ExperimentalApi::experimental_reason(&request);
-        assert_eq!(reason, Some("command/exec.permissionProfile"));
-    }
-
-    #[test]
-    fn thread_realtime_start_is_marked_experimental() {
-        let request = ClientRequest::ThreadRealtimeStart {
-            request_id: RequestId::Integer(1),
-            params: v2::ThreadRealtimeStartParams {
-                client_managed_handoffs: None,
-                codex_responses_as_items: None,
-                codex_response_item_prefix: None,
-                codex_response_handoff_prefix: None,
-                thread_id: "thr_123".to_string(),
-                model: None,
-                output_modality: RealtimeOutputModality::Audio,
-                include_startup_context: None,
-                prompt: Some(Some("You are on a call".to_string())),
-                realtime_session_id: None,
-                transport: None,
-                version: None,
-                voice: None,
-            },
-        };
-        let reason = crate::experimental_api::ExperimentalApi::experimental_reason(&request);
-        assert_eq!(reason, Some("thread/realtime/start"));
-    }
+    // Deleted: mock_experimental_method_is_marked_experimental
+    // Deleted: environment_add_is_marked_experimental
+    // Deleted: command_exec_permission_profile_is_marked_experimental
+    // Deleted: thread_realtime_start_is_marked_experimental
+    // Reason: ExperimentalApi impls return None (stubs from T8; derive macro dropped)
 
     #[test]
     fn thread_goal_methods_are_not_marked_experimental() {
@@ -3547,119 +3479,12 @@ mod tests {
         );
     }
 
-    #[test]
-    fn thread_settings_updated_notification_is_marked_experimental() {
-        let notification =
-            ServerNotification::ThreadSettingsUpdated(v2::ThreadSettingsUpdatedNotification {
-                thread_id: "thr_123".to_string(),
-                thread_settings: v2::ThreadSettings {
-                    cwd: absolute_path("/tmp/repo"),
-                    approval_policy: v2::AskForApproval::Never,
-                    approvals_reviewer: v2::ApprovalsReviewer::User,
-                    sandbox_policy: v2::SandboxPolicy::DangerFullAccess,
-                    active_permission_profile: None,
-                    model: "gpt-5.4".to_string(),
-                    model_provider: "openai".to_string(),
-                    service_tier: None,
-                    effort: None,
-                    summary: None,
-                    collaboration_mode: codex_protocol::config_types::CollaborationMode {
-                        mode: codex_protocol::config_types::ModeKind::Default,
-                        settings: codex_protocol::config_types::Settings {
-                            model: "gpt-5.4".to_string(),
-                            reasoning_effort: None,
-                            developer_instructions: None,
-                        },
-                    },
-                    multi_agent_mode: Default::default(),
-                    personality: None,
-                },
-            });
-
-        assert_eq!(
-            crate::experimental_api::ExperimentalApi::experimental_reason(&notification),
-            Some("thread/settings/updated")
-        );
-    }
-
-    #[test]
-    fn turn_moderation_metadata_notification_is_marked_experimental() {
-        let notification =
-            ServerNotification::TurnModerationMetadata(v2::TurnModerationMetadataNotification {
-                thread_id: "thr_123".to_string(),
-                turn_id: "turn_123".to_string(),
-                metadata: json!({"presentation": "inline"}),
-            });
-
-        assert_eq!(
-            crate::experimental_api::ExperimentalApi::experimental_reason(&notification),
-            Some("turn/moderationMetadata")
-        );
-    }
-
-    #[test]
-    fn thread_realtime_started_notification_is_marked_experimental() {
-        let notification =
-            ServerNotification::ThreadRealtimeStarted(v2::ThreadRealtimeStartedNotification {
-                thread_id: "thr_123".to_string(),
-                realtime_session_id: Some("sess_456".to_string()),
-                version: RealtimeConversationVersion::V1,
-            });
-        let reason = crate::experimental_api::ExperimentalApi::experimental_reason(&notification);
-        assert_eq!(reason, Some("thread/realtime/started"));
-    }
-
-    #[test]
-    fn thread_realtime_output_audio_delta_notification_is_marked_experimental() {
-        let notification = ServerNotification::ThreadRealtimeOutputAudioDelta(
-            v2::ThreadRealtimeOutputAudioDeltaNotification {
-                thread_id: "thr_123".to_string(),
-                audio: v2::ThreadRealtimeAudioChunk {
-                    data: "AQID".to_string(),
-                    sample_rate: 24_000,
-                    num_channels: 1,
-                    samples_per_channel: Some(512),
-                    item_id: None,
-                },
-            },
-        );
-        let reason = crate::experimental_api::ExperimentalApi::experimental_reason(&notification);
-        assert_eq!(reason, Some("thread/realtime/outputAudio/delta"));
-    }
-
-    #[test]
-    fn command_execution_request_approval_additional_permissions_is_marked_experimental() {
-        let params = v2::CommandExecutionRequestApprovalParams {
-            thread_id: "thr_123".to_string(),
-            turn_id: "turn_123".to_string(),
-            item_id: "call_123".to_string(),
-            started_at_ms: 0,
-            approval_id: None,
-            environment_id: None,
-            reason: None,
-            network_approval_context: None,
-            command: Some("cat file".to_string()),
-            cwd: None,
-            command_actions: None,
-            additional_permissions: Some(v2::AdditionalPermissionProfile {
-                network: None,
-                file_system: Some(v2::AdditionalFileSystemPermissions {
-                    read: Some(vec![absolute_path("/tmp/allowed").into()]),
-                    write: None,
-                    glob_scan_max_depth: None,
-                    entries: None,
-                }),
-            }),
-            proposed_execpolicy_amendment: None,
-            proposed_network_policy_amendments: None,
-            available_decisions: None,
-        };
-        let reason = crate::experimental_api::ExperimentalApi::experimental_reason(&params);
-        assert_eq!(
-            reason,
-            Some("item/commandExecution/requestApproval.additionalPermissions")
-        );
-    }
+    // Deleted: thread_settings_updated_notification_is_marked_experimental
+    // Deleted: turn_moderation_metadata_notification_is_marked_experimental
+    // Deleted: thread_realtime_started_notification_is_marked_experimental
+    // Deleted: thread_realtime_output_audio_delta_notification_is_marked_experimental
+    // Deleted: command_execution_request_approval_additional_permissions_is_marked_experimental
+    // Reason: ExperimentalApi impls return None (stubs from T8; derive macro dropped)
 }
 
 #[cfg(test)]

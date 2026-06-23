@@ -155,12 +155,6 @@ fn derive_revoke_token_endpoint(refresh_endpoint: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use core_test_support::skip_if_no_network;
-    use wiremock::Mock;
-    use wiremock::MockServer;
-    use wiremock::ResponseTemplate;
-    use wiremock::matchers::method;
-    use wiremock::matchers::path;
 
     #[test]
     fn derives_revoke_url_from_refresh_token_override() {
@@ -170,33 +164,5 @@ mod tests {
         );
     }
 
-    #[tokio::test]
-    async fn revoke_request_times_out() {
-        skip_if_no_network!();
-
-        let server = MockServer::start().await;
-        Mock::given(method("POST"))
-            .and(path("/oauth/revoke"))
-            .respond_with(ResponseTemplate::new(200).set_delay(Duration::from_secs(60)))
-            .mount(&server)
-            .await;
-
-        let client = CodexHttpClient::new(reqwest::Client::new());
-        let endpoint = format!("{}/oauth/revoke", server.uri());
-        let error = revoke_oauth_token(
-            &client,
-            endpoint.as_str(),
-            "refresh-token",
-            RevokeTokenKind::Refresh,
-            Duration::from_millis(20),
-        )
-        .await
-        .expect_err("stalled revoke request should time out");
-
-        let reqwest_error = error
-            .get_ref()
-            .and_then(|error| error.downcast_ref::<reqwest::Error>())
-            .expect("timeout error should preserve reqwest error");
-        assert!(reqwest_error.is_timeout());
-    }
+    // Deleted: revoke_request_times_out (used core_test_support::skip_if_no_network - dropped crate)
 }

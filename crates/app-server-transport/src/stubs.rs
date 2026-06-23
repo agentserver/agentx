@@ -55,7 +55,7 @@ pub async fn is_stale_socket_path(path: &std::path::Path) -> std::io::Result<boo
 // ── codex_state stubs ─────────────────────────────────────────────────────────
 
 /// Minimal record of a remote-control enrollment stored in the state database.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct RemoteControlEnrollmentRecord {
     pub websocket_url: String,
     pub account_id: String,

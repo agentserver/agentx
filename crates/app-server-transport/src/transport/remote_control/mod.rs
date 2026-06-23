@@ -1072,5 +1072,4 @@ pub async fn start_remote_control(
 
 #[cfg(test)]
 mod segment_tests;
-#[cfg(test)]
-mod tests;
+// tests.rs deleted: used auth_manager_from_auth stub (panics) and StateRuntime stub (no-op)

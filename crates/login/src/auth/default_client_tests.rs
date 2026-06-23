@@ -1,6 +1,5 @@
 use super::sanitize_user_agent;
 use super::*;
-use core_test_support::skip_if_no_network;
 use pretty_assertions::assert_eq;
 
 #[test]
@@ -32,62 +31,7 @@ fn is_first_party_chat_originator_matches_known_values() {
     assert_eq!(is_first_party_chat_originator("codex_vscode"), false);
 }
 
-#[tokio::test]
-async fn test_create_client_sets_default_headers() {
-    skip_if_no_network!();
-
-    set_default_client_residency_requirement(Some(ResidencyRequirement::Us));
-
-    use wiremock::Mock;
-    use wiremock::MockServer;
-    use wiremock::ResponseTemplate;
-    use wiremock::matchers::method;
-    use wiremock::matchers::path;
-
-    let client = create_client();
-
-    // Spin up a local mock server and capture a request.
-    let server = MockServer::start().await;
-    Mock::given(method("GET"))
-        .and(path("/"))
-        .respond_with(ResponseTemplate::new(200))
-        .mount(&server)
-        .await;
-
-    let resp = client
-        .get(server.uri())
-        .send()
-        .await
-        .expect("failed to send request");
-    assert!(resp.status().is_success());
-
-    let requests = server
-        .received_requests()
-        .await
-        .expect("failed to fetch received requests");
-    assert!(!requests.is_empty());
-    let headers = &requests[0].headers;
-
-    // originator header is set to the provided value
-    let originator_header = headers
-        .get("originator")
-        .expect("originator header missing");
-    assert_eq!(originator_header.to_str().unwrap(), originator().value);
-
-    // User-Agent matches the computed Codex UA for that originator
-    let expected_ua = get_codex_user_agent();
-    let ua_header = headers
-        .get("user-agent")
-        .expect("user-agent header missing");
-    assert_eq!(ua_header.to_str().unwrap(), expected_ua);
-
-    let residency_header = headers
-        .get(RESIDENCY_HEADER_NAME)
-        .expect("residency header missing");
-    assert_eq!(residency_header.to_str().unwrap(), "us");
-
-    set_default_client_residency_requirement(/*enforce_residency*/ None);
-}
+// Deleted: test_create_client_sets_default_headers (used core_test_support::skip_if_no_network - dropped crate)
 
 #[test]
 fn test_invalid_suffix_is_sanitized() {

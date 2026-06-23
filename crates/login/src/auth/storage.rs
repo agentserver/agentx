@@ -535,6 +535,4 @@ fn create_keyring_auth_storage(
     }
 }
 
-#[cfg(test)]
-#[path = "storage_tests.rs"]
-mod tests;
+// storage_tests.rs deleted: used codex_secrets and codex_keyring_store (dropped crates)
