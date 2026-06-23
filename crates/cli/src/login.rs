@@ -458,8 +458,8 @@ pub async fn run_login_status(cli_config_overrides: CliConfigOverrides) -> ! {
                 std::process::exit(0);
             }
             AuthMode::BedrockApiKey => {
-                eprintln!("Logged in using Amazon Bedrock API key");
-                std::process::exit(0);
+                eprintln!("Bedrock API key auth is not supported");
+                std::process::exit(1);
             }
         },
         Ok(None) => {
