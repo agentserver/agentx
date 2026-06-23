@@ -1,126 +1,24 @@
 [workspace]
 members = [
-    "aws-auth",
-    "analytics",
-    "agent-graph-store",
-    "agent-identity",
-    "backend-client",
-    "bwrap",
-    "ansi-escape",
-    "async-utils",
-    "app-server",
-    "app-server-transport",
-    "app-server-daemon",
-    "app-server-client",
-    "app-server-protocol",
-    "app-server-test-client",
-    "apply-patch",
-    "arg0",
-    "feedback",
-    "features",
-    "install-context",
-    "codex-backend-openapi-models",
-    "code-mode",
-    "code-mode-host",
-    "code-mode-protocol",
-    "codex-home",
-    "cloud-config",
-    "cloud-tasks",
-    "cloud-tasks-client",
-    "cloud-tasks-mock-client",
-    "cli",
-    "collaboration-mode-templates",
-    "connectors",
-    "config",
-    "context-fragments",
-    "shell-command",
-    "shell-escalation",
-    "skills",
-    "core",
-    "core-api",
-    "core-plugins",
-    "core-skills",
-    "hooks",
-    "secrets",
-    "exec",
-    "file-system",
-    "exec-server",
-    "execpolicy",
-    "execpolicy-legacy",
-    "ext/extension-api",
-    "ext/goal",
-    "ext/guardian",
-    "ext/image-generation",
-    "ext/memories",
-    "ext/mcp",
-    "ext/skills",
-    "ext/web-search",
-    "external-agent-migration",
-    "external-agent-sessions",
-    "keyring-store",
-    "file-search",
-    "file-watcher",
-    "linux-sandbox",
-    "lmstudio",
-    "login",
-    "codex-mcp",
-    "mcp-server",
-    "memories/read",
-    "memories/write",
-    "model-provider-info",
-    "models-manager",
-    "network-proxy",
-    "ollama",
-    "process-hardening",
-    "protocol",
-    "realtime-webrtc",
-    "prompts",
-    "rollout",
-    "rollout-trace",
-    "rmcp-client",
-    "responses-api-proxy",
-    "response-debug-context",
-    "sandboxing",
-    "stdio-to-uds",
-    "otel",
-    "tui",
-    "tools",
-    "v8-poc",
+    "crates/cli",
+    "crates/exec-server",
+    "crates/agent-identity",
+    "crates/login",
+    "crates/app-server-protocol",
+    "crates/app-server-transport",
+    "crates/codex-api",
+    "crates/codex-client",
+    "crates/protocol",
+    "crates/file-system",
+    "crates/sandboxing",
+    "crates/shell-command",
+    "crates/arg0",
+    "crates/async-utils",
+    "crates/bwrap",
     "utils/absolute-path",
     "utils/path-uri",
-    "utils/cargo-bin",
-    "git-utils",
-    "utils/cache",
-    "utils/image",
-    "utils/json-to-toml",
-    "utils/home-dir",
     "utils/pty",
-    "utils/readiness",
     "utils/rustls-provider",
-    "utils/string",
-    "utils/cli",
-    "utils/elapsed",
-    "utils/sandbox-summary",
-    "utils/sleep-inhibitor",
-    "utils/approval-presets",
-    "utils/oss",
-    "utils/output-truncation",
-    "utils/path-utils",
-    "utils/plugins",
-    "utils/fuzzy-match",
-    "utils/stream-parser",
-    "utils/template",
-    "codex-client",
-    "codex-api",
-    "state",
-    "terminal-detection",
-    "test-binary-support",
-    "thread-manager-sample",
-    "thread-store",
-    "uds",
-    "codex-experimental-api-macros",
-    "plugin",
-    "model-provider",
 ]
 resolver = "2"
 
@@ -135,125 +33,24 @@ license = "Apache-2.0"
 
 [workspace.dependencies]
 # Internal
-app_test_support = { path = "app-server/tests/common" }
-codex-analytics = { path = "analytics" }
-codex-agent-graph-store = { path = "agent-graph-store" }
-codex-agent-identity = { path = "agent-identity" }
-codex-ansi-escape = { path = "ansi-escape" }
-codex-api = { path = "codex-api" }
-codex-aws-auth = { path = "aws-auth" }
-codex-app-server = { path = "app-server" }
-codex-app-server-transport = { path = "app-server-transport" }
-codex-app-server-daemon = { path = "app-server-daemon" }
-codex-app-server-client = { path = "app-server-client" }
-codex-app-server-protocol = { path = "app-server-protocol" }
-codex-app-server-test-client = { path = "app-server-test-client" }
-codex-apply-patch = { path = "apply-patch" }
-codex-arg0 = { path = "arg0" }
-codex-async-utils = { path = "async-utils" }
-codex-backend-client = { path = "backend-client" }
-codex-chatgpt = { path = "chatgpt" }
-codex-cli = { path = "cli" }
-codex-client = { path = "codex-client" }
-codex-collaboration-mode-templates = { path = "collaboration-mode-templates" }
-codex-cloud-config = { path = "cloud-config" }
-codex-cloud-tasks-client = { path = "cloud-tasks-client" }
-codex-cloud-tasks-mock-client = { path = "cloud-tasks-mock-client" }
-codex-code-mode = { path = "code-mode" }
-codex-code-mode-protocol = { path = "code-mode-protocol" }
-codex-home = { path = "codex-home" }
-codex-config = { path = "config" }
-codex-connectors = { path = "connectors" }
-codex-context-fragments = { path = "context-fragments" }
-codex-core = { path = "core" }
-codex-core-api = { path = "core-api" }
-codex-core-plugins = { path = "core-plugins" }
-codex-core-skills = { path = "core-skills" }
-codex-exec = { path = "exec" }
-codex-file-system = { path = "file-system" }
-codex-exec-server = { path = "exec-server" }
-codex-execpolicy = { path = "execpolicy" }
-codex-extension-api = { path = "ext/extension-api" }
-codex-goal-extension = { path = "ext/goal" }
-codex-guardian = { path = "ext/guardian" }
-codex-image-generation-extension = { path = "ext/image-generation" }
-codex-external-agent-migration = { path = "external-agent-migration" }
-codex-external-agent-sessions = { path = "external-agent-sessions" }
-codex-experimental-api-macros = { path = "codex-experimental-api-macros" }
-codex-features = { path = "features" }
-codex-feedback = { path = "feedback" }
-codex-install-context = { path = "install-context" }
-codex-file-search = { path = "file-search" }
-codex-file-watcher = { path = "file-watcher" }
-codex-git-utils = { path = "git-utils" }
-codex-hooks = { path = "hooks" }
-codex-keyring-store = { path = "keyring-store" }
-codex-linux-sandbox = { path = "linux-sandbox" }
-codex-lmstudio = { path = "lmstudio" }
-codex-login = { path = "login" }
-codex-message-history = { path = "message-history" }
-codex-memories-extension = { path = "ext/memories" }
-codex-web-search-extension = { path = "ext/web-search" }
-codex-memories-read = { path = "memories/read" }
-codex-memories-write = { path = "memories/write" }
-codex-mcp = { path = "codex-mcp" }
-codex-mcp-extension = { path = "ext/mcp" }
-codex-mcp-server = { path = "mcp-server" }
-codex-model-provider-info = { path = "model-provider-info" }
-codex-models-manager = { path = "models-manager" }
-codex-network-proxy = { path = "network-proxy" }
-codex-ollama = { path = "ollama" }
-codex-otel = { path = "otel" }
-codex-plugin = { path = "plugin" }
-codex-model-provider = { path = "model-provider" }
-codex-process-hardening = { path = "process-hardening" }
-codex-protocol = { path = "protocol" }
-codex-prompts = { path = "prompts" }
-codex-responses-api-proxy = { path = "responses-api-proxy" }
-codex-response-debug-context = { path = "response-debug-context" }
-codex-rmcp-client = { path = "rmcp-client" }
-codex-rollout = { path = "rollout" }
-codex-rollout-trace = { path = "rollout-trace" }
-codex-sandboxing = { path = "sandboxing" }
-codex-secrets = { path = "secrets" }
-codex-shell-command = { path = "shell-command" }
-codex-shell-escalation = { path = "shell-escalation" }
-codex-skills-extension = { path = "ext/skills" }
-codex-skills = { path = "skills" }
-codex-state = { path = "state" }
-codex-stdio-to-uds = { path = "stdio-to-uds" }
-codex-terminal-detection = { path = "terminal-detection" }
-codex-test-binary-support = { path = "test-binary-support" }
-codex-thread-store = { path = "thread-store" }
-codex-tools = { path = "tools" }
-codex-tui = { path = "tui" }
-codex-uds = { path = "uds" }
+codex-agent-identity = { path = "crates/agent-identity" }
+codex-api = { path = "crates/codex-api" }
+codex-app-server-protocol = { path = "crates/app-server-protocol" }
+codex-app-server-transport = { path = "crates/app-server-transport" }
+codex-arg0 = { path = "crates/arg0" }
+codex-async-utils = { path = "crates/async-utils" }
+codex-bwrap = { path = "crates/bwrap" }
+codex-client = { path = "crates/codex-client" }
+codex-exec-server = { path = "crates/exec-server" }
+codex-file-system = { path = "crates/file-system" }
+codex-login = { path = "crates/login" }
+codex-protocol = { path = "crates/protocol" }
+codex-sandboxing = { path = "crates/sandboxing" }
+codex-shell-command = { path = "crates/shell-command" }
 codex-utils-absolute-path = { path = "utils/absolute-path" }
-codex-utils-approval-presets = { path = "utils/approval-presets" }
-codex-utils-cache = { path = "utils/cache" }
-codex-utils-cargo-bin = { path = "utils/cargo-bin" }
-codex-utils-cli = { path = "utils/cli" }
-codex-utils-elapsed = { path = "utils/elapsed" }
-codex-utils-fuzzy-match = { path = "utils/fuzzy-match" }
-codex-utils-home-dir = { path = "utils/home-dir" }
-codex-utils-image = { path = "utils/image" }
-codex-utils-json-to-toml = { path = "utils/json-to-toml" }
-codex-utils-oss = { path = "utils/oss" }
-codex-utils-output-truncation = { path = "utils/output-truncation" }
-codex-utils-path = { path = "utils/path-utils" }
 codex-utils-path-uri = { path = "utils/path-uri" }
-codex-utils-plugins = { path = "utils/plugins" }
 codex-utils-pty = { path = "utils/pty" }
 codex-utils-rustls-provider = { path = "utils/rustls-provider" }
-codex-utils-sandbox-summary = { path = "utils/sandbox-summary" }
-codex-utils-sleep-inhibitor = { path = "utils/sleep-inhibitor" }
-codex-utils-stream-parser = { path = "utils/stream-parser" }
-codex-utils-string = { path = "utils/string" }
-codex-utils-template = { path = "utils/template" }
-codex-v8-poc = { path = "v8-poc" }
-codex-windows-sandbox = { path = "windows-sandbox-rs" }
-core_test_support = { path = "core/tests/common" }
-mcp_test_support = { path = "mcp-server/tests/common" }
 
 # External
 age = "0.11.1"
@@ -501,10 +298,8 @@ unwrap_used = "deny"
 # silence the false positive here instead of deleting a real dependency.
 [workspace.metadata.cargo-shear]
 ignored = [
-    "codex-agent-graph-store",
     "icu_provider",
     "openssl-sys",
-    "codex-v8-poc",
 ]
 
 [profile.dev]

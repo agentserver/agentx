@@ -16,12 +16,8 @@ workspace = true
 chardetng = { workspace = true }
 chrono = { workspace = true, features = ["serde"] }
 codex-async-utils = { workspace = true }
-codex-execpolicy = { workspace = true }
-codex-network-proxy = { workspace = true }
 codex-utils-absolute-path = { workspace = true }
-codex-utils-image = { workspace = true }
 codex-utils-path-uri = { workspace = true }
-codex-utils-string = { workspace = true }
 encoding_rs = { workspace = true }
 globset = { workspace = true }
 icu_decimal = { workspace = true }

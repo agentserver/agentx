@@ -13,14 +13,7 @@ chrono = { workspace = true, features = ["serde"] }
 codex-agent-identity = { workspace = true }
 codex-app-server-protocol = { workspace = true }
 codex-client = { workspace = true }
-codex-config = { workspace = true }
-codex-keyring-store = { workspace = true }
-codex-model-provider-info = { workspace = true }
-codex-otel = { workspace = true }
 codex-protocol = { workspace = true }
-codex-secrets = { workspace = true }
-codex-terminal-detection = { workspace = true }
-codex-utils-template = { workspace = true }
 once_cell = { workspace = true }
 os_info = { workspace = true }
 rand = { workspace = true }
@@ -44,7 +37,6 @@ webbrowser = { workspace = true }
 
 [dev-dependencies]
 anyhow = { workspace = true }
-core_test_support = { workspace = true }
 jsonwebtoken = { workspace = true }
 keyring = { workspace = true }
 pretty_assertions = { workspace = true }

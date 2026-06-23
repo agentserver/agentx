@@ -28,7 +28,6 @@ zstd = { workspace = true }
 workspace = true
 
 [dev-dependencies]
-codex-utils-cargo-bin = { workspace = true }
 opentelemetry_sdk = { workspace = true }
 pretty_assertions = { workspace = true }
 rcgen = { workspace = true }
