@@ -1,68 +1,19 @@
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::NoiseChannelPublicKey;
-
-/// Request body for registering an executor with the environment registry.
-#[derive(Clone, Deserialize, Eq, PartialEq, Serialize)]
+/// Request body for registering an executor with the agentx gateway.
+///
+/// POST /agentx/environment/{env_id}/register
+/// Authorization: AgentAssertion <jwt>
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct EnvironmentRegistryRegistrationRequest {
-    pub security_profile: String,
-    pub executor_public_key: NoiseChannelPublicKey,
+    pub id: String,
+    pub public_key: String,
 }
 
-/// Environment registry response returned after executor registration.
+/// Response from the agentx gateway after executor registration.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct EnvironmentRegistryRegistrationResponse {
-    pub environment_id: String,
+    pub executor_id: String,
     pub url: String,
-    pub security_profile: String,
-    pub executor_registration_id: String,
 }
-
-/// Request body for connecting a harness key with the environment registry.
-#[derive(Clone, Deserialize, Eq, PartialEq, Serialize)]
-pub struct EnvironmentRegistryConnectRequest {
-    pub harness_public_key: NoiseChannelPublicKey,
-}
-
-/// Environment registry response returned after connecting a harness key.
-#[derive(Clone, Deserialize, Eq, PartialEq, Serialize)]
-pub struct EnvironmentRegistryConnectResponse {
-    pub environment_id: String,
-    pub url: String,
-    pub security_profile: String,
-    pub executor_registration_id: String,
-    pub executor_public_key: NoiseChannelPublicKey,
-    pub harness_key_authorization: String,
-}
-
-impl std::fmt::Debug for EnvironmentRegistryConnectResponse {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("EnvironmentRegistryConnectResponse")
-            .field("environment_id", &self.environment_id)
-            .field("url", &"<redacted>")
-            .field("security_profile", &self.security_profile)
-            .field("executor_registration_id", &self.executor_registration_id)
-            .field("executor_public_key", &self.executor_public_key)
-            .field("harness_key_authorization", &"<redacted>")
-            .finish()
-    }
-}
-
-/// Request body for authorizing a harness key with the environment registry.
-#[derive(Clone, Deserialize, Eq, PartialEq, Serialize)]
-pub struct EnvironmentRegistryHarnessKeyValidationRequest {
-    pub executor_registration_id: String,
-    pub harness_public_key: NoiseChannelPublicKey,
-    pub harness_key_authorization: String,
-}
-
-/// Environment registry response returned after harness key validation.
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
-pub struct EnvironmentRegistryHarnessKeyValidationResponse {
-    pub valid: bool,
-}
-
-#[cfg(test)]
-#[path = "environment_registry_tests.rs"]
-mod tests;
