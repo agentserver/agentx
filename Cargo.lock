@@ -700,6 +700,7 @@ dependencies = [
  "assert_matches",
  "clap",
  "clap_complete",
+ "codex-agent-identity",
  "codex-api",
  "codex-app-server-protocol",
  "codex-arg0",

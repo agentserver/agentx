@@ -235,14 +235,82 @@ async fn load_exec_server_remote_auth(
 }
 
 /// Build a `SharedAuthProvider` from a login auth snapshot.
-/// Stub: returns an unauthenticated provider. Proper auth header injection
-/// is handled inside the exec-server's RemoteEnvironment via the auth token.
-fn auth_provider_from_auth(_auth: &CodexAuth) -> SharedAuthProvider {
-    struct Unauthenticated;
-    impl codex_api::AuthProvider for Unauthenticated {
-        fn add_auth_headers(&self, _headers: &mut http::HeaderMap) {}
+///
+/// Dispatches on the `CodexAuth` variant:
+/// - `AgentIdentity` → `Authorization: AgentAssertion <jwt>` (signed assertion)
+/// - All others (ApiKey / Chatgpt / ChatgptAuthTokens / PersonalAccessToken)
+///   → `Authorization: Bearer <token>`
+fn auth_provider_from_auth(auth: &CodexAuth) -> SharedAuthProvider {
+    use codex_agent_identity::AgentIdentityKey;
+    use codex_agent_identity::authorization_header_for_agent_task;
+
+    // ------- AgentIdentity: signed AgentAssertion header -------
+    struct AgentIdentityAuthProvider {
+        agent_runtime_id: String,
+        agent_private_key: String,
+        task_id: String,
     }
-    Arc::new(Unauthenticated)
+    impl codex_api::AuthProvider for AgentIdentityAuthProvider {
+        fn add_auth_headers(&self, headers: &mut http::HeaderMap) {
+            let key = AgentIdentityKey {
+                agent_runtime_id: &self.agent_runtime_id,
+                private_key_pkcs8_base64: &self.agent_private_key,
+            };
+            let result = authorization_header_for_agent_task(key, &self.task_id)
+                .map_err(std::io::Error::other);
+            if let Ok(header_value) = result
+                && let Ok(header) = http::HeaderValue::from_str(&header_value)
+            {
+                let _ = headers.insert(http::header::AUTHORIZATION, header);
+            }
+        }
+    }
+
+    // ------- Bearer: ApiKey / Chatgpt / ChatgptAuthTokens / PersonalAccessToken -------
+    struct BearerAuthProvider {
+        token: Option<String>,
+        account_id: Option<String>,
+        is_fedramp_account: bool,
+    }
+    impl codex_api::AuthProvider for BearerAuthProvider {
+        fn add_auth_headers(&self, headers: &mut http::HeaderMap) {
+            if let Some(token) = self.token.as_ref()
+                && let Ok(header) = http::HeaderValue::from_str(&format!("Bearer {token}"))
+            {
+                let _ = headers.insert(http::header::AUTHORIZATION, header);
+            }
+            if let Some(account_id) = self.account_id.as_ref()
+                && let Ok(header) = http::HeaderValue::from_str(account_id)
+            {
+                let _ = headers.insert("ChatGPT-Account-ID", header);
+            }
+            if self.is_fedramp_account {
+                let _ = headers.insert(
+                    "X-OpenAI-Fedramp",
+                    http::HeaderValue::from_static("true"),
+                );
+            }
+        }
+    }
+
+    match auth {
+        CodexAuth::AgentIdentity(ai) => {
+            let record = ai.record();
+            Arc::new(AgentIdentityAuthProvider {
+                agent_runtime_id: record.agent_runtime_id.clone(),
+                agent_private_key: record.agent_private_key.clone(),
+                task_id: ai.run_task_id().to_string(),
+            })
+        }
+        CodexAuth::ApiKey(_)
+        | CodexAuth::Chatgpt(_)
+        | CodexAuth::ChatgptAuthTokens(_)
+        | CodexAuth::PersonalAccessToken(_) => Arc::new(BearerAuthProvider {
+            token: auth.get_token().ok(),
+            account_id: auth.get_account_id(),
+            is_fedramp_account: auth.is_fedramp_account(),
+        }),
+    }
 }
 
 #[cfg(test)]
@@ -303,6 +371,48 @@ mod tests {
         assert_eq!(
             error.to_string(),
             "remote exec-server API-key authentication is restricted to HTTPS openai.com and openai.org hosts and subdomains or loopback hosts"
+        );
+    }
+
+    #[test]
+    fn auth_provider_from_api_key_injects_bearer_header() {
+        use codex_api::AuthProvider as _;
+
+        let auth = CodexAuth::from_api_key("sk-test-key");
+        let provider = auth_provider_from_auth(&auth);
+        let headers = provider.to_auth_headers();
+
+        let authorization = headers
+            .get(http::header::AUTHORIZATION)
+            .and_then(|v| v.to_str().ok())
+            .expect("Authorization header must be present for ApiKey auth");
+
+        assert!(
+            authorization.starts_with("Bearer "),
+            "ApiKey auth must produce a Bearer Authorization header, got: {authorization}"
+        );
+        assert!(
+            authorization.contains("sk-test-key"),
+            "Bearer header must contain the api key, got: {authorization}"
+        );
+    }
+
+    #[test]
+    fn auth_provider_from_chatgpt_auth_injects_bearer_header() {
+        use codex_api::AuthProvider as _;
+
+        let auth = CodexAuth::create_dummy_chatgpt_auth_for_testing();
+        let provider = auth_provider_from_auth(&auth);
+        let headers = provider.to_auth_headers();
+
+        let authorization = headers
+            .get(http::header::AUTHORIZATION)
+            .and_then(|v| v.to_str().ok())
+            .expect("Authorization header must be present for Chatgpt auth");
+
+        assert!(
+            authorization.starts_with("Bearer "),
+            "Chatgpt auth must produce a Bearer Authorization header, got: {authorization}"
         );
     }
 }
