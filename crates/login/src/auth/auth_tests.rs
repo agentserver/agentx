@@ -2264,3 +2264,4 @@ async fn missing_plan_type_maps_to_unknown() {
 
     pretty_assertions::assert_eq!(auth.account_plan_type(), Some(AccountPlanType::Unknown));
 }
+

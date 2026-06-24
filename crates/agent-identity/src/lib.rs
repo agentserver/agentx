@@ -51,7 +51,23 @@ pub enum ChatGptEnvironment {
 
 impl ChatGptEnvironment {
     pub fn from_chatgpt_base_url(chatgpt_base_url: &str) -> Result<Self> {
-        match chatgpt_base_url.trim_end_matches('/') {
+        let trimmed = chatgpt_base_url.trim_end_matches('/');
+
+        // Env override (set per-instance via AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS,
+        // comma-separated). When set, the URL must appear in the list.
+        // When unset, fall back to the original hardcoded whitelist below.
+        if let Ok(list) = std::env::var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS") {
+            let allowed: Vec<&str> = list.split(',').map(str::trim).filter(|s| !s.is_empty()).collect();
+            if allowed.iter().any(|a| a.trim_end_matches('/') == trimmed) {
+                // Treat any env-allowed URL as Production-equivalent.
+                return Ok(Self::Production);
+            }
+            anyhow::bail!(
+                "Agent Identity URL {chatgpt_base_url:?} not in AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS"
+            );
+        }
+
+        match trimmed {
             "https://chatgpt.com"
             | "https://chatgpt.com/backend-api"
             | "https://chatgpt.com/codex"
@@ -870,6 +886,40 @@ J1bwkqKZTB5dHolX9A58e/xXnfZ5P8f3Z83+Izap3FwqQulk7b1WO1MQcHuVg2NN
             }]
         }))
         .expect("test JWKS should parse")
+    }
+
+    #[test]
+    fn from_chatgpt_base_url_respects_env_allowlist() {
+        // Save + restore env to avoid test interference.
+        let prev = std::env::var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS").ok();
+
+        // 1) URL in the env list → Ok(Production by convention).
+        unsafe { std::env::set_var(
+            "AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS",
+            "https://codex-auth.agent.cs.ac.cn,https://other.example",
+        ); }
+        assert!(
+            ChatGptEnvironment::from_chatgpt_base_url("https://codex-auth.agent.cs.ac.cn").is_ok(),
+            "URL in env list should pass"
+        );
+
+        // 2) URL not in env list → Err (we don't punch through to hardcoded list when env is set).
+        assert!(
+            ChatGptEnvironment::from_chatgpt_base_url("https://chatgpt.com").is_err(),
+            "URL not in env list should fail even if in hardcoded list"
+        );
+
+        // 3) Env unset → original hardcoded list still works.
+        unsafe { std::env::remove_var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS"); }
+        assert!(
+            ChatGptEnvironment::from_chatgpt_base_url("https://chatgpt.com").is_ok(),
+            "fallback to hardcoded whitelist when env unset"
+        );
+
+        // Restore.
+        if let Some(v) = prev {
+            unsafe { std::env::set_var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS", v); }
+        }
     }
 
     #[test]
