@@ -1,9 +1,6 @@
 use std::future::Future;
 use std::time::Duration;
 
-use anyhow::Context;
-use anyhow::Result;
-use anyhow::bail;
 use agentx_app_server_protocol::JSONRPCMessage;
 use agentx_app_server_protocol::JSONRPCNotification;
 use agentx_app_server_protocol::JSONRPCRequest;
@@ -17,6 +14,9 @@ use agentx_exec_server::HttpRequestResponse;
 use agentx_exec_server::InitializeParams;
 use agentx_exec_server::InitializeResponse;
 use agentx_exec_server::RemoteExecServerConnectArgs;
+use anyhow::Context;
+use anyhow::Result;
+use anyhow::bail;
 use futures::SinkExt;
 use futures::StreamExt;
 use pretty_assertions::assert_eq;

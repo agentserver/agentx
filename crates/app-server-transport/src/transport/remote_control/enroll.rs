@@ -8,12 +8,12 @@ use super::protocol::RemoteControlPairingStatusResponse as BackendRemoteControlP
 use super::protocol::RemoteControlTarget;
 use super::protocol::StartRemoteControlPairingRequest;
 use super::protocol::StartRemoteControlPairingResponse;
-use axum::http::HeaderMap;
+use crate::stubs::RemoteControlEnrollmentRecord;
+use crate::stubs::StateRuntime;
 use agentx_app_server_protocol::RemoteControlPairingStartResponse;
 use agentx_app_server_protocol::RemoteControlPairingStatusResponse;
 use agentx_login::default_client::build_reqwest_client;
-use crate::stubs::RemoteControlEnrollmentRecord;
-use crate::stubs::StateRuntime;
+use axum::http::HeaderMap;
 use serde::Serialize;
 use serde::de::DeserializeOwned;
 use std::io;
@@ -558,8 +558,8 @@ fn update_remote_control_server_token(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::transport::remote_control::protocol::normalize_remote_control_url;
     use crate::stubs::StateRuntime;
+    use crate::transport::remote_control::protocol::normalize_remote_control_url;
     use pretty_assertions::assert_eq;
     use serde_json::json;
     use std::sync::Arc;

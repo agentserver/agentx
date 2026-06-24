@@ -294,7 +294,6 @@ impl EnvironmentManager {
             .insert(environment_id, environment);
         Ok(())
     }
-
 }
 
 fn optional_environment_value(name: &str) -> Option<String> {

@@ -1,4 +1,3 @@
-
 use agentx_protocol::config_types::ApprovalsReviewer as CoreApprovalsReviewer;
 use agentx_protocol::config_types::SandboxMode as CoreSandboxMode;
 use agentx_protocol::protocol::AskForApproval as CoreAskForApproval;
@@ -154,9 +153,7 @@ impl From<CoreNonSteerableTurnKind> for NonSteerableTurnKind {
     }
 }
 
-#[derive(
-    Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, JsonSchema, TS,
-)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, JsonSchema, TS)]
 #[serde(rename_all = "kebab-case")]
 #[ts(rename_all = "kebab-case", export_to = "v2/")]
 pub enum AskForApproval {

@@ -167,4 +167,3 @@ fn stdio_command_process(stdio_command: &StdioExecServerCommand) -> Command {
     command.process_group(0);
     command
 }
-

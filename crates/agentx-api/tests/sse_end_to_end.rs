@@ -2,8 +2,6 @@
 use std::sync::Arc;
 use std::time::Duration;
 
-use anyhow::Result;
-use bytes::Bytes;
 use agentx_api::AuthProvider;
 use agentx_api::Compression;
 use agentx_api::Provider;
@@ -15,6 +13,8 @@ use agentx_client::Response;
 use agentx_client::StreamResponse;
 use agentx_client::TransportError;
 use agentx_protocol::models::ResponseItem;
+use anyhow::Result;
+use bytes::Bytes;
 use futures::StreamExt;
 use http::HeaderMap;
 use http::StatusCode;

@@ -4,9 +4,9 @@ use std::io::Result as IoResult;
 use std::path::Path;
 
 use super::TransportEvent;
-use crate::transport::websocket::run_websocket_connection;
 use crate::stubs::UnixListener;
 use crate::stubs::UnixStream;
+use crate::transport::websocket::run_websocket_connection;
 use agentx_utils_absolute_path::AbsolutePathBuf;
 use futures::StreamExt;
 use tokio::sync::mpsc;

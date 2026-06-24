@@ -559,10 +559,12 @@ J1bwkqKZTB5dHolX9A58e/xXnfZ5P8f3Z83+Izap3FwqQulk7b1WO1MQcHuVg2NN
         let prev = std::env::var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS").ok();
 
         // 1) URL in env list → resolves without error.
-        unsafe { std::env::set_var(
-            "AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS",
-            "https://codex-auth.agent.cs.ac.cn,https://other.example",
-        ); }
+        unsafe {
+            std::env::set_var(
+                "AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS",
+                "https://codex-auth.agent.cs.ac.cn,https://other.example",
+            );
+        }
         assert!(
             agent_identity_authapi_base_url(Some("https://codex-auth.agent.cs.ac.cn")).is_ok(),
             "URL in env list should pass"
@@ -575,7 +577,9 @@ J1bwkqKZTB5dHolX9A58e/xXnfZ5P8f3Z83+Izap3FwqQulk7b1WO1MQcHuVg2NN
         );
 
         // 3) Env unset → original hardcoded list still works.
-        unsafe { std::env::remove_var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS"); }
+        unsafe {
+            std::env::remove_var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS");
+        }
         assert!(
             agent_identity_authapi_base_url(Some("https://chatgpt.com")).is_ok(),
             "fallback to hardcoded whitelist when env unset"
@@ -583,7 +587,9 @@ J1bwkqKZTB5dHolX9A58e/xXnfZ5P8f3Z83+Izap3FwqQulk7b1WO1MQcHuVg2NN
 
         // Restore.
         if let Some(v) = prev {
-            unsafe { std::env::set_var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS", v); }
+            unsafe {
+                std::env::set_var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS", v);
+            }
         }
     }
 }

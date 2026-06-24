@@ -27,9 +27,7 @@ pub fn has_proxy_url_env_vars(env: &HashMap<String, String>) -> bool {
 
 /// Returns the value of the given proxy env key from `env`, if present and non-empty.
 pub fn proxy_url_env_value<'a>(env: &'a HashMap<String, String>, key: &str) -> Option<&'a str> {
-    env.get(key)
-        .map(String::as_str)
-        .filter(|v| !v.is_empty())
+    env.get(key).map(String::as_str).filter(|v| !v.is_empty())
 }
 
 /// Stub network proxy — no MITM-proxy functionality, always acts as "no proxy".

@@ -8,9 +8,9 @@ use agentx_protocol::auth::KnownPlan as InternalKnownPlan;
 use agentx_protocol::auth::PlanType as InternalPlanType;
 use agentx_protocol::protocol::SessionSource;
 
-use base64::Engine;
 use agentx_protocol::config_types::ForcedLoginMethod;
 use agentx_protocol::config_types::ModelProviderAuthInfo;
+use base64::Engine;
 use pretty_assertions::assert_eq;
 use serde::Serialize;
 use serde_json::json;
@@ -2265,7 +2265,6 @@ async fn missing_plan_type_maps_to_unknown() {
     pretty_assertions::assert_eq!(auth.account_plan_type(), Some(AccountPlanType::Unknown));
 }
 
-
 #[tokio::test]
 async fn from_agent_identity_jwt_accepts_authapi_override() {
     // This test just confirms the signature compiles with a fourth arg.
@@ -2274,8 +2273,9 @@ async fn from_agent_identity_jwt_accepts_authapi_override() {
         "not-a-jwt",
         Some("https://chatgpt.com/backend-api"),
         None,
-        Some("https://example.com/api/accounts"),   // <-- new override arg
-    ).await;
+        Some("https://example.com/api/accounts"), // <-- new override arg
+    )
+    .await;
     // We don't care if it succeeds (JWT is junk); we care that it compiles.
     let _ = result;
 }

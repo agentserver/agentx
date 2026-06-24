@@ -1,5 +1,5 @@
-use crate::stubs::ModelProviderInfo;
 use crate::stubs::AuthEnvTelemetryMetadata;
+use crate::stubs::ModelProviderInfo;
 
 use crate::CODEX_API_KEY_ENV_VAR;
 use crate::OPENAI_API_KEY_ENV_VAR;

@@ -72,7 +72,6 @@ fn seatbelt_protected_metadata_name_requirements(root: &Path) -> String {
         .join(" ")
 }
 
-
 #[test]
 fn base_policy_allows_node_cpu_sysctls() {
     assert!(

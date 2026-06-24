@@ -1,4 +1,3 @@
-use clap::Parser;
 use agentx_api::SharedAuthProvider;
 use agentx_arg0::Arg0DispatchPaths;
 use agentx_arg0::arg0_dispatch_or_else;
@@ -9,6 +8,7 @@ use agentx_login::AuthManagerConfig;
 use agentx_login::AuthRouteConfig;
 use agentx_login::CodexAuth;
 use agentx_login::read_codex_access_token_from_env;
+use clap::Parser;
 use std::path::PathBuf;
 use std::sync::Arc;
 
@@ -75,7 +75,12 @@ struct AgentxCli {
 #[derive(Debug, Parser)]
 struct ExecServerCommand {
     /// Register this exec-server as a remote environment using the given base URL.
-    #[arg(long = "remote", value_name = "URL", required = true, requires = "environment_id")]
+    #[arg(
+        long = "remote",
+        value_name = "URL",
+        required = true,
+        requires = "environment_id"
+    )]
     remote: String,
 
     /// Environment id to attach to when registering remotely.
@@ -94,7 +99,7 @@ struct ExecServerCommand {
     /// the chatgpt_base_url via the default whitelist.
     #[arg(
         long = "agent-identity-authapi-base-url",
-        env = "AGENTX_AGENT_IDENTITY_AUTHAPI_BASE_URL",
+        env = "AGENTX_AGENT_IDENTITY_AUTHAPI_BASE_URL"
     )]
     agent_identity_authapi_base_url: Option<String>,
 }
@@ -137,11 +142,8 @@ async fn run_exec_server_command(
         cmd.agent_identity_authapi_base_url.as_deref(),
     )
     .await?;
-    let mut remote_config = agentx_exec_server::RemoteEnvironmentConfig::new(
-        base_url,
-        environment_id,
-        auth_provider,
-    )?;
+    let mut remote_config =
+        agentx_exec_server::RemoteEnvironmentConfig::new(base_url, environment_id, auth_provider)?;
     if let Some(name) = cmd.name {
         remote_config.name = name;
     }
@@ -203,7 +205,11 @@ fn validate_api_key_remote_host(base_url: &str) -> anyhow::Result<()> {
     // Env override (set per-instance via AGENTX_API_KEY_ALLOWED_HOSTS,
     // comma-separated). When set, host must appear in the list.
     if let Ok(list) = std::env::var("AGENTX_API_KEY_ALLOWED_HOSTS") {
-        let allowed: Vec<&str> = list.split(',').map(str::trim).filter(|s| !s.is_empty()).collect();
+        let allowed: Vec<&str> = list
+            .split(',')
+            .map(str::trim)
+            .filter(|s| !s.is_empty())
+            .collect();
         let host_str = match &host {
             url::Host::Domain(d) => d.to_ascii_lowercase(),
             url::Host::Ipv4(ip) => ip.to_string(),
@@ -212,9 +218,7 @@ fn validate_api_key_remote_host(base_url: &str) -> anyhow::Result<()> {
         if allowed.iter().any(|a| a.eq_ignore_ascii_case(&host_str)) {
             return Ok(());
         }
-        anyhow::bail!(
-            "remote exec-server host {host_str:?} not in AGENTX_API_KEY_ALLOWED_HOSTS"
-        );
+        anyhow::bail!("remote exec-server host {host_str:?} not in AGENTX_API_KEY_ALLOWED_HOSTS");
     }
 
     // Original openai.com / openai.org / loopback whitelist (preserved verbatim from v0.142).
@@ -317,10 +321,7 @@ fn auth_provider_from_auth(auth: &CodexAuth) -> SharedAuthProvider {
                 let _ = headers.insert("ChatGPT-Account-ID", header);
             }
             if self.is_fedramp_account {
-                let _ = headers.insert(
-                    "X-OpenAI-Fedramp",
-                    http::HeaderValue::from_static("true"),
-                );
+                let _ = headers.insert("X-OpenAI-Fedramp", http::HeaderValue::from_static("true"));
             }
         }
     }
@@ -439,10 +440,12 @@ mod tests {
     fn validate_api_key_remote_host_respects_env_allowlist() {
         let prev = std::env::var("AGENTX_API_KEY_ALLOWED_HOSTS").ok();
 
-        unsafe { std::env::set_var(
-            "AGENTX_API_KEY_ALLOWED_HOSTS",
-            "x.agent.cs.ac.cn,gateway.example",
-        ); }
+        unsafe {
+            std::env::set_var(
+                "AGENTX_API_KEY_ALLOWED_HOSTS",
+                "x.agent.cs.ac.cn,gateway.example",
+            );
+        }
         assert!(
             validate_api_key_remote_host("https://x.agent.cs.ac.cn").is_ok(),
             "host in env list should pass"
@@ -452,14 +455,18 @@ mod tests {
             "host not in env list should fail"
         );
 
-        unsafe { std::env::remove_var("AGENTX_API_KEY_ALLOWED_HOSTS"); }
+        unsafe {
+            std::env::remove_var("AGENTX_API_KEY_ALLOWED_HOSTS");
+        }
         assert!(
             validate_api_key_remote_host("https://api.openai.com").is_ok(),
             "fallback to openai.com whitelist when env unset"
         );
 
         if let Some(v) = prev {
-            unsafe { std::env::set_var("AGENTX_API_KEY_ALLOWED_HOSTS", v); }
+            unsafe {
+                std::env::set_var("AGENTX_API_KEY_ALLOWED_HOSTS", v);
+            }
         }
     }
 

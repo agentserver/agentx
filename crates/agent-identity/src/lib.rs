@@ -3,6 +3,8 @@ use std::error::Error as StdError;
 use std::fmt;
 use std::time::Duration;
 
+use agentx_protocol::auth::PlanType as AuthPlanType;
+use agentx_protocol::protocol::SessionSource;
 use anyhow::Context;
 use anyhow::Result;
 use base64::Engine as _;
@@ -10,8 +12,6 @@ use base64::engine::general_purpose::STANDARD as BASE64_STANDARD;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use chrono::SecondsFormat;
 use chrono::Utc;
-use agentx_protocol::auth::PlanType as AuthPlanType;
-use agentx_protocol::protocol::SessionSource;
 use crypto_box::SecretKey as Curve25519SecretKey;
 use ed25519_dalek::Signer as _;
 use ed25519_dalek::SigningKey;
@@ -57,7 +57,11 @@ impl ChatGptEnvironment {
         // comma-separated). When set, the URL must appear in the list.
         // When unset, fall back to the original hardcoded whitelist below.
         if let Ok(list) = std::env::var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS") {
-            let allowed: Vec<&str> = list.split(',').map(str::trim).filter(|s| !s.is_empty()).collect();
+            let allowed: Vec<&str> = list
+                .split(',')
+                .map(str::trim)
+                .filter(|s| !s.is_empty())
+                .collect();
             if allowed.iter().any(|a| a.trim_end_matches('/') == trimmed) {
                 // Treat any env-allowed URL as Production-equivalent.
                 return Ok(Self::Production);
@@ -894,10 +898,12 @@ J1bwkqKZTB5dHolX9A58e/xXnfZ5P8f3Z83+Izap3FwqQulk7b1WO1MQcHuVg2NN
         let prev = std::env::var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS").ok();
 
         // 1) URL in the env list → Ok(Production by convention).
-        unsafe { std::env::set_var(
-            "AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS",
-            "https://codex-auth.agent.cs.ac.cn,https://other.example",
-        ); }
+        unsafe {
+            std::env::set_var(
+                "AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS",
+                "https://codex-auth.agent.cs.ac.cn,https://other.example",
+            );
+        }
         assert!(
             ChatGptEnvironment::from_chatgpt_base_url("https://codex-auth.agent.cs.ac.cn").is_ok(),
             "URL in env list should pass"
@@ -910,7 +916,9 @@ J1bwkqKZTB5dHolX9A58e/xXnfZ5P8f3Z83+Izap3FwqQulk7b1WO1MQcHuVg2NN
         );
 
         // 3) Env unset → original hardcoded list still works.
-        unsafe { std::env::remove_var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS"); }
+        unsafe {
+            std::env::remove_var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS");
+        }
         assert!(
             ChatGptEnvironment::from_chatgpt_base_url("https://chatgpt.com").is_ok(),
             "fallback to hardcoded whitelist when env unset"
@@ -918,7 +926,9 @@ J1bwkqKZTB5dHolX9A58e/xXnfZ5P8f3Z83+Izap3FwqQulk7b1WO1MQcHuVg2NN
 
         // Restore.
         if let Some(v) = prev {
-            unsafe { std::env::set_var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS", v); }
+            unsafe {
+                std::env::set_var("AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS", v);
+            }
         }
     }
 

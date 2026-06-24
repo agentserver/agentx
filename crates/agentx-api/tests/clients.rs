@@ -3,8 +3,6 @@ use std::sync::Arc;
 use std::sync::Mutex;
 use std::time::Duration;
 
-use anyhow::Result;
-use bytes::Bytes;
 use agentx_api::ApiError;
 use agentx_api::AuthError;
 use agentx_api::AuthProvider;
@@ -23,6 +21,8 @@ use agentx_protocol::models::ContentItem;
 use agentx_protocol::models::ResponseItem;
 use agentx_protocol::protocol::SessionSource;
 use agentx_protocol::protocol::SubAgentSource;
+use anyhow::Result;
+use bytes::Bytes;
 use http::HeaderMap;
 use http::HeaderValue;
 use http::StatusCode;

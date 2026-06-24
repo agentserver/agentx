@@ -1534,8 +1534,7 @@ pub fn local_image_content_items_with_label_number(
     let encoded = {
         use std::fmt::Write as _;
         let mut out = String::with_capacity(file_bytes.len() * 4 / 3 + 4);
-        const CHARS: &[u8] =
-            b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        const CHARS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         let chunks = file_bytes.chunks(3);
         for chunk in chunks {
             let b0 = chunk[0] as usize;

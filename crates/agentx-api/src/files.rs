@@ -1,8 +1,8 @@
 use std::time::Duration;
 
 use crate::AuthProvider;
-use bytes::Bytes;
 use agentx_client::build_reqwest_client_with_custom_ca;
+use bytes::Bytes;
 use futures::Stream;
 use reqwest::StatusCode;
 use reqwest::header::CONTENT_LENGTH;

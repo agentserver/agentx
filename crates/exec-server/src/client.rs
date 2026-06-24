@@ -8,8 +8,8 @@ use std::sync::atomic::AtomicU64;
 use std::sync::atomic::Ordering;
 use std::time::Duration;
 
-use arc_swap::ArcSwap;
 use agentx_app_server_protocol::JSONRPCNotification;
+use arc_swap::ArcSwap;
 use futures::FutureExt;
 use futures::future::BoxFuture;
 use serde_json::Value;

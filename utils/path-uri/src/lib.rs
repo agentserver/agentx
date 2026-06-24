@@ -2,8 +2,8 @@
 //!
 //! See [`PathUri`] for scheme, normalization, and serialization behavior.
 
-use base64::Engine;
 use agentx_utils_absolute_path::AbsolutePathBuf;
+use base64::Engine;
 use schemars::JsonSchema;
 use serde::Deserialize;
 use serde::Deserializer;

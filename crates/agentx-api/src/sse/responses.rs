@@ -615,12 +615,12 @@ fn rate_limit_regex() -> &'static regex_lite::Regex {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use assert_matches::assert_matches;
-    use bytes::Bytes;
     use agentx_client::StreamResponse;
     use agentx_client::TransportError;
     use agentx_protocol::models::MessagePhase;
     use agentx_protocol::models::ResponseItem;
+    use assert_matches::assert_matches;
+    use bytes::Bytes;
     use futures::TryStreamExt;
     use futures::stream;
     use http::HeaderMap;

@@ -1,6 +1,6 @@
+use agentx_utils_path_uri::PathUri;
 use base64::Engine as _;
 use base64::engine::general_purpose::STANDARD;
-use agentx_utils_path_uri::PathUri;
 use tokio::io;
 use tracing::trace;
 

@@ -129,11 +129,7 @@ impl SecretsManager {
         Self
     }
 
-    pub fn get(
-        &self,
-        _scope: &SecretScope,
-        _name: &SecretName,
-    ) -> Result<Option<String>, String> {
+    pub fn get(&self, _scope: &SecretScope, _name: &SecretName) -> Result<Option<String>, String> {
         Ok(None)
     }
 

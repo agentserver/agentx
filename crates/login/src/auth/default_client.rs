@@ -4,6 +4,7 @@
 //! Use [`crate::default_client`] or [`agentx_login::default_client`] from other crates in this
 //! workspace.
 
+use crate::stubs::user_agent;
 use agentx_client::BuildCustomCaTransportError;
 use agentx_client::BuildRouteAwareHttpClientError;
 use agentx_client::ClientRouteClass;
@@ -12,7 +13,6 @@ pub use agentx_client::CodexRequestBuilder;
 use agentx_client::build_reqwest_client_for_route;
 use agentx_client::build_reqwest_client_with_custom_ca;
 use agentx_client::with_chatgpt_cloudflare_cookie_store;
-use crate::stubs::user_agent;
 use reqwest::header::HeaderMap;
 use reqwest::header::HeaderValue;
 use reqwest::header::USER_AGENT;

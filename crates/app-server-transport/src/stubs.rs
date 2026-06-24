@@ -143,13 +143,11 @@ pub mod util {
 }
 
 pub mod test_support {
-    use std::sync::Arc;
     use crate::stubs::UnauthenticatedAuthProvider;
+    use std::sync::Arc;
 
     /// Creates an auth manager for tests from an auth value.
-    pub fn auth_manager_from_auth(
-        _auth: impl std::any::Any,
-    ) -> Arc<agentx_login::AuthManager> {
+    pub fn auth_manager_from_auth(_auth: impl std::any::Any) -> Arc<agentx_login::AuthManager> {
         unimplemented!("test_support::auth_manager_from_auth is not available in this build")
     }
 
@@ -158,7 +156,9 @@ pub mod test_support {
         _auth: impl std::any::Any,
         _home: impl AsRef<std::path::Path>,
     ) -> Arc<agentx_login::AuthManager> {
-        unimplemented!("test_support::auth_manager_from_auth_with_home is not available in this build")
+        unimplemented!(
+            "test_support::auth_manager_from_auth_with_home is not available in this build"
+        )
     }
 }
 

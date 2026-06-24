@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-use base64::engine::general_purpose::STANDARD as BASE64_STANDARD;
 use agentx_file_system::FileSystemSandboxContext;
 use agentx_protocol::config_types::ShellEnvironmentPolicyInherit;
 use agentx_utils_path_uri::PathUri;
+use base64::engine::general_purpose::STANDARD as BASE64_STANDARD;
 use serde::Deserialize;
 use serde::Serialize;
 

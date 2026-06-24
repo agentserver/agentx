@@ -50,11 +50,11 @@ use crate::auth::util::try_parse_error_message;
 use crate::default_client::create_client;
 use crate::default_client::create_default_auth_client;
 use crate::outbound_proxy::AuthRouteConfig;
+use crate::stubs::AuthCredentialsStoreMode;
 use crate::token_data::TokenData;
 use crate::token_data::parse_chatgpt_jwt_claims;
 use crate::token_data::parse_jwt_expiration;
 use agentx_client::CodexHttpClient;
-use crate::stubs::AuthCredentialsStoreMode;
 use agentx_protocol::account::PlanType as AccountPlanType;
 use agentx_protocol::auth::PlanType as InternalPlanType;
 use agentx_protocol::auth::RefreshTokenFailedError;
@@ -585,9 +585,7 @@ impl CodexAuth {
     ) -> std::io::Result<Option<AgentIdentityAuth>> {
         match self {
             Self::AgentIdentity(auth) => Ok(Some(auth.clone())),
-            Self::ApiKey(_) | Self::ChatgptAuthTokens(_) | Self::PersonalAccessToken(_) => {
-                Ok(None)
-            }
+            Self::ApiKey(_) | Self::ChatgptAuthTokens(_) | Self::PersonalAccessToken(_) => Ok(None),
             Self::Chatgpt(_) => {
                 if policy == AgentIdentityAuthPolicy::JwtOnly {
                     return Ok(None);

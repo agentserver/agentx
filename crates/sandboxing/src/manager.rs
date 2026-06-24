@@ -5,6 +5,7 @@ use crate::bwrap::is_wsl1;
 use crate::landlock::CODEX_LINUX_SANDBOX_ARG0;
 use crate::landlock::allow_network_for_proxy;
 use crate::landlock::create_linux_sandbox_command_args_for_permission_profile;
+use crate::network_proxy::NetworkProxy;
 use crate::policy_transforms::effective_permission_profile;
 use crate::policy_transforms::should_require_platform_sandbox;
 #[cfg(target_os = "windows")]
@@ -13,7 +14,6 @@ use crate::resolve_windows_elevated_filesystem_overrides;
 use crate::resolve_windows_restricted_token_filesystem_overrides;
 #[cfg(target_os = "windows")]
 use crate::windows_sandbox_uses_elevated_backend;
-use crate::network_proxy::NetworkProxy;
 use agentx_protocol::config_types::WindowsSandboxLevel;
 use agentx_protocol::models::AdditionalPermissionProfile;
 use agentx_protocol::models::PermissionProfile;

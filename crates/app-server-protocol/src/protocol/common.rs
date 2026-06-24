@@ -1661,7 +1661,6 @@ client_notification_definitions! {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use anyhow::Result;
     use agentx_protocol::ThreadId;
     use agentx_protocol::account::AmazonBedrockCredentialSource;
     use agentx_protocol::account::PlanType;
@@ -1674,6 +1673,7 @@ mod tests {
     use agentx_utils_absolute_path::AbsolutePathBuf;
     use agentx_utils_absolute_path::test_support::PathBufExt;
     use agentx_utils_absolute_path::test_support::test_path_buf;
+    use anyhow::Result;
     use pretty_assertions::assert_eq;
     use serde_json::json;
     use std::path::PathBuf;

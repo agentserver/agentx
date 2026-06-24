@@ -10,11 +10,11 @@ use crate::protocol::ErrorEvent;
 use crate::protocol::RateLimitReachedType;
 use crate::protocol::RateLimitSnapshot;
 use crate::protocol::TruncationPolicy;
+use agentx_async_utils::CancelErr;
 use chrono::DateTime;
 use chrono::Datelike;
 use chrono::Local;
 use chrono::Utc;
-use agentx_async_utils::CancelErr;
 // Inlined from dropped codex_utils_string crate.
 fn truncate_middle_chars(s: &str, max_chars: usize) -> String {
     let char_count = s.chars().count();
