@@ -1439,7 +1439,7 @@ fn local_image_error_placeholder(
 ) -> ContentItem {
     ContentItem::InputText {
         text: format!(
-            "Codex could not read the local image at `{}`: {}",
+            "agentx could not read the local image at `{}`: {}",
             path.display(),
             error
         ),
@@ -1505,7 +1505,7 @@ fn invalid_image_error_placeholder(
 fn unsupported_image_error_placeholder(path: &std::path::Path, mime: &str) -> ContentItem {
     ContentItem::InputText {
         text: format!(
-            "Codex cannot attach image at `{}`: unsupported image `{}`.",
+            "agentx cannot attach image at `{}`: unsupported image `{}`.",
             path.display(),
             mime
         ),

@@ -2286,7 +2286,7 @@ mod tests {
         assert_eq!(err.kind(), ErrorKind::PermissionDenied);
         assert_eq!(
             err.to_string(),
-            "remote control requires ChatGPT authentication"
+            "remote control requires bearer authentication"
         );
         assert_eq!(*current_enrollment.lock().await, None);
         assert_eq!(

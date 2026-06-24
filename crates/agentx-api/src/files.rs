@@ -37,27 +37,27 @@ pub enum OpenAiFileError {
         size_bytes: u64,
         limit_bytes: u64,
     },
-    #[error("failed to send OpenAI file request to {url}: {source}")]
+    #[error("failed to send file request to {url}: {source}")]
     Request {
         url: String,
         #[source]
         source: reqwest::Error,
     },
-    #[error("OpenAI file request to {url} failed with status {status}: {body}")]
+    #[error("file request to {url} failed with status {status}: {body}")]
     UnexpectedStatus {
         url: String,
         status: StatusCode,
         body: String,
     },
-    #[error("failed to parse OpenAI file response from {url}: {source}")]
+    #[error("failed to parse file response from {url}: {source}")]
     Decode {
         url: String,
         #[source]
         source: serde_json::Error,
     },
-    #[error("OpenAI file upload for `{file_id}` is not ready yet")]
+    #[error("file upload for `{file_id}` is not ready yet")]
     UploadNotReady { file_id: String },
-    #[error("OpenAI file upload for `{file_id}` failed: {message}")]
+    #[error("file upload for `{file_id}` failed: {message}")]
     UploadFailed { file_id: String, message: String },
 }
 
@@ -229,7 +229,7 @@ fn authorized_request(
 
 fn build_reqwest_client() -> reqwest::Client {
     build_reqwest_client_with_custom_ca(reqwest::Client::builder()).unwrap_or_else(|error| {
-        tracing::warn!(error = %error, "failed to build OpenAI file upload client");
+        tracing::warn!(error = %error, "failed to build file upload client");
         reqwest::Client::new()
     })
 }

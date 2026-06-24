@@ -81,7 +81,7 @@ impl ChatGptEnvironment {
             | "https://chatgpt-staging.com/codex"
             | "https://chatgpt-staging.com/backend-api/codex" => Ok(Self::Staging),
             _ => anyhow::bail!(
-                "Agent Identity only supports production and staging ChatGPT environments"
+                "Agent Identity only supports production and staging environments; set --agent-identity-authapi-base-url"
             ),
         }
     }

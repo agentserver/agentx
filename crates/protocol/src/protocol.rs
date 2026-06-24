@@ -110,7 +110,7 @@ pub const MULTI_AGENT_MODE_OPEN_TAG: &str = "<multi_agent_mode>";
 pub const MULTI_AGENT_MODE_CLOSE_TAG: &str = "</multi_agent_mode>";
 pub const REALTIME_CONVERSATION_OPEN_TAG: &str = "<realtime_conversation>";
 pub const REALTIME_CONVERSATION_CLOSE_TAG: &str = "</realtime_conversation>";
-pub const USER_MESSAGE_BEGIN: &str = "## My request for Codex:";
+pub const USER_MESSAGE_BEGIN: &str = "## My request for agentx:";
 
 // TODO(anp): Replace `TurnEnvironmentSelection` with `PathUri` once path URIs carry environment
 // identifiers.

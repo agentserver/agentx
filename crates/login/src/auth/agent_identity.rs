@@ -41,7 +41,7 @@ pub(super) fn require_agent_identity_authapi_base_url(
 ) -> std::io::Result<&str> {
     agent_identity_authapi_base_url.ok_or_else(|| {
         std::io::Error::other(
-            "Agent Identity only supports production and staging ChatGPT environments",
+            "Agent Identity only supports production and staging environments; set --agent-identity-authapi-base-url",
         )
     })
 }

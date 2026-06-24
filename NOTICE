@@ -1,0 +1,25 @@
+agentx
+Copyright 2026 agentserver maintainers
+
+This product includes software derived from codex
+(https://github.com/openai/codex), released under the Apache License 2.0
+by OpenAI.
+
+Specifically, agentx v0.0.1 is forked from codex rust-v0.142.0 (git tag
+rust-v0.142.0). The fork keeps a subset of crates around the exec-server
+binary; see crates/ for the list. Modifications include:
+
+- Removal of the noise relay protocol (Noise hybrid IK over WebSocket
+  rendezvous) and related protobuf, ~400 LOC of tests.
+- Removal of Bedrock auth, AWS SigV4 helpers, and CodexAuth::BedrockApiKey
+  variant.
+- Removal of the analytics telemetry crate and all call sites.
+- Removal of all non-exec-server CLI subcommands and the --listen local-mode
+  branch.
+- Rename of all crate names, env vars, and config directory paths from
+  codex-* / CODEX_* / ~/.codex to agentx-* / AGENTX_* / ~/.agentx.
+- Two new env-driven allow-list overrides
+  (AGENTX_AGENT_IDENTITY_ALLOWED_BASE_URLS and AGENTX_API_KEY_ALLOWED_HOSTS)
+  and one new CLI flag (--agent-identity-authapi-base-url).
+
+No upstream git remote is tracked.

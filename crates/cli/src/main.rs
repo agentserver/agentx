@@ -118,7 +118,7 @@ async fn run_exec_server_command(
     let codex_self_exe = arg0_paths
         .codex_self_exe
         .clone()
-        .ok_or_else(|| anyhow::anyhow!("Codex executable path is not configured"))?;
+        .ok_or_else(|| anyhow::anyhow!("agentx executable path is not configured"))?;
     let runtime_paths = agentx_exec_server::ExecServerRuntimePaths::new(
         codex_self_exe,
         arg0_paths.codex_linux_sandbox_exe.clone(),
@@ -172,13 +172,13 @@ async fn load_exec_server_remote_auth_provider(
 
     let auth = load_exec_server_remote_auth(
         config,
-        "remote exec-server registration requires ChatGPT authentication or API key authentication; run `agentx login` or set AGENTX_API_KEY",
+        "remote exec-server registration requires bearer authentication or API key authentication; run `agentx login` or set AGENTX_API_KEY",
     )
     .await?;
 
     if !is_supported_exec_server_remote_auth(&auth) {
         anyhow::bail!(
-            "remote exec-server registration requires ChatGPT authentication or API key authentication; Agent Identity auth requires --use-agent-identity-auth"
+            "remote exec-server registration requires bearer authentication or API key authentication; Agent Identity auth requires --use-agent-identity-auth"
         );
     }
 

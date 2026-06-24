@@ -613,7 +613,7 @@ impl CodexAuth {
     ) -> std::io::Result<AgentIdentityAuth> {
         let binding =
             ManagedChatGptAgentIdentityBinding::from_auth(self, forced_chatgpt_workspace_id)
-                .ok_or_else(|| std::io::Error::other("ChatGPT auth is unavailable"))?;
+                .ok_or_else(|| std::io::Error::other("bearer auth is unavailable"))?;
 
         // JWT auth is loaded as CodexAuth::AgentIdentity; this path only reuses
         // records created by the managed ChatGPT Agent Identity bootstrap.
@@ -1015,11 +1015,11 @@ async fn enforce_login_restrictions_with_agent_identity_authapi_base_url(
             | (ForcedLoginMethod::Api, AuthMode::ChatgptAuthTokens)
             | (ForcedLoginMethod::Api, AuthMode::AgentIdentity)
             | (ForcedLoginMethod::Api, AuthMode::PersonalAccessToken) => Some(
-                "API key login is required, but ChatGPT is currently being used. Logging out."
+                "API key login is required, but bearer auth is currently being used. Logging out."
                     .to_string(),
             ),
             (ForcedLoginMethod::Chatgpt, AuthMode::ApiKey) => Some(
-                "ChatGPT login is required, but an API key is currently being used. Logging out."
+                "Bearer auth login is required, but an API key is currently being used. Logging out."
                     .to_string(),
             ),
             (_, AuthMode::BedrockApiKey) => Some(
@@ -1050,7 +1050,7 @@ async fn enforce_login_restrictions_with_agent_identity_authapi_base_url(
                         return logout_with_message(
                             &config.codex_home,
                             format!(
-                                "Failed to load ChatGPT credentials while enforcing workspace restrictions: {err}. Logging out."
+                                "Failed to load auth credentials while enforcing workspace restrictions: {err}. Logging out."
                             ),
                             config.auth_credentials_store_mode,
                             config.keyring_backend_kind,

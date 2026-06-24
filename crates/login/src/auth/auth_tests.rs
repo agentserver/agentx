@@ -1637,7 +1637,7 @@ async fn enforce_login_restrictions_logs_out_for_method_mismatch() {
     let err = super::enforce_login_restrictions(&config)
         .await
         .expect_err("expected method mismatch to error");
-    assert!(err.to_string().contains("ChatGPT login is required"));
+    assert!(err.to_string().contains("Bearer auth login is required"));
     assert!(
         !codex_home.path().join("auth.json").exists(),
         "auth.json should be removed on mismatch"
@@ -1909,7 +1909,7 @@ async fn enforce_login_restrictions_blocks_env_api_key_when_chatgpt_required() {
         .expect_err("environment API key should not satisfy forced ChatGPT login");
     assert!(
         err.to_string()
-            .contains("ChatGPT login is required, but an API key is currently being used.")
+            .contains("Bearer auth login is required, but an API key is currently being used.")
     );
 }
 

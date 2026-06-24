@@ -177,17 +177,17 @@ fn sanitize_user_agent(candidate: String, fallback: &str) -> String {
         .collect();
     if !sanitized.is_empty() && HeaderValue::from_str(sanitized.as_str()).is_ok() {
         tracing::warn!(
-            "Sanitized Codex user agent because provided suffix contained invalid header characters"
+            "Sanitized agentx user agent because provided suffix contained invalid header characters"
         );
         sanitized
     } else if HeaderValue::from_str(fallback).is_ok() {
         tracing::warn!(
-            "Falling back to base Codex user agent because provided suffix could not be sanitized"
+            "Falling back to base agentx user agent because provided suffix could not be sanitized"
         );
         fallback.to_string()
     } else {
         tracing::warn!(
-            "Falling back to default Codex originator because base user agent string is invalid"
+            "Falling back to default agentx originator because base user agent string is invalid"
         );
         originator().value
     }
@@ -220,7 +220,7 @@ pub fn build_reqwest_client() -> reqwest::Client {
             .unwrap_or_else(|fallback_error| {
                 tracing::warn!(
                     error = %fallback_error,
-                    "failed to build fallback reqwest client with ChatGPT Cloudflare cookie store"
+                    "failed to build fallback reqwest client with Cloudflare cookie store"
                 );
                 reqwest::Client::new()
             })

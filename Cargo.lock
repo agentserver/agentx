@@ -20,7 +20,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-agent-identity"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-protocol",
  "anyhow",
@@ -39,7 +39,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-api"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-client",
  "agentx-protocol",
@@ -72,7 +72,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-app-server-protocol"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-protocol",
  "agentx-shell-command",
@@ -98,7 +98,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-app-server-transport"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-api",
  "agentx-app-server-protocol",
@@ -133,7 +133,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-arg0"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-exec-server",
  "agentx-sandboxing",
@@ -147,7 +147,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-async-utils"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "pretty_assertions",
  "tokio",
@@ -156,7 +156,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-bwrap"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "cc",
  "libc",
@@ -165,7 +165,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-cli"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-agent-identity",
  "agentx-api",
@@ -210,7 +210,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-client"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-utils-rustls-provider",
  "bytes",
@@ -239,7 +239,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-exec-server"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-api",
  "agentx-app-server-protocol",
@@ -281,7 +281,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-file-system"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-protocol",
  "agentx-utils-absolute-path",
@@ -293,7 +293,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-login"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-agent-identity",
  "agentx-app-server-protocol",
@@ -327,7 +327,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-protocol"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-async-utils",
  "agentx-utils-absolute-path",
@@ -364,7 +364,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-sandboxing"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-protocol",
  "agentx-utils-absolute-path",
@@ -384,7 +384,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-shell-command"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-protocol",
  "agentx-utils-absolute-path",
@@ -405,7 +405,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-utils-absolute-path"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "dirs",
  "dunce",
@@ -419,7 +419,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-utils-path-uri"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "agentx-utils-absolute-path",
  "base64",
@@ -435,7 +435,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-utils-pty"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "anyhow",
  "filedescriptor",
@@ -451,7 +451,7 @@ dependencies = [
 
 [[package]]
 name = "agentx-utils-rustls-provider"
-version = "0.142.0"
+version = "0.0.1"
 dependencies = [
  "rustls",
 ]
