@@ -56,7 +56,7 @@ pub fn find_codex_home() -> std::io::Result<std::path::PathBuf> {
                 "cannot determine home directory",
             )
         })?;
-    Ok(std::path::PathBuf::from(home).join(".codex"))
+    Ok(std::path::PathBuf::from(home).join(".agentx"))
 }
 
 // ── codex_linux_sandbox stub ──────────────────────────────────────────────────

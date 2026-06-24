@@ -130,7 +130,7 @@ pub mod config {
                     "cannot determine home directory",
                 )
             })?;
-        Ok(std::path::PathBuf::from(home).join(".codex"))
+        Ok(std::path::PathBuf::from(home).join(".agentx"))
     }
 }
 

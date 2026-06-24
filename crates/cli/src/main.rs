@@ -33,7 +33,7 @@ impl AuthManagerConfig for ExecServerConfig {
         std::env::var_os("HOME")
             .map(PathBuf::from)
             .unwrap_or_else(|| PathBuf::from("."))
-            .join(".codex")
+            .join(".agentx")
     }
 
     fn cli_auth_credentials_store_mode(&self) -> AuthCredentialsStoreMode {

@@ -2238,7 +2238,7 @@ fn core_turn_item_into_thread_item_converts_supported_variants() {
             },
             CoreUserInput::Skill {
                 name: "skill-creator".to_string(),
-                path: PathBuf::from("/repo/.codex/skills/skill-creator/SKILL.md"),
+                path: PathBuf::from("/repo/.agentx/skills/skill-creator/SKILL.md"),
             },
             CoreUserInput::Mention {
                 name: "Demo App".to_string(),
@@ -2267,7 +2267,7 @@ fn core_turn_item_into_thread_item_converts_supported_variants() {
                 },
                 UserInput::Skill {
                     name: "skill-creator".to_string(),
-                    path: PathBuf::from("/repo/.codex/skills/skill-creator/SKILL.md"),
+                    path: PathBuf::from("/repo/.agentx/skills/skill-creator/SKILL.md"),
                 },
                 UserInput::Mention {
                     name: "Demo App".to_string(),
