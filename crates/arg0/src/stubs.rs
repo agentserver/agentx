@@ -1,7 +1,6 @@
 /// Inline stubs for dropped crates that codex-arg0 depended on.
-
-// ── codex_apply_patch stubs ───────────────────────────────────────────────────
-
+///
+/// ── codex_apply_patch stubs ───────────────────────────────────────────────────
 pub const CODEX_CORE_APPLY_PATCH_ARG1: &str = "--codex-run-as-apply-patch";
 
 pub fn apply_patch_main() -> ! {
@@ -9,6 +8,7 @@ pub fn apply_patch_main() -> ! {
     std::process::exit(1);
 }
 
+#[allow(dead_code)]
 pub async fn apply_patch(
     _patch: &str,
     _cwd: &std::path::Path,

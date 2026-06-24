@@ -44,7 +44,7 @@ pub async fn start_control_socket_acceptor(
 }
 
 async fn run_control_socket_acceptor(
-    mut listener: UnixListener,
+    listener: UnixListener,
     transport_event_tx: mpsc::Sender<TransportEvent>,
     shutdown_token: CancellationToken,
     socket_guard: ControlSocketFileGuard,

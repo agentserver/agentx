@@ -1,9 +1,9 @@
 /// Inline stubs for dropped crates that codex-login depended on.
 /// These provide enough surface to compile; real implementations are not needed
 /// because the agentx authentication path differs from the original Codex path.
-
-// ── codex_config stubs ────────────────────────────────────────────────────────
-
+///
+/// ── codex_config stubs ────────────────────────────────────────────────────────
+///
 /// Where authentication credentials are persisted.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize, Default)]
 #[serde(rename_all = "snake_case")]

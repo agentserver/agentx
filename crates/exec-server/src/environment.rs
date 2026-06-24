@@ -296,6 +296,7 @@ impl EnvironmentManager {
     }
 }
 
+#[allow(dead_code)]
 fn optional_environment_value(name: &str) -> Option<String> {
     std::env::var(name)
         .ok()

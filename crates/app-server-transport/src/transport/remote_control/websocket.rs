@@ -1970,6 +1970,7 @@ mod tests {
             .expect("state runtime should initialize")
     }
 
+    #[allow(dead_code)]
     fn remote_control_auth_manager() -> Arc<AuthManager> {
         auth_manager_from_auth(CodexAuth::create_dummy_chatgpt_auth_for_testing())
     }

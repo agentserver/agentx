@@ -9,6 +9,7 @@ use std::collections::HashMap;
 use agentx_utils_absolute_path::AbsolutePathBuf;
 
 /// Environment variable keys that may carry proxy URLs.
+#[allow(dead_code)]
 pub const PROXY_URL_ENV_KEYS: &[&str] = &[
     "http_proxy",
     "HTTP_PROXY",
@@ -19,6 +20,7 @@ pub const PROXY_URL_ENV_KEYS: &[&str] = &[
 ];
 
 /// Returns true when at least one proxy-URL env var is set and non-empty in `env`.
+#[allow(dead_code)]
 pub fn has_proxy_url_env_vars(env: &HashMap<String, String>) -> bool {
     PROXY_URL_ENV_KEYS
         .iter()
@@ -26,6 +28,7 @@ pub fn has_proxy_url_env_vars(env: &HashMap<String, String>) -> bool {
 }
 
 /// Returns the value of the given proxy env key from `env`, if present and non-empty.
+#[allow(dead_code)]
 pub fn proxy_url_env_value<'a>(env: &'a HashMap<String, String>, key: &str) -> Option<&'a str> {
     env.get(key).map(String::as_str).filter(|v| !v.is_empty())
 }
@@ -67,6 +70,7 @@ impl NetworkProxy {
 
 /// Decision types that were in the dropped crate (also used by protocol/network_policy.rs,
 /// which inlines its own copy — see protocol/src/network_policy.rs).
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum NetworkPolicyDecision {
     Allow,
@@ -74,6 +78,7 @@ pub enum NetworkPolicyDecision {
     Ask,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum NetworkDecisionSource {
     Decider,

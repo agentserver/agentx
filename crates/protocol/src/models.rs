@@ -1489,6 +1489,7 @@ pub fn is_image_close_tag_text(text: &str) -> bool {
     text == IMAGE_CLOSE_TAG
 }
 
+#[allow(dead_code)]
 fn invalid_image_error_placeholder(
     path: &std::path::Path,
     error: impl std::fmt::Display,
@@ -1502,6 +1503,7 @@ fn invalid_image_error_placeholder(
     }
 }
 
+#[allow(dead_code)]
 fn unsupported_image_error_placeholder(path: &std::path::Path, mime: &str) -> ContentItem {
     ContentItem::InputText {
         text: format!(
@@ -1532,7 +1534,6 @@ pub fn local_image_content_items_with_label_number(
     };
     // Use base64 encoding via standard library (no external dep).
     let encoded = {
-        use std::fmt::Write as _;
         let mut out = String::with_capacity(file_bytes.len() * 4 / 3 + 4);
         const CHARS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         let chunks = file_bytes.chunks(3);
@@ -1540,7 +1541,7 @@ pub fn local_image_content_items_with_label_number(
             let b0 = chunk[0] as usize;
             let b1 = chunk.get(1).copied().unwrap_or(0) as usize;
             let b2 = chunk.get(2).copied().unwrap_or(0) as usize;
-            out.push(CHARS[(b0 >> 2)] as char);
+            out.push(CHARS[b0 >> 2] as char);
             out.push(CHARS[((b0 & 3) << 4) | (b1 >> 4)] as char);
             if chunk.len() > 1 {
                 out.push(CHARS[((b1 & 0xf) << 2) | (b2 >> 6)] as char);

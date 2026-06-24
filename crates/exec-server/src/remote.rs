@@ -1,4 +1,3 @@
-use std::sync::Arc;
 use std::time::Duration;
 
 use agentx_api::AuthProvider;
@@ -103,6 +102,7 @@ impl EnvironmentRegistryClient {
     }
 }
 
+#[allow(dead_code)]
 #[derive(Clone)]
 struct StaticBearerAuthProvider {
     authorization: HeaderValue,
@@ -312,7 +312,6 @@ fn preview_error_body(body: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use std::sync::Arc;
-    use std::time::Duration;
 
     use agentx_api::AuthProvider;
     use http::HeaderMap;

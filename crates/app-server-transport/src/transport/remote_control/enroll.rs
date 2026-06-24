@@ -572,6 +572,7 @@ mod tests {
     use tokio::time::Duration;
     use tokio::time::timeout;
 
+    #[allow(dead_code)]
     async fn remote_control_state_runtime(codex_home: &TempDir) -> Arc<StateRuntime> {
         StateRuntime::init(codex_home.path().to_path_buf(), "test-provider".to_string())
             .await

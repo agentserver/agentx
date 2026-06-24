@@ -3153,7 +3153,7 @@ impl TruncationPolicy {
         match self {
             TruncationPolicy::Bytes(bytes) => {
                 // Inlined from dropped codex_utils_string: 1 token ≈ 4 bytes.
-                usize::try_from(*bytes / 4).unwrap_or(usize::MAX)
+                *bytes / 4
             }
             TruncationPolicy::Tokens(tokens) => *tokens,
         }

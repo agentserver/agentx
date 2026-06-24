@@ -414,8 +414,6 @@ mod tests {
 
     #[test]
     fn auth_provider_from_api_key_injects_bearer_header() {
-        use agentx_api::AuthProvider as _;
-
         let auth = CodexAuth::from_api_key("sk-test-key");
         let provider = auth_provider_from_auth(&auth);
         let headers = provider.to_auth_headers();
@@ -472,8 +470,6 @@ mod tests {
 
     #[test]
     fn auth_provider_from_chatgpt_auth_injects_bearer_header() {
-        use agentx_api::AuthProvider as _;
-
         let auth = CodexAuth::create_dummy_chatgpt_auth_for_testing();
         let provider = auth_provider_from_auth(&auth);
         let headers = provider.to_auth_headers();

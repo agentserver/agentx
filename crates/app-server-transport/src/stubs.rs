@@ -1,7 +1,6 @@
 /// Inline stubs for dropped crates that codex-app-server-transport depended on.
-
-// ── codex_uds stubs ───────────────────────────────────────────────────────────
-
+///
+/// ── codex_uds stubs ───────────────────────────────────────────────────────────
 #[cfg(unix)]
 pub use tokio::net::UnixStream;
 
@@ -143,15 +142,16 @@ pub mod util {
 }
 
 pub mod test_support {
-    use crate::stubs::UnauthenticatedAuthProvider;
     use std::sync::Arc;
 
     /// Creates an auth manager for tests from an auth value.
+    #[allow(dead_code)]
     pub fn auth_manager_from_auth(_auth: impl std::any::Any) -> Arc<agentx_login::AuthManager> {
         unimplemented!("test_support::auth_manager_from_auth is not available in this build")
     }
 
     /// Creates an auth manager for tests from an auth value and a home directory.
+    #[allow(dead_code)]
     pub fn auth_manager_from_auth_with_home(
         _auth: impl std::any::Any,
         _home: impl AsRef<std::path::Path>,
@@ -175,6 +175,7 @@ impl agentx_api::AuthProvider for UnauthenticatedAuthProvider {
 }
 
 /// Build an unauthenticated `SharedAuthProvider`.
+#[allow(dead_code)]
 pub fn unauthenticated_auth_provider() -> SharedAuthProvider {
     Arc::new(UnauthenticatedAuthProvider)
 }

@@ -20,7 +20,6 @@ use super::disconnected_message;
 use super::fail_all_in_flight_work;
 use super::handle_server_notification;
 use super::is_transport_closed_error;
-use crate::client_transport::ExecServerReconnectStrategy;
 use crate::process::ExecProcessEvent;
 use crate::protocol::EXEC_READ_METHOD;
 use crate::protocol::EXEC_TERMINATE_METHOD;

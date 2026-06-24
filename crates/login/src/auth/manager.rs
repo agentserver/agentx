@@ -313,9 +313,9 @@ impl CodexAuth {
                 unreachable!("personal access token mode is handled above")
             }
             ApiAuthMode::BedrockApiKey => {
-                return Err(std::io::Error::other(
+                Err(std::io::Error::other(
                     "Bedrock API key auth is not supported.",
-                ));
+                ))
             }
         }
     }

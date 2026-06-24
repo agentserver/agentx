@@ -1665,7 +1665,6 @@ mod tests {
     use agentx_protocol::account::AmazonBedrockCredentialSource;
     use agentx_protocol::account::PlanType;
     use agentx_protocol::config_types::MultiAgentMode;
-    use agentx_protocol::models::BUILT_IN_PERMISSION_PROFILE_READ_ONLY;
     use agentx_protocol::parse_command::ParsedCommand;
     use agentx_protocol::protocol::RealtimeConversationVersion;
     use agentx_protocol::protocol::RealtimeOutputModality;
