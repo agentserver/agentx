@@ -1,0 +1,103 @@
+# URLs — these are intentional references to upstream services
+chatgpt.com
+openai.com
+openai.org
+chat.openai.com
+chatgpt-staging.com
+
+# Wire-protocol HTTP headers sent to/received from upstream backends.
+# These cannot be renamed without breaking the upstream API.
+x-codex-
+X-Codex-
+X-OpenAI-
+x-openai-
+OpenAI-Model
+ChatGPT-Account-ID
+chatgpt_account_id
+chatgpt_base_url
+chatgpt_cloudflare
+chatgpt_hosts
+
+# Upstream event type names sent over the wire.
+codex.rate_limits
+"codex.
+
+# Upstream server / protocol identifier strings used in JWT audiences,
+# client-name headers, argv-0 aliases, and gRPC service names.
+# These are wire-protocol identifiers; renaming them breaks the backend.
+codex-app-server
+codex-agent-identity
+codex-linux-sandbox
+codex-environment
+codex-core
+codex-exec-server
+codex-realtime
+
+# Constant names in source that hold upstream API values.
+CODEX_CA_CERT_ENV
+CODEX_FS_HELPER_ARG1
+CODEX_EXEC_SERVER
+
+# API path segments and test-fixture URL fragments.
+/api/codex
+/tmp/codex
+codex-auth.
+
+# Rate-limit header family identifiers (upstream server-defined string).
+"codex"
+'codex'
+codex_other
+
+# Test fixture values referencing upstream model names / limit IDs.
+gpt-5.2-codex
+gpt-5.3-codex
+
+# app-server-protocol is a wire-protocol compatibility crate; all Codex/OpenAI
+# references in it are upstream protocol documentation that must not be changed.
+crates/app-server-protocol/
+
+# agentx-api implements the upstream HTTP API client; headers, field names, and
+# comments describe the upstream API surface and must stay accurate.
+crates/agentx-api/
+
+# agentx-client wraps the upstream HTTP stack; chatgpt_hosts, custom_ca, and
+# cookie jar are upstream-API concerns.
+crates/agentx-client/
+
+# login crate implements upstream OAuth / ChatGPT login flows.
+crates/login/
+
+# agent-identity JWT audience strings reference the upstream service name.
+crates/agent-identity/
+
+# exec-server retains upstream server-name strings for gRPC service identity
+# and environment-toml examples that ship to end users unchanged.
+crates/exec-server/
+
+# bwrap build script uses upstream C source paths (bubblewrap project).
+crates/bwrap/
+
+# arg0 dispatch table references the argv-0 alias used by the upstream binary.
+crates/arg0/
+
+# protocol crate carries upstream model names, OpenAI model list, and error
+# codes that are part of the wire format.
+crates/protocol/
+
+# sandboxing policy files reference upstream binary names for allow-list rules.
+crates/sandboxing/
+
+# app-server-transport includes upstream enrollment and websocket client code.
+crates/app-server-transport/
+
+# shell-command safety checker includes upstream CLI command names.
+crates/shell-command/
+
+# path-uri and other utils carry upstream path conventions.
+utils/
+
+# HTML assets in login crate may reference upstream brand in OAuth flow pages.
+crates/login/src/assets/
+
+# Windows/Wine exec-server test stubs reference upstream binary names.
+crates/exec-server/testing/

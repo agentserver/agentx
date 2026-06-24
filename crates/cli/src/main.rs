@@ -14,8 +14,8 @@ use std::sync::Arc;
 
 mod exec_server_telemetry;
 
-/// Minimal exec-server configuration — replaces the dropped codex_core::config::Config.
-/// No TOML config loading needed; agentx only needs the ChatGPT base URL for auth.
+/// Minimal exec-server configuration — replaces the dropped upstream config module.
+/// No TOML config loading needed; agentx only needs the base URL for auth.
 pub(crate) struct ExecServerConfig {
     pub chatgpt_base_url: String,
 }
@@ -57,13 +57,13 @@ impl AuthManagerConfig for ExecServerConfig {
     }
 }
 
-/// agentx — Remote process / fs executor (forked from codex exec-server)
+/// agentx — Remote process / fs executor
 ///
 /// Registers this host as a remote environment with the given control-plane URL.
 #[derive(Debug, Parser)]
 #[clap(
     name = "agentx",
-    about = "Remote process / fs executor (forked from codex exec-server)",
+    about = "Remote process / fs executor",
     author,
     version
 )]
