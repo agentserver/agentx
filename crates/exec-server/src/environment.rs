@@ -27,15 +27,15 @@ use crate::remote_process::RemoteProcess;
 use agentx_shell_command::shell_detect::DetectedShell;
 use tokio_util::task::AbortOnDropHandle;
 
-pub const CODEX_EXEC_SERVER_URL_ENV_VAR: &str = "CODEX_EXEC_SERVER_URL";
+pub const CODEX_EXEC_SERVER_URL_ENV_VAR: &str = "AGENTX_EXEC_SERVER_URL";
 
 /// Owns the execution/filesystem environments available to the Codex runtime.
 ///
 /// `EnvironmentManager` is a shared registry for concrete environments. Its
-/// default constructor preserves the legacy `CODEX_EXEC_SERVER_URL` behavior
+/// default constructor preserves the legacy `AGENTX_EXEC_SERVER_URL` behavior
 /// while configured construction accepts a provider-supplied snapshot.
 ///
-/// Setting `CODEX_EXEC_SERVER_URL=none` disables environment access by leaving
+/// Setting `AGENTX_EXEC_SERVER_URL=none` disables environment access by leaving
 /// the default environment unset and omitting the local environment. Callers
 /// use `default_environment().is_some()` as the signal for model-facing
 /// shell/filesystem tool availability.
@@ -86,12 +86,12 @@ impl EnvironmentManager {
         Self::from_default_provider_url(exec_server_url, local_runtime_paths).await
     }
 
-    /// Builds a manager from `CODEX_HOME` and local runtime paths used when
+    /// Builds a manager from `AGENTX_HOME` and local runtime paths used when
     /// creating local filesystem helpers.
     ///
-    /// If `CODEX_HOME/environments.toml` is present, it defines the configured
+    /// If `AGENTX_HOME/environments.toml` is present, it defines the configured
     /// environments. Otherwise this preserves the legacy
-    /// `CODEX_EXEC_SERVER_URL` behavior.
+    /// `AGENTX_EXEC_SERVER_URL` behavior.
     pub async fn from_codex_home(
         codex_home: impl AsRef<std::path::Path>,
         local_runtime_paths: Option<ExecServerRuntimePaths>,
@@ -101,7 +101,7 @@ impl EnvironmentManager {
     }
 
     /// Builds a manager from the legacy environment-variable provider without
-    /// reading user config files from `CODEX_HOME`.
+    /// reading user config files from `AGENTX_HOME`.
     pub async fn from_env(
         local_runtime_paths: Option<ExecServerRuntimePaths>,
     ) -> Result<Self, ExecServerError> {
@@ -344,7 +344,7 @@ impl std::fmt::Debug for Environment {
 }
 
 impl Environment {
-    /// Builds an environment from the raw `CODEX_EXEC_SERVER_URL` value.
+    /// Builds an environment from the raw `AGENTX_EXEC_SERVER_URL` value.
     pub fn create(
         exec_server_url: Option<String>,
         local_runtime_paths: ExecServerRuntimePaths,
@@ -357,7 +357,7 @@ impl Environment {
         Self::create_inner(exec_server_url, /*local_runtime_paths*/ None)
     }
 
-    /// Builds an environment from the raw `CODEX_EXEC_SERVER_URL` value and
+    /// Builds an environment from the raw `AGENTX_EXEC_SERVER_URL` value and
     /// local runtime paths used when creating local filesystem helpers.
     fn create_inner(
         exec_server_url: Option<String>,

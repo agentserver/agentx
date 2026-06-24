@@ -9,7 +9,7 @@
 //!
 //! The module intentionally has a narrow responsibility:
 //!
-//! - read CA material from `CODEX_CA_CERTIFICATE`, falling back to `SSL_CERT_FILE`
+//! - read CA material from `AGENTX_CA_CERTIFICATE`, falling back to `SSL_CERT_FILE`
 //! - normalize PEM variants that show up in real deployments, including OpenSSL-style
 //!   `TRUSTED CERTIFICATE` labels and bundles that also contain CRLs
 //! - return user-facing errors that explain how to fix misconfigured CA files
@@ -58,9 +58,9 @@ use thiserror::Error;
 use tracing::info;
 use tracing::warn;
 
-pub const CODEX_CA_CERT_ENV: &str = "CODEX_CA_CERTIFICATE";
+pub const CODEX_CA_CERT_ENV: &str = "AGENTX_CA_CERTIFICATE";
 pub const SSL_CERT_FILE_ENV: &str = "SSL_CERT_FILE";
-const CA_CERT_HINT: &str = "If you set CODEX_CA_CERTIFICATE or SSL_CERT_FILE, ensure it points to a PEM file containing one or more CERTIFICATE blocks, or unset it to use system roots.";
+const CA_CERT_HINT: &str = "If you set AGENTX_CA_CERTIFICATE or SSL_CERT_FILE, ensure it points to a PEM file containing one or more CERTIFICATE blocks, or unset it to use system roots.";
 type PemSection = (SectionKind, Vec<u8>);
 
 /// Describes why a transport using shared custom CA support could not be constructed.
@@ -164,7 +164,7 @@ impl From<BuildCustomCaTransportError> for io::Error {
 /// Builds a reqwest client that honors Codex custom CA environment variables.
 ///
 /// Callers supply the baseline builder configuration they need, and this helper layers in custom
-/// CA handling before finally constructing the client. `CODEX_CA_CERTIFICATE` takes precedence
+/// CA handling before finally constructing the client. `AGENTX_CA_CERTIFICATE` takes precedence
 /// over `SSL_CERT_FILE`, and empty values for either are treated as unset so callers do not
 /// accidentally turn `VAR=""` into a bogus path lookup.
 ///
@@ -185,7 +185,7 @@ pub fn build_reqwest_client_with_custom_ca(
 /// Builds a rustls client config when a Codex custom CA bundle is configured.
 ///
 /// This is the websocket-facing sibling of [`build_reqwest_client_with_custom_ca`]. When
-/// `CODEX_CA_CERTIFICATE` or `SSL_CERT_FILE` selects a CA bundle, the returned config starts from
+/// `AGENTX_CA_CERTIFICATE` or `SSL_CERT_FILE` selects a CA bundle, the returned config starts from
 /// the platform native roots and then adds the configured custom CA certificates. When no custom
 /// CA env var is set, this returns `Ok(None)` so websocket callers can keep using their ordinary
 /// default connector path.
@@ -367,7 +367,7 @@ trait EnvSource {
 
     /// Returns the configured CA bundle and which environment variable selected it.
     ///
-    /// `CODEX_CA_CERTIFICATE` wins over `SSL_CERT_FILE` because it is the Codex-specific override.
+    /// `AGENTX_CA_CERTIFICATE` wins over `SSL_CERT_FILE` because it is the Codex-specific override.
     /// Keeping the winning variable name with the path lets later logging explain not only which
     /// file was used but also why that file was chosen.
     fn configured_ca_bundle(&self) -> Option<ConfiguredCaBundle> {

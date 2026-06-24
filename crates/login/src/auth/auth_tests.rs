@@ -218,7 +218,7 @@ async fn login_with_access_token_writes_only_personal_access_token() {
         .expect(1)
         .mount(&server)
         .await;
-    let _authapi_guard = EnvVarGuard::set("CODEX_AUTHAPI_BASE_URL", &server.uri());
+    let _authapi_guard = EnvVarGuard::set("AGENTX_AUTHAPI_BASE_URL", &server.uri());
     let allowed_workspaces = [WORKSPACE_ID_ALLOWED.to_string()];
     super::login_with_access_token(
         dir.path(),
@@ -269,7 +269,7 @@ async fn login_with_access_token_rejects_personal_access_token_workspace_mismatc
         .expect(1)
         .mount(&server)
         .await;
-    let _authapi_guard = EnvVarGuard::set("CODEX_AUTHAPI_BASE_URL", &server.uri());
+    let _authapi_guard = EnvVarGuard::set("AGENTX_AUTHAPI_BASE_URL", &server.uri());
     let allowed_workspaces = [WORKSPACE_ID_ALLOWED.to_string()];
 
     let err = super::login_with_access_token(
@@ -303,7 +303,7 @@ async fn login_with_access_token_rejects_invalid_personal_access_token() {
         .expect(1)
         .mount(&server)
         .await;
-    let _authapi_guard = EnvVarGuard::set("CODEX_AUTHAPI_BASE_URL", &server.uri());
+    let _authapi_guard = EnvVarGuard::set("AGENTX_AUTHAPI_BASE_URL", &server.uri());
 
     let err = super::login_with_access_token(
         dir.path(),
@@ -1417,7 +1417,7 @@ async fn load_auth_reads_personal_access_token_from_env() {
         .expect(2)
         .mount(&server)
         .await;
-    let _authapi_guard = EnvVarGuard::set("CODEX_AUTHAPI_BASE_URL", &server.uri());
+    let _authapi_guard = EnvVarGuard::set("AGENTX_AUTHAPI_BASE_URL", &server.uri());
     let _access_token_guard = EnvVarGuard::set(CODEX_ACCESS_TOKEN_ENV_VAR, "at-env-test");
 
     for auth_credentials_store_mode in [
@@ -1475,7 +1475,7 @@ async fn auth_manager_rejects_env_personal_access_token_workspace_mismatch() {
         .expect(1)
         .mount(&server)
         .await;
-    let _authapi_guard = EnvVarGuard::set("CODEX_AUTHAPI_BASE_URL", &server.uri());
+    let _authapi_guard = EnvVarGuard::set("AGENTX_AUTHAPI_BASE_URL", &server.uri());
     let _access_token_guard =
         EnvVarGuard::set(CODEX_ACCESS_TOKEN_ENV_VAR, "at-env-workspace-mismatch");
 
@@ -1511,7 +1511,7 @@ async fn auth_manager_rejects_stored_personal_access_token_workspace_mismatch() 
         .expect(4)
         .mount(&server)
         .await;
-    let _authapi_guard = EnvVarGuard::set("CODEX_AUTHAPI_BASE_URL", &server.uri());
+    let _authapi_guard = EnvVarGuard::set("AGENTX_AUTHAPI_BASE_URL", &server.uri());
     let _access_token_guard = remove_access_token_env_var();
 
     for auth_credentials_store_mode in [
@@ -1561,7 +1561,7 @@ async fn personal_access_token_does_not_offer_unauthorized_recovery() {
         .expect(1)
         .mount(&server)
         .await;
-    let _authapi_guard = EnvVarGuard::set("CODEX_AUTHAPI_BASE_URL", &server.uri());
+    let _authapi_guard = EnvVarGuard::set("AGENTX_AUTHAPI_BASE_URL", &server.uri());
     let _access_token_guard =
         EnvVarGuard::set(CODEX_ACCESS_TOKEN_ENV_VAR, "at-no-unauthorized-recovery");
     let manager = Arc::new(
@@ -1694,7 +1694,7 @@ async fn enforce_login_restrictions_logs_out_for_personal_access_token_workspace
         .mount(&server)
         .await;
     let _access_token_guard = remove_access_token_env_var();
-    let _authapi_guard = EnvVarGuard::set("CODEX_AUTHAPI_BASE_URL", &server.uri());
+    let _authapi_guard = EnvVarGuard::set("AGENTX_AUTHAPI_BASE_URL", &server.uri());
     super::login_with_access_token(
         codex_home.path(),
         "at-workspace-mismatch",

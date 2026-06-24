@@ -35,19 +35,19 @@ pub enum EnvironmentDefault {
     EnvironmentId(String),
 }
 
-/// Default provider backed by `CODEX_EXEC_SERVER_URL`.
+/// Default provider backed by `AGENTX_EXEC_SERVER_URL`.
 #[derive(Clone, Debug)]
 pub struct DefaultEnvironmentProvider {
     exec_server_url: Option<String>,
 }
 
 impl DefaultEnvironmentProvider {
-    /// Builds a provider from an already-read raw `CODEX_EXEC_SERVER_URL` value.
+    /// Builds a provider from an already-read raw `AGENTX_EXEC_SERVER_URL` value.
     pub fn new(exec_server_url: Option<String>) -> Self {
         Self { exec_server_url }
     }
 
-    /// Builds a provider by reading `CODEX_EXEC_SERVER_URL`.
+    /// Builds a provider by reading `AGENTX_EXEC_SERVER_URL`.
     pub fn from_env() -> Self {
         Self::new(std::env::var(CODEX_EXEC_SERVER_URL_ENV_VAR).ok())
     }

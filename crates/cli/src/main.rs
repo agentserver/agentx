@@ -86,7 +86,7 @@ struct ExecServerCommand {
     #[arg(long = "name", value_name = "NAME")]
     name: Option<String>,
 
-    /// Use Agent Identity auth from CODEX_ACCESS_TOKEN for remote registration.
+    /// Use Agent Identity auth from AGENTX_ACCESS_TOKEN for remote registration.
     #[arg(long = "use-agent-identity-auth")]
     use_agent_identity_auth: bool,
 }
@@ -144,7 +144,7 @@ async fn load_exec_server_remote_auth_provider(
 ) -> anyhow::Result<agentx_api::SharedAuthProvider> {
     if use_agent_identity_auth {
         let agent_identity_jwt = read_codex_access_token_from_env().ok_or_else(|| {
-            anyhow::anyhow!("CODEX_ACCESS_TOKEN is required when --use-agent-identity-auth is set")
+            anyhow::anyhow!("AGENTX_ACCESS_TOKEN is required when --use-agent-identity-auth is set")
         })?;
         let auth_route_config = config.auth_route_config();
         let auth = CodexAuth::from_agent_identity_jwt(
@@ -158,7 +158,7 @@ async fn load_exec_server_remote_auth_provider(
 
     let auth = load_exec_server_remote_auth(
         config,
-        "remote exec-server registration requires ChatGPT authentication or API key authentication; run `codex login` or set CODEX_API_KEY",
+        "remote exec-server registration requires ChatGPT authentication or API key authentication; run `agentx login` or set AGENTX_API_KEY",
     )
     .await?;
 

@@ -119,7 +119,7 @@ impl StateRuntime {
 pub mod config {
     /// Returns the Codex home directory.
     pub fn find_codex_home() -> std::io::Result<std::path::PathBuf> {
-        if let Ok(val) = std::env::var("CODEX_HOME") {
+        if let Ok(val) = std::env::var("AGENTX_HOME") {
             return Ok(std::path::PathBuf::from(val));
         }
         let home = std::env::var("HOME")

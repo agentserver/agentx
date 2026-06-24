@@ -9,7 +9,7 @@ use crate::default_client::create_default_auth_client;
 use crate::outbound_proxy::AuthRouteConfig;
 
 const PROD_AUTHAPI_BASE_URL: &str = "https://auth.openai.com/api/accounts";
-const CODEX_AUTHAPI_BASE_URL_ENV_VAR: &str = "CODEX_AUTHAPI_BASE_URL";
+const CODEX_AUTHAPI_BASE_URL_ENV_VAR: &str = "AGENTX_AUTHAPI_BASE_URL";
 const WHOAMI_PATH: &str = "/v1/user-auth-credential/whoami";
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]

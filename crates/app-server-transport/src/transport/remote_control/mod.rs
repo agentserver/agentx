@@ -83,7 +83,7 @@ pub enum RemoteControlStartupMode {
 
 /// Internal marker used by the daemon to disable remote control without requiring a new CLI flag.
 pub const REMOTE_CONTROL_DISABLED_ENV_VAR: &str =
-    "CODEX_INTERNAL_APP_SERVER_REMOTE_CONTROL_DISABLED";
+    "AGENTX_INTERNAL_APP_SERVER_REMOTE_CONTROL_DISABLED";
 
 /// Reads and removes the daemon's internal disabled-start marker before worker threads start.
 pub fn take_remote_control_disabled_env() -> bool {

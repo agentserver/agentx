@@ -43,9 +43,9 @@ impl InstallContext {
 
 // ── codex_utils_home_dir stubs ────────────────────────────────────────────────
 
-/// Returns the Codex home directory (`~/.codex` or `$CODEX_HOME`).
+/// Returns the agentx home directory (`~/.agentx` or `$AGENTX_HOME`).
 pub fn find_codex_home() -> std::io::Result<std::path::PathBuf> {
-    if let Ok(val) = std::env::var("CODEX_HOME") {
+    if let Ok(val) = std::env::var("AGENTX_HOME") {
         return Ok(std::path::PathBuf::from(val));
     }
     let home = std::env::var("HOME")
