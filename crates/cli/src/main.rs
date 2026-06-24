@@ -186,6 +186,24 @@ fn validate_api_key_remote_host(base_url: &str) -> anyhow::Result<()> {
         anyhow::anyhow!("remote exec-server registration URL must include a host")
     })?;
 
+    // Env override (set per-instance via AGENTX_API_KEY_ALLOWED_HOSTS,
+    // comma-separated). When set, host must appear in the list.
+    if let Ok(list) = std::env::var("AGENTX_API_KEY_ALLOWED_HOSTS") {
+        let allowed: Vec<&str> = list.split(',').map(str::trim).filter(|s| !s.is_empty()).collect();
+        let host_str = match &host {
+            url::Host::Domain(d) => d.to_ascii_lowercase(),
+            url::Host::Ipv4(ip) => ip.to_string(),
+            url::Host::Ipv6(ip) => ip.to_string(),
+        };
+        if allowed.iter().any(|a| a.eq_ignore_ascii_case(&host_str)) {
+            return Ok(());
+        }
+        anyhow::bail!(
+            "remote exec-server host {host_str:?} not in AGENTX_API_KEY_ALLOWED_HOSTS"
+        );
+    }
+
+    // Original openai.com / openai.org / loopback whitelist (preserved verbatim from v0.142).
     let is_loopback = match &host {
         url::Host::Domain(host) => host.eq_ignore_ascii_case("localhost"),
         url::Host::Ipv4(ip) => ip.is_loopback(),
@@ -316,6 +334,7 @@ fn auth_provider_from_auth(auth: &CodexAuth) -> SharedAuthProvider {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serial_test::serial;
 
     #[test]
     fn exec_server_remote_auth_accepts_api_key_auth() {
@@ -325,6 +344,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn exec_server_remote_api_key_auth_accepts_https_openai_domains() {
         for base_url in [
             "https://openai.com/api",
@@ -337,6 +357,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn exec_server_remote_api_key_auth_accepts_http_loopback() {
         for base_url in [
             "http://localhost:8098/api",
@@ -348,6 +369,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn exec_server_remote_api_key_auth_rejects_http_openai_domain() {
         for base_url in [
             "http://service.openai.com/api",
@@ -364,6 +386,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn exec_server_remote_api_key_auth_rejects_suffix_spoof() {
         let error = validate_api_key_remote_host("https://service.openai.org.evil.example/api")
             .expect_err("reject suffix spoof");
@@ -395,6 +418,35 @@ mod tests {
             authorization.contains("sk-test-key"),
             "Bearer header must contain the api key, got: {authorization}"
         );
+    }
+
+    #[test]
+    #[serial]
+    fn validate_api_key_remote_host_respects_env_allowlist() {
+        let prev = std::env::var("AGENTX_API_KEY_ALLOWED_HOSTS").ok();
+
+        unsafe { std::env::set_var(
+            "AGENTX_API_KEY_ALLOWED_HOSTS",
+            "x.agent.cs.ac.cn,gateway.example",
+        ); }
+        assert!(
+            validate_api_key_remote_host("https://x.agent.cs.ac.cn").is_ok(),
+            "host in env list should pass"
+        );
+        assert!(
+            validate_api_key_remote_host("https://random.example").is_err(),
+            "host not in env list should fail"
+        );
+
+        unsafe { std::env::remove_var("AGENTX_API_KEY_ALLOWED_HOSTS"); }
+        assert!(
+            validate_api_key_remote_host("https://api.openai.com").is_ok(),
+            "fallback to openai.com whitelist when env unset"
+        );
+
+        if let Some(v) = prev {
+            unsafe { std::env::set_var("AGENTX_API_KEY_ALLOWED_HOSTS", v); }
+        }
     }
 
     #[test]

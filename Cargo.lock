@@ -192,6 +192,7 @@ dependencies = [
  "regex-lite",
  "serde",
  "serde_json",
+ "serial_test",
  "sqlx",
  "supports-color 3.0.2",
  "sys-locale",

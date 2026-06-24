@@ -64,5 +64,6 @@ assert_matches = { workspace = true }
 insta = { workspace = true }
 predicates = { workspace = true }
 pretty_assertions = { workspace = true }
+serial_test = { workspace = true }
 sqlx = { workspace = true }
 wiremock = { workspace = true }
