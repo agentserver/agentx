@@ -346,8 +346,12 @@ impl CodexAuth {
         jwt: &str,
         chatgpt_base_url: Option<&str>,
         auth_route_config: Option<&AuthRouteConfig>,
+        agent_identity_authapi_base_url_override: Option<&str>,
     ) -> std::io::Result<Self> {
-        let agent_identity_authapi_base_url = agent_identity_authapi_base_url(chatgpt_base_url)?;
+        let agent_identity_authapi_base_url = match agent_identity_authapi_base_url_override {
+            Some(url) => url.to_string(),
+            None => agent_identity_authapi_base_url(chatgpt_base_url)?,
+        };
         Self::from_agent_identity_jwt_with_authapi_base_url(
             jwt,
             chatgpt_base_url,

@@ -89,6 +89,14 @@ struct ExecServerCommand {
     /// Use Agent Identity auth from AGENTX_ACCESS_TOKEN for remote registration.
     #[arg(long = "use-agent-identity-auth")]
     use_agent_identity_auth: bool,
+
+    /// Override the Agent Identity auth-api base URL. If unset, derived from
+    /// the chatgpt_base_url via the default whitelist.
+    #[arg(
+        long = "agent-identity-authapi-base-url",
+        env = "AGENTX_AGENT_IDENTITY_AUTHAPI_BASE_URL",
+    )]
+    agent_identity_authapi_base_url: Option<String>,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -122,9 +130,13 @@ async fn run_exec_server_command(
     let _otel = exec_server_telemetry::init(Some(&config))
         .inspect_err(|err| eprintln!("Could not create otel exporter: {err}"))
         .ok();
-    let auth_provider =
-        load_exec_server_remote_auth_provider(&config, &base_url, cmd.use_agent_identity_auth)
-            .await?;
+    let auth_provider = load_exec_server_remote_auth_provider(
+        &config,
+        &base_url,
+        cmd.use_agent_identity_auth,
+        cmd.agent_identity_authapi_base_url.as_deref(),
+    )
+    .await?;
     let mut remote_config = agentx_exec_server::RemoteEnvironmentConfig::new(
         base_url,
         environment_id,
@@ -141,6 +153,7 @@ async fn load_exec_server_remote_auth_provider(
     config: &ExecServerConfig,
     base_url: &str,
     use_agent_identity_auth: bool,
+    agent_identity_authapi_base_url_override: Option<&str>,
 ) -> anyhow::Result<agentx_api::SharedAuthProvider> {
     if use_agent_identity_auth {
         let agent_identity_jwt = read_codex_access_token_from_env().ok_or_else(|| {
@@ -151,6 +164,7 @@ async fn load_exec_server_remote_auth_provider(
             &agent_identity_jwt,
             Some(&config.chatgpt_base_url),
             auth_route_config.as_ref(),
+            agent_identity_authapi_base_url_override,
         )
         .await?;
         return Ok(auth_provider_from_auth(&auth));

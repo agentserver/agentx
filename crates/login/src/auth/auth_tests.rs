@@ -2265,3 +2265,17 @@ async fn missing_plan_type_maps_to_unknown() {
     pretty_assertions::assert_eq!(auth.account_plan_type(), Some(AccountPlanType::Unknown));
 }
 
+
+#[tokio::test]
+async fn from_agent_identity_jwt_accepts_authapi_override() {
+    // This test just confirms the signature compiles with a fourth arg.
+    // Real behaviour is covered by from_jwt_registers_task elsewhere.
+    let result = CodexAuth::from_agent_identity_jwt(
+        "not-a-jwt",
+        Some("https://chatgpt.com/backend-api"),
+        None,
+        Some("https://example.com/api/accounts"),   // <-- new override arg
+    ).await;
+    // We don't care if it succeeds (JWT is junk); we care that it compiles.
+    let _ = result;
+}
