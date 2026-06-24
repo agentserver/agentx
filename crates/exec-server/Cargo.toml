@@ -1,5 +1,5 @@
 [package]
-name = "codex-exec-server"
+name = "agentx-exec-server"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -15,17 +15,17 @@ arc-swap = { workspace = true }
 axum = { workspace = true, features = ["http1", "tokio", "ws"] }
 base64 = { workspace = true }
 bytes = { workspace = true }
-codex-app-server-protocol = { workspace = true }
-codex-api = { workspace = true }
-codex-client = { workspace = true }
-codex-file-system = { workspace = true }
-codex-protocol = { workspace = true }
-codex-sandboxing = { workspace = true }
-codex-shell-command = { workspace = true }
-codex-utils-absolute-path = { workspace = true }
-codex-utils-path-uri = { workspace = true }
-codex-utils-pty = { workspace = true }
-codex-utils-rustls-provider = { workspace = true }
+agentx-app-server-protocol = { workspace = true }
+agentx-api = { workspace = true }
+agentx-client = { workspace = true }
+agentx-file-system = { workspace = true }
+agentx-protocol = { workspace = true }
+agentx-sandboxing = { workspace = true }
+agentx-shell-command = { workspace = true }
+agentx-utils-absolute-path = { workspace = true }
+agentx-utils-path-uri = { workspace = true }
+agentx-utils-pty = { workspace = true }
+agentx-utils-rustls-provider = { workspace = true }
 futures = { workspace = true }
 http = { workspace = true }
 reqwest = { workspace = true, features = ["json", "rustls-tls", "stream"] }

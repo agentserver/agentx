@@ -1,43 +1,43 @@
 use super::*;
-use codex_protocol::approvals::ElicitationRequest as CoreElicitationRequest;
-use codex_protocol::config_types::MultiAgentMode;
-use codex_protocol::items::AgentMessageContent;
-use codex_protocol::items::AgentMessageItem;
-use codex_protocol::items::FileChangeItem;
-use codex_protocol::items::ImageViewItem;
-use codex_protocol::items::McpToolCallItem;
-use codex_protocol::items::McpToolCallStatus as CoreMcpToolCallStatus;
-use codex_protocol::items::ReasoningItem;
-use codex_protocol::items::TurnItem;
-use codex_protocol::items::UserMessageItem;
-use codex_protocol::items::WebSearchItem;
-use codex_protocol::mcp::CallToolResult;
-use codex_protocol::mcp::McpServerInfo;
-use codex_protocol::memory_citation::MemoryCitation as CoreMemoryCitation;
-use codex_protocol::memory_citation::MemoryCitationEntry as CoreMemoryCitationEntry;
-use codex_protocol::models::AdditionalPermissionProfile as CoreAdditionalPermissionProfile;
-use codex_protocol::models::BUILT_IN_PERMISSION_PROFILE_WORKSPACE;
-use codex_protocol::models::FileSystemPermissions as CoreFileSystemPermissions;
-use codex_protocol::models::ImageDetail;
-use codex_protocol::models::MessagePhase;
-use codex_protocol::models::NetworkPermissions as CoreNetworkPermissions;
-use codex_protocol::models::WebSearchAction as CoreWebSearchAction;
-use codex_protocol::permissions::FileSystemAccessMode as CoreFileSystemAccessMode;
-use codex_protocol::permissions::FileSystemPath as CoreFileSystemPath;
-use codex_protocol::permissions::FileSystemSandboxEntry as CoreFileSystemSandboxEntry;
-use codex_protocol::permissions::FileSystemSpecialPath as CoreFileSystemSpecialPath;
-use codex_protocol::protocol::AgentStatus as CoreAgentStatus;
-use codex_protocol::protocol::AskForApproval as CoreAskForApproval;
-use codex_protocol::protocol::ConversationTextRole;
-use codex_protocol::protocol::GranularApprovalConfig as CoreGranularApprovalConfig;
-use codex_protocol::protocol::NetworkAccess as CoreNetworkAccess;
-use codex_protocol::request_permissions::RequestPermissionProfile as CoreRequestPermissionProfile;
-use codex_protocol::user_input::UserInput as CoreUserInput;
-use codex_utils_absolute_path::AbsolutePathBuf;
-use codex_utils_absolute_path::test_support::PathBufExt;
-use codex_utils_absolute_path::test_support::test_path_buf;
-use codex_utils_path_uri::LegacyAppPathString;
-use codex_utils_path_uri::PathUri;
+use agentx_protocol::approvals::ElicitationRequest as CoreElicitationRequest;
+use agentx_protocol::config_types::MultiAgentMode;
+use agentx_protocol::items::AgentMessageContent;
+use agentx_protocol::items::AgentMessageItem;
+use agentx_protocol::items::FileChangeItem;
+use agentx_protocol::items::ImageViewItem;
+use agentx_protocol::items::McpToolCallItem;
+use agentx_protocol::items::McpToolCallStatus as CoreMcpToolCallStatus;
+use agentx_protocol::items::ReasoningItem;
+use agentx_protocol::items::TurnItem;
+use agentx_protocol::items::UserMessageItem;
+use agentx_protocol::items::WebSearchItem;
+use agentx_protocol::mcp::CallToolResult;
+use agentx_protocol::mcp::McpServerInfo;
+use agentx_protocol::memory_citation::MemoryCitation as CoreMemoryCitation;
+use agentx_protocol::memory_citation::MemoryCitationEntry as CoreMemoryCitationEntry;
+use agentx_protocol::models::AdditionalPermissionProfile as CoreAdditionalPermissionProfile;
+use agentx_protocol::models::BUILT_IN_PERMISSION_PROFILE_WORKSPACE;
+use agentx_protocol::models::FileSystemPermissions as CoreFileSystemPermissions;
+use agentx_protocol::models::ImageDetail;
+use agentx_protocol::models::MessagePhase;
+use agentx_protocol::models::NetworkPermissions as CoreNetworkPermissions;
+use agentx_protocol::models::WebSearchAction as CoreWebSearchAction;
+use agentx_protocol::permissions::FileSystemAccessMode as CoreFileSystemAccessMode;
+use agentx_protocol::permissions::FileSystemPath as CoreFileSystemPath;
+use agentx_protocol::permissions::FileSystemSandboxEntry as CoreFileSystemSandboxEntry;
+use agentx_protocol::permissions::FileSystemSpecialPath as CoreFileSystemSpecialPath;
+use agentx_protocol::protocol::AgentStatus as CoreAgentStatus;
+use agentx_protocol::protocol::AskForApproval as CoreAskForApproval;
+use agentx_protocol::protocol::ConversationTextRole;
+use agentx_protocol::protocol::GranularApprovalConfig as CoreGranularApprovalConfig;
+use agentx_protocol::protocol::NetworkAccess as CoreNetworkAccess;
+use agentx_protocol::request_permissions::RequestPermissionProfile as CoreRequestPermissionProfile;
+use agentx_protocol::user_input::UserInput as CoreUserInput;
+use agentx_utils_absolute_path::AbsolutePathBuf;
+use agentx_utils_absolute_path::test_support::PathBufExt;
+use agentx_utils_absolute_path::test_support::test_path_buf;
+use agentx_utils_path_uri::LegacyAppPathString;
+use agentx_utils_path_uri::PathUri;
 use pretty_assertions::assert_eq;
 use serde_json::Value as JsonValue;
 use serde_json::json;
@@ -80,7 +80,7 @@ fn thread_sources_round_trip_as_scalar_labels() {
             source
         );
 
-        let core_source: codex_protocol::protocol::ThreadSource = source.clone().into();
+        let core_source: agentx_protocol::protocol::ThreadSource = source.clone().into();
         assert_eq!(ThreadSource::from(core_source), source);
     }
 }
@@ -1533,7 +1533,7 @@ fn sandbox_policy_round_trips_external_sandbox_network_access() {
     let core_policy = v2_policy.to_core();
     assert_eq!(
         core_policy,
-        codex_protocol::protocol::SandboxPolicy::ExternalSandbox {
+        agentx_protocol::protocol::SandboxPolicy::ExternalSandbox {
             network_access: CoreNetworkAccess::Enabled,
         }
     );
@@ -1551,7 +1551,7 @@ fn sandbox_policy_round_trips_read_only_network_access() {
     let core_policy = v2_policy.to_core();
     assert_eq!(
         core_policy,
-        codex_protocol::protocol::SandboxPolicy::ReadOnly {
+        agentx_protocol::protocol::SandboxPolicy::ReadOnly {
             network_access: true,
         }
     );
@@ -1998,7 +1998,7 @@ fn sandbox_policy_round_trips_workspace_write_access() {
     let core_policy = v2_policy.to_core();
     assert_eq!(
         core_policy,
-        codex_protocol::protocol::SandboxPolicy::WorkspaceWrite {
+        agentx_protocol::protocol::SandboxPolicy::WorkspaceWrite {
             writable_roots: vec![],
             network_access: true,
             exclude_tmpdir_env_var: false,
@@ -2389,13 +2389,13 @@ fn core_turn_item_into_thread_item_converts_supported_variants() {
         id: "patch-1".to_string(),
         changes: [(
             PathBuf::from("README.md"),
-            codex_protocol::protocol::FileChange::Add {
+            agentx_protocol::protocol::FileChange::Add {
                 content: "hello\n".to_string(),
             },
         )]
         .into_iter()
         .collect(),
-        status: Some(codex_protocol::protocol::PatchApplyStatus::Completed),
+        status: Some(agentx_protocol::protocol::PatchApplyStatus::Completed),
         auto_approved: None,
         stdout: Some("Done!".to_string()),
         stderr: Some(String::new()),

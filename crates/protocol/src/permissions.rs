@@ -4,9 +4,9 @@ use std::io;
 use std::path::Path;
 use std::path::PathBuf;
 
-use codex_utils_absolute_path::AbsolutePathBuf;
-use codex_utils_absolute_path::canonicalize_preserving_symlinks;
-use codex_utils_path_uri::PathUri;
+use agentx_utils_absolute_path::AbsolutePathBuf;
+use agentx_utils_absolute_path::canonicalize_preserving_symlinks;
+use agentx_utils_path_uri::PathUri;
 use globset::GlobBuilder;
 use globset::GlobMatcher;
 use schemars::JsonSchema;

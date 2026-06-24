@@ -1,2 +1,2 @@
-pub use codex_protocol::auth::RefreshTokenFailedError;
-pub use codex_protocol::auth::RefreshTokenFailedReason;
+pub use agentx_protocol::auth::RefreshTokenFailedError;
+pub use agentx_protocol::auth::RefreshTokenFailedReason;

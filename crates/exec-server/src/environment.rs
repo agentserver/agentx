@@ -24,7 +24,7 @@ use crate::protocol::EnvironmentInfo;
 use crate::protocol::ShellInfo;
 use crate::remote_file_system::RemoteFileSystem;
 use crate::remote_process::RemoteProcess;
-use codex_shell_command::shell_detect::DetectedShell;
+use agentx_shell_command::shell_detect::DetectedShell;
 use tokio_util::task::AbortOnDropHandle;
 
 pub const CODEX_EXEC_SERVER_URL_ENV_VAR: &str = "CODEX_EXEC_SERVER_URL";
@@ -502,7 +502,7 @@ impl Environment {
 impl EnvironmentInfo {
     pub(crate) fn local() -> Self {
         Self {
-            shell: codex_shell_command::shell_detect::default_user_shell().into(),
+            shell: agentx_shell_command::shell_detect::default_user_shell().into(),
         }
     }
 }
@@ -532,7 +532,7 @@ mod tests {
     use crate::client_api::StdioExecServerCommand;
     use crate::environment_provider::EnvironmentDefault;
     use crate::environment_provider::EnvironmentProviderSnapshot;
-    use codex_utils_path_uri::PathUri;
+    use agentx_utils_path_uri::PathUri;
     use pretty_assertions::assert_eq;
     use tokio::net::TcpListener;
     use tokio::time::timeout;
@@ -1044,7 +1044,7 @@ mod tests {
             .to_abs_path()
             .expect_err("sandbox cwd should not be native to this host");
         let sandbox = crate::FileSystemSandboxContext::from_permission_profile_with_cwd(
-            codex_protocol::models::PermissionProfile::workspace_write(),
+            agentx_protocol::models::PermissionProfile::workspace_write(),
             sandbox_cwd.clone(),
         );
 
@@ -1079,15 +1079,15 @@ mod tests {
     #[tokio::test]
     async fn test_environment_rejects_sandboxed_filesystem_without_runtime_paths() {
         let environment = Environment::default_for_tests();
-        let path = codex_utils_absolute_path::AbsolutePathBuf::from_absolute_path(
+        let path = agentx_utils_absolute_path::AbsolutePathBuf::from_absolute_path(
             std::env::current_exe().expect("current exe").as_path(),
         )
         .expect("absolute current exe");
-        let path = codex_utils_path_uri::PathUri::from_abs_path(&path);
+        let path = agentx_utils_path_uri::PathUri::from_abs_path(&path);
         let sandbox = crate::FileSystemSandboxContext::from_permission_profile(
-            codex_protocol::models::PermissionProfile::from_runtime_permissions(
-                &codex_protocol::permissions::FileSystemSandboxPolicy::restricted(Vec::new()),
-                codex_protocol::permissions::NetworkSandboxPolicy::Restricted,
+            agentx_protocol::models::PermissionProfile::from_runtime_permissions(
+                &agentx_protocol::permissions::FileSystemSandboxPolicy::restricted(Vec::new()),
+                agentx_protocol::permissions::NetworkSandboxPolicy::Restricted,
             ),
         );
 

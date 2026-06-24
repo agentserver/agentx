@@ -19,11 +19,11 @@ use tokio::sync::Semaphore;
 use tokio::sync::watch;
 use tracing::instrument;
 
-use codex_agent_identity::ChatGptEnvironment;
-use codex_app_server_protocol::AuthMode;
-use codex_app_server_protocol::AuthMode as ApiAuthMode;
-use codex_protocol::config_types::ForcedLoginMethod;
-use codex_protocol::config_types::ModelProviderAuthInfo;
+use agentx_agent_identity::ChatGptEnvironment;
+use agentx_app_server_protocol::AuthMode;
+use agentx_app_server_protocol::AuthMode as ApiAuthMode;
+use agentx_protocol::config_types::ForcedLoginMethod;
+use agentx_protocol::config_types::ModelProviderAuthInfo;
 
 use super::access_token::CodexAccessToken;
 use super::access_token::classify_codex_access_token;
@@ -53,13 +53,13 @@ use crate::outbound_proxy::AuthRouteConfig;
 use crate::token_data::TokenData;
 use crate::token_data::parse_chatgpt_jwt_claims;
 use crate::token_data::parse_jwt_expiration;
-use codex_client::CodexHttpClient;
+use agentx_client::CodexHttpClient;
 use crate::stubs::AuthCredentialsStoreMode;
-use codex_protocol::account::PlanType as AccountPlanType;
-use codex_protocol::auth::PlanType as InternalPlanType;
-use codex_protocol::auth::RefreshTokenFailedError;
-use codex_protocol::auth::RefreshTokenFailedReason;
-use codex_protocol::protocol::SessionSource;
+use agentx_protocol::account::PlanType as AccountPlanType;
+use agentx_protocol::auth::PlanType as InternalPlanType;
+use agentx_protocol::auth::RefreshTokenFailedError;
+use agentx_protocol::auth::RefreshTokenFailedReason;
+use agentx_protocol::protocol::SessionSource;
 use serde_json::Value;
 use thiserror::Error;
 

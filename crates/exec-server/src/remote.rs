@@ -1,8 +1,8 @@
 use std::sync::Arc;
 use std::time::Duration;
 
-use codex_api::AuthProvider;
-use codex_api::SharedAuthProvider;
+use agentx_api::AuthProvider;
+use agentx_api::SharedAuthProvider;
 use http::HeaderMap;
 use http::HeaderName;
 use http::HeaderValue;
@@ -14,7 +14,7 @@ use tracing::debug;
 use tracing::info;
 use tracing::warn;
 
-use codex_utils_rustls_provider::ensure_rustls_crypto_provider;
+use agentx_utils_rustls_provider::ensure_rustls_crypto_provider;
 
 use crate::EnvironmentRegistryRegistrationRequest;
 use crate::EnvironmentRegistryRegistrationResponse;
@@ -314,7 +314,7 @@ mod tests {
     use std::sync::Arc;
     use std::time::Duration;
 
-    use codex_api::AuthProvider;
+    use agentx_api::AuthProvider;
     use http::HeaderMap;
     use http::HeaderValue;
     use wiremock::Mock;

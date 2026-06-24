@@ -1,17 +1,17 @@
 //! Default Codex HTTP client: shared `User-Agent`, `originator`, optional residency header, and
 //! reqwest/`CodexHttpClient` construction.
 //!
-//! Use [`crate::default_client`] or [`codex_login::default_client`] from other crates in this
+//! Use [`crate::default_client`] or [`agentx_login::default_client`] from other crates in this
 //! workspace.
 
-use codex_client::BuildCustomCaTransportError;
-use codex_client::BuildRouteAwareHttpClientError;
-use codex_client::ClientRouteClass;
-use codex_client::CodexHttpClient;
-pub use codex_client::CodexRequestBuilder;
-use codex_client::build_reqwest_client_for_route;
-use codex_client::build_reqwest_client_with_custom_ca;
-use codex_client::with_chatgpt_cloudflare_cookie_store;
+use agentx_client::BuildCustomCaTransportError;
+use agentx_client::BuildRouteAwareHttpClientError;
+use agentx_client::ClientRouteClass;
+use agentx_client::CodexHttpClient;
+pub use agentx_client::CodexRequestBuilder;
+use agentx_client::build_reqwest_client_for_route;
+use agentx_client::build_reqwest_client_with_custom_ca;
+use agentx_client::with_chatgpt_cloudflare_cookie_store;
 use crate::stubs::user_agent;
 use reqwest::header::HeaderMap;
 use reqwest::header::HeaderValue;

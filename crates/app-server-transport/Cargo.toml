@@ -1,11 +1,11 @@
 [package]
-name = "codex-app-server-transport"
+name = "agentx-app-server-transport"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [lib]
-name = "codex_app_server_transport"
+name = "agentx_app_server_transport"
 path = "src/lib.rs"
 doctest = false
 
@@ -22,11 +22,11 @@ axum = { workspace = true, default-features = false, features = [
 ] }
 base64 = { workspace = true }
 clap = { workspace = true, features = ["derive"] }
-codex-api = { workspace = true }
-codex-app-server-protocol = { workspace = true }
-codex-login = { workspace = true }
-codex-utils-absolute-path = { workspace = true }
-codex-utils-rustls-provider = { workspace = true }
+agentx-api = { workspace = true }
+agentx-app-server-protocol = { workspace = true }
+agentx-login = { workspace = true }
+agentx-utils-absolute-path = { workspace = true }
+agentx-utils-rustls-provider = { workspace = true }
 constant_time_eq = { workspace = true }
 futures = { workspace = true }
 gethostname = { workspace = true }

@@ -9,7 +9,7 @@ use tokio_tungstenite::connect_async;
 use tracing::debug;
 use tracing::warn;
 
-use codex_utils_rustls_provider::ensure_rustls_crypto_provider;
+use agentx_utils_rustls_provider::ensure_rustls_crypto_provider;
 
 use crate::ExecServerClient;
 use crate::ExecServerError;

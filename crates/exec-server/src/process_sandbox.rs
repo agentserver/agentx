@@ -1,15 +1,15 @@
 use std::collections::HashMap;
 
-use codex_app_server_protocol::JSONRPCErrorError;
-use codex_protocol::models::PermissionProfile;
-use codex_sandboxing::SandboxCommand;
-use codex_sandboxing::SandboxDirectSpawnTransformRequest;
-use codex_sandboxing::SandboxManager;
-use codex_sandboxing::SandboxTransformRequest;
-use codex_sandboxing::SandboxType;
-use codex_sandboxing::SandboxablePreference;
-use codex_utils_absolute_path::AbsolutePathBuf;
-use codex_utils_path_uri::PathUri;
+use agentx_app_server_protocol::JSONRPCErrorError;
+use agentx_protocol::models::PermissionProfile;
+use agentx_sandboxing::SandboxCommand;
+use agentx_sandboxing::SandboxDirectSpawnTransformRequest;
+use agentx_sandboxing::SandboxManager;
+use agentx_sandboxing::SandboxTransformRequest;
+use agentx_sandboxing::SandboxType;
+use agentx_sandboxing::SandboxablePreference;
+use agentx_utils_absolute_path::AbsolutePathBuf;
+use agentx_utils_path_uri::PathUri;
 
 use crate::ExecServerRuntimePaths;
 use crate::protocol::ExecParams;

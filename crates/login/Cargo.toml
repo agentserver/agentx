@@ -1,5 +1,5 @@
 [package]
-name = "codex-login"
+name = "agentx-login"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -10,10 +10,10 @@ workspace = true
 [dependencies]
 base64 = { workspace = true }
 chrono = { workspace = true, features = ["serde"] }
-codex-agent-identity = { workspace = true }
-codex-app-server-protocol = { workspace = true }
-codex-client = { workspace = true }
-codex-protocol = { workspace = true }
+agentx-agent-identity = { workspace = true }
+agentx-app-server-protocol = { workspace = true }
+agentx-client = { workspace = true }
+agentx-protocol = { workspace = true }
 once_cell = { workspace = true }
 os_info = { workspace = true }
 rand = { workspace = true }

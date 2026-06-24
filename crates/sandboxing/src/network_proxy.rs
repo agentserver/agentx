@@ -6,7 +6,7 @@
 /// the type system.
 use std::collections::HashMap;
 
-use codex_utils_absolute_path::AbsolutePathBuf;
+use agentx_utils_absolute_path::AbsolutePathBuf;
 
 /// Environment variable keys that may carry proxy URLs.
 pub const PROXY_URL_ENV_KEYS: &[&str] = &[

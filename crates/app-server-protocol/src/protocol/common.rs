@@ -1662,18 +1662,18 @@ client_notification_definitions! {
 mod tests {
     use super::*;
     use anyhow::Result;
-    use codex_protocol::ThreadId;
-    use codex_protocol::account::AmazonBedrockCredentialSource;
-    use codex_protocol::account::PlanType;
-    use codex_protocol::config_types::MultiAgentMode;
-    use codex_protocol::models::BUILT_IN_PERMISSION_PROFILE_READ_ONLY;
-    use codex_protocol::parse_command::ParsedCommand;
-    use codex_protocol::protocol::RealtimeConversationVersion;
-    use codex_protocol::protocol::RealtimeOutputModality;
-    use codex_protocol::protocol::RealtimeVoice;
-    use codex_utils_absolute_path::AbsolutePathBuf;
-    use codex_utils_absolute_path::test_support::PathBufExt;
-    use codex_utils_absolute_path::test_support::test_path_buf;
+    use agentx_protocol::ThreadId;
+    use agentx_protocol::account::AmazonBedrockCredentialSource;
+    use agentx_protocol::account::PlanType;
+    use agentx_protocol::config_types::MultiAgentMode;
+    use agentx_protocol::models::BUILT_IN_PERMISSION_PROFILE_READ_ONLY;
+    use agentx_protocol::parse_command::ParsedCommand;
+    use agentx_protocol::protocol::RealtimeConversationVersion;
+    use agentx_protocol::protocol::RealtimeOutputModality;
+    use agentx_protocol::protocol::RealtimeVoice;
+    use agentx_utils_absolute_path::AbsolutePathBuf;
+    use agentx_utils_absolute_path::test_support::PathBufExt;
+    use agentx_utils_absolute_path::test_support::test_path_buf;
     use pretty_assertions::assert_eq;
     use serde_json::json;
     use std::path::PathBuf;
@@ -2558,7 +2558,7 @@ mod tests {
                 cwd,
                 runtime_workspace_roots: Vec::new(),
                 instruction_sources: vec![
-                    codex_utils_path_uri::LegacyAppPathString::from_abs_path(&absolute_path(
+                    agentx_utils_path_uri::LegacyAppPathString::from_abs_path(&absolute_path(
                         "/tmp/AGENTS.md",
                     )),
                 ],

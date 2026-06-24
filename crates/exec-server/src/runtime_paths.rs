@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use codex_utils_absolute_path::AbsolutePathBuf;
+use agentx_utils_absolute_path::AbsolutePathBuf;
 
 /// Runtime paths needed by exec-server child processes.
 #[derive(Clone, Debug, Eq, PartialEq)]

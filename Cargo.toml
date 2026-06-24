@@ -6,8 +6,8 @@ members = [
     "crates/login",
     "crates/app-server-protocol",
     "crates/app-server-transport",
-    "crates/codex-api",
-    "crates/codex-client",
+    "crates/agentx-api",
+    "crates/agentx-client",
     "crates/protocol",
     "crates/file-system",
     "crates/sandboxing",
@@ -33,24 +33,24 @@ license = "Apache-2.0"
 
 [workspace.dependencies]
 # Internal
-codex-agent-identity = { path = "crates/agent-identity" }
-codex-api = { path = "crates/codex-api" }
-codex-app-server-protocol = { path = "crates/app-server-protocol" }
-codex-app-server-transport = { path = "crates/app-server-transport" }
-codex-arg0 = { path = "crates/arg0" }
-codex-async-utils = { path = "crates/async-utils" }
-codex-bwrap = { path = "crates/bwrap" }
-codex-client = { path = "crates/codex-client" }
-codex-exec-server = { path = "crates/exec-server" }
-codex-file-system = { path = "crates/file-system" }
-codex-login = { path = "crates/login" }
-codex-protocol = { path = "crates/protocol" }
-codex-sandboxing = { path = "crates/sandboxing" }
-codex-shell-command = { path = "crates/shell-command" }
-codex-utils-absolute-path = { path = "utils/absolute-path" }
-codex-utils-path-uri = { path = "utils/path-uri" }
-codex-utils-pty = { path = "utils/pty" }
-codex-utils-rustls-provider = { path = "utils/rustls-provider" }
+agentx-agent-identity = { path = "crates/agent-identity" }
+agentx-api = { path = "crates/agentx-api" }
+agentx-app-server-protocol = { path = "crates/app-server-protocol" }
+agentx-app-server-transport = { path = "crates/app-server-transport" }
+agentx-arg0 = { path = "crates/arg0" }
+agentx-async-utils = { path = "crates/async-utils" }
+agentx-bwrap = { path = "crates/bwrap" }
+agentx-client = { path = "crates/agentx-client" }
+agentx-exec-server = { path = "crates/exec-server" }
+agentx-file-system = { path = "crates/file-system" }
+agentx-login = { path = "crates/login" }
+agentx-protocol = { path = "crates/protocol" }
+agentx-sandboxing = { path = "crates/sandboxing" }
+agentx-shell-command = { path = "crates/shell-command" }
+agentx-utils-absolute-path = { path = "utils/absolute-path" }
+agentx-utils-path-uri = { path = "utils/path-uri" }
+agentx-utils-pty = { path = "utils/pty" }
+agentx-utils-rustls-provider = { path = "utils/rustls-provider" }
 
 # External
 age = "0.11.1"

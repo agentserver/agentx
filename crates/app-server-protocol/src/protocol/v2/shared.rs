@@ -1,10 +1,10 @@
 
-use codex_protocol::config_types::ApprovalsReviewer as CoreApprovalsReviewer;
-use codex_protocol::config_types::SandboxMode as CoreSandboxMode;
-use codex_protocol::protocol::AskForApproval as CoreAskForApproval;
-use codex_protocol::protocol::CodexErrorInfo as CoreCodexErrorInfo;
-use codex_protocol::protocol::GranularApprovalConfig as CoreGranularApprovalConfig;
-use codex_protocol::protocol::NonSteerableTurnKind as CoreNonSteerableTurnKind;
+use agentx_protocol::config_types::ApprovalsReviewer as CoreApprovalsReviewer;
+use agentx_protocol::config_types::SandboxMode as CoreSandboxMode;
+use agentx_protocol::protocol::AskForApproval as CoreAskForApproval;
+use agentx_protocol::protocol::CodexErrorInfo as CoreCodexErrorInfo;
+use agentx_protocol::protocol::GranularApprovalConfig as CoreGranularApprovalConfig;
+use agentx_protocol::protocol::NonSteerableTurnKind as CoreNonSteerableTurnKind;
 use schemars::JsonSchema;
 use schemars::r#gen::SchemaGenerator;
 use schemars::schema::InstanceType;

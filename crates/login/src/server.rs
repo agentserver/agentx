@@ -36,7 +36,7 @@ use crate::token_data::TokenData;
 use crate::token_data::parse_chatgpt_jwt_claims;
 use base64::Engine;
 use chrono::Utc;
-use codex_app_server_protocol::AuthMode;
+use agentx_app_server_protocol::AuthMode;
 use crate::stubs::AuthCredentialsStoreMode;
 use crate::stubs::Template;
 use rand::RngCore;

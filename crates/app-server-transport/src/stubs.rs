@@ -149,7 +149,7 @@ pub mod test_support {
     /// Creates an auth manager for tests from an auth value.
     pub fn auth_manager_from_auth(
         _auth: impl std::any::Any,
-    ) -> Arc<codex_login::AuthManager> {
+    ) -> Arc<agentx_login::AuthManager> {
         unimplemented!("test_support::auth_manager_from_auth is not available in this build")
     }
 
@@ -157,20 +157,20 @@ pub mod test_support {
     pub fn auth_manager_from_auth_with_home(
         _auth: impl std::any::Any,
         _home: impl AsRef<std::path::Path>,
-    ) -> Arc<codex_login::AuthManager> {
+    ) -> Arc<agentx_login::AuthManager> {
         unimplemented!("test_support::auth_manager_from_auth_with_home is not available in this build")
     }
 }
 
 // ── codex_model_provider stubs ────────────────────────────────────────────────
 
-use codex_api::SharedAuthProvider;
+use agentx_api::SharedAuthProvider;
 use std::sync::Arc;
 
 /// An auth provider that attaches no credentials.
 pub struct UnauthenticatedAuthProvider;
 
-impl codex_api::AuthProvider for UnauthenticatedAuthProvider {
+impl agentx_api::AuthProvider for UnauthenticatedAuthProvider {
     fn add_auth_headers(&self, _headers: &mut ::http::HeaderMap) {}
 }
 
@@ -180,7 +180,7 @@ pub fn unauthenticated_auth_provider() -> SharedAuthProvider {
 }
 
 /// Build a `SharedAuthProvider` from a login auth snapshot.
-pub fn auth_provider_from_auth(_auth: &codex_login::CodexAuth) -> SharedAuthProvider {
+pub fn auth_provider_from_auth(_auth: &agentx_login::CodexAuth) -> SharedAuthProvider {
     // For now return an unauthenticated provider; proper implementation would
     // extract the token from `auth` and construct a bearer-token provider.
     Arc::new(UnauthenticatedAuthProvider)

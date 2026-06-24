@@ -1,11 +1,11 @@
 [package]
 edition.workspace = true
 license.workspace = true
-name = "codex-protocol"
+name = "agentx-protocol"
 version.workspace = true
 
 [lib]
-name = "codex_protocol"
+name = "agentx_protocol"
 path = "src/lib.rs"
 doctest = false
 
@@ -15,9 +15,9 @@ workspace = true
 [dependencies]
 chardetng = { workspace = true }
 chrono = { workspace = true, features = ["serde"] }
-codex-async-utils = { workspace = true }
-codex-utils-absolute-path = { workspace = true }
-codex-utils-path-uri = { workspace = true }
+agentx-async-utils = { workspace = true }
+agentx-utils-absolute-path = { workspace = true }
+agentx-utils-path-uri = { workspace = true }
 encoding_rs = { workspace = true }
 globset = { workspace = true }
 icu_decimal = { workspace = true }

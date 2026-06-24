@@ -1,11 +1,11 @@
 [package]
-name = "codex-arg0"
+name = "agentx-arg0"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [lib]
-name = "codex_arg0"
+name = "agentx_arg0"
 path = "src/lib.rs"
 doctest = false
 
@@ -14,9 +14,9 @@ workspace = true
 
 [dependencies]
 anyhow = { workspace = true }
-codex-exec-server = { workspace = true }
-codex-sandboxing = { workspace = true }
-codex-utils-absolute-path = { workspace = true }
+agentx-exec-server = { workspace = true }
+agentx-sandboxing = { workspace = true }
+agentx-utils-absolute-path = { workspace = true }
 dotenvy = { workspace = true }
 tempfile = { workspace = true }
 tokio = { workspace = true, features = ["rt-multi-thread"] }

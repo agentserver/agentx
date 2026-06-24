@@ -1,13 +1,13 @@
 use crate::protocol::common::AuthMode;
 
-use codex_protocol::account::AmazonBedrockCredentialSource;
-use codex_protocol::account::PlanType;
-use codex_protocol::account::ProviderAccount;
-use codex_protocol::protocol::CreditsSnapshot as CoreCreditsSnapshot;
-use codex_protocol::protocol::RateLimitReachedType as CoreRateLimitReachedType;
-use codex_protocol::protocol::RateLimitSnapshot as CoreRateLimitSnapshot;
-use codex_protocol::protocol::RateLimitWindow as CoreRateLimitWindow;
-use codex_protocol::protocol::SpendControlLimitSnapshot as CoreSpendControlLimitSnapshot;
+use agentx_protocol::account::AmazonBedrockCredentialSource;
+use agentx_protocol::account::PlanType;
+use agentx_protocol::account::ProviderAccount;
+use agentx_protocol::protocol::CreditsSnapshot as CoreCreditsSnapshot;
+use agentx_protocol::protocol::RateLimitReachedType as CoreRateLimitReachedType;
+use agentx_protocol::protocol::RateLimitSnapshot as CoreRateLimitSnapshot;
+use agentx_protocol::protocol::RateLimitWindow as CoreRateLimitWindow;
+use agentx_protocol::protocol::SpendControlLimitSnapshot as CoreSpendControlLimitSnapshot;
 use schemars::JsonSchema;
 use serde::Deserialize;
 use serde::Serialize;

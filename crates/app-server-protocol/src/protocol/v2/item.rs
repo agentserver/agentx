@@ -10,28 +10,28 @@ use super::UserInput;
 use super::shared::v2_enum_from_core;
 use crate::protocol::item_builders::convert_patch_changes;
 
-use codex_protocol::approvals::GuardianAssessmentAction as CoreGuardianAssessmentAction;
-use codex_protocol::approvals::GuardianAssessmentDecisionSource as CoreGuardianAssessmentDecisionSource;
-use codex_protocol::approvals::GuardianCommandSource as CoreGuardianCommandSource;
-use codex_protocol::items::AgentMessageContent as CoreAgentMessageContent;
-use codex_protocol::items::McpToolCallStatus as CoreMcpToolCallStatus;
-use codex_protocol::items::TurnItem as CoreTurnItem;
-use codex_protocol::memory_citation::MemoryCitation as CoreMemoryCitation;
-use codex_protocol::memory_citation::MemoryCitationEntry as CoreMemoryCitationEntry;
-use codex_protocol::models::MessagePhase;
-use codex_protocol::models::ResponseItem;
-use codex_protocol::openai_models::ReasoningEffort;
-use codex_protocol::parse_command::ParsedCommand as CoreParsedCommand;
-use codex_protocol::protocol::AgentStatus as CoreAgentStatus;
-use codex_protocol::protocol::ExecCommandSource as CoreExecCommandSource;
-use codex_protocol::protocol::ExecCommandStatus as CoreExecCommandStatus;
-use codex_protocol::protocol::GuardianRiskLevel as CoreGuardianRiskLevel;
-use codex_protocol::protocol::GuardianUserAuthorization as CoreGuardianUserAuthorization;
-use codex_protocol::protocol::PatchApplyStatus as CorePatchApplyStatus;
-use codex_protocol::protocol::ReviewDecision as CoreReviewDecision;
-use codex_protocol::protocol::SubAgentActivityKind as CoreSubAgentActivityKind;
-use codex_utils_absolute_path::AbsolutePathBuf;
-use codex_utils_path_uri::LegacyAppPathString;
+use agentx_protocol::approvals::GuardianAssessmentAction as CoreGuardianAssessmentAction;
+use agentx_protocol::approvals::GuardianAssessmentDecisionSource as CoreGuardianAssessmentDecisionSource;
+use agentx_protocol::approvals::GuardianCommandSource as CoreGuardianCommandSource;
+use agentx_protocol::items::AgentMessageContent as CoreAgentMessageContent;
+use agentx_protocol::items::McpToolCallStatus as CoreMcpToolCallStatus;
+use agentx_protocol::items::TurnItem as CoreTurnItem;
+use agentx_protocol::memory_citation::MemoryCitation as CoreMemoryCitation;
+use agentx_protocol::memory_citation::MemoryCitationEntry as CoreMemoryCitationEntry;
+use agentx_protocol::models::MessagePhase;
+use agentx_protocol::models::ResponseItem;
+use agentx_protocol::openai_models::ReasoningEffort;
+use agentx_protocol::parse_command::ParsedCommand as CoreParsedCommand;
+use agentx_protocol::protocol::AgentStatus as CoreAgentStatus;
+use agentx_protocol::protocol::ExecCommandSource as CoreExecCommandSource;
+use agentx_protocol::protocol::ExecCommandStatus as CoreExecCommandStatus;
+use agentx_protocol::protocol::GuardianRiskLevel as CoreGuardianRiskLevel;
+use agentx_protocol::protocol::GuardianUserAuthorization as CoreGuardianUserAuthorization;
+use agentx_protocol::protocol::PatchApplyStatus as CorePatchApplyStatus;
+use agentx_protocol::protocol::ReviewDecision as CoreReviewDecision;
+use agentx_protocol::protocol::SubAgentActivityKind as CoreSubAgentActivityKind;
+use agentx_utils_absolute_path::AbsolutePathBuf;
+use agentx_utils_path_uri::LegacyAppPathString;
 use schemars::JsonSchema;
 use serde::Deserialize;
 use serde::Serialize;
@@ -791,19 +791,19 @@ pub enum WebSearchAction {
     Other,
 }
 
-impl From<codex_protocol::models::WebSearchAction> for WebSearchAction {
-    fn from(value: codex_protocol::models::WebSearchAction) -> Self {
+impl From<agentx_protocol::models::WebSearchAction> for WebSearchAction {
+    fn from(value: agentx_protocol::models::WebSearchAction) -> Self {
         match value {
-            codex_protocol::models::WebSearchAction::Search { query, queries } => {
+            agentx_protocol::models::WebSearchAction::Search { query, queries } => {
                 WebSearchAction::Search { query, queries }
             }
-            codex_protocol::models::WebSearchAction::OpenPage { url } => {
+            agentx_protocol::models::WebSearchAction::OpenPage { url } => {
                 WebSearchAction::OpenPage { url }
             }
-            codex_protocol::models::WebSearchAction::FindInPage { url, pattern } => {
+            agentx_protocol::models::WebSearchAction::FindInPage { url, pattern } => {
                 WebSearchAction::FindInPage { url, pattern }
             }
-            codex_protocol::models::WebSearchAction::Other => WebSearchAction::Other,
+            agentx_protocol::models::WebSearchAction::Other => WebSearchAction::Other,
         }
     }
 }
@@ -907,8 +907,8 @@ impl From<CoreTurnItem> for ThreadItem {
     }
 }
 
-impl From<codex_protocol::items::HookPromptFragment> for HookPromptFragment {
-    fn from(value: codex_protocol::items::HookPromptFragment) -> Self {
+impl From<agentx_protocol::items::HookPromptFragment> for HookPromptFragment {
+    fn from(value: agentx_protocol::items::HookPromptFragment) -> Self {
         Self {
             text: value.text,
             hook_run_id: value.hook_run_id,
@@ -1452,7 +1452,7 @@ pub enum DynamicToolCallOutputContentItem {
 }
 
 impl From<DynamicToolCallOutputContentItem>
-    for codex_protocol::dynamic_tools::DynamicToolCallOutputContentItem
+    for agentx_protocol::dynamic_tools::DynamicToolCallOutputContentItem
 {
     fn from(item: DynamicToolCallOutputContentItem) -> Self {
         match item {

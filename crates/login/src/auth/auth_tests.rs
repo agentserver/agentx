@@ -2,15 +2,15 @@ use super::*;
 use crate::auth::storage::FileAuthStorage;
 use crate::auth::storage::get_auth_file;
 use crate::token_data::IdTokenInfo;
-use codex_app_server_protocol::AuthMode;
-use codex_protocol::account::PlanType as AccountPlanType;
-use codex_protocol::auth::KnownPlan as InternalKnownPlan;
-use codex_protocol::auth::PlanType as InternalPlanType;
-use codex_protocol::protocol::SessionSource;
+use agentx_app_server_protocol::AuthMode;
+use agentx_protocol::account::PlanType as AccountPlanType;
+use agentx_protocol::auth::KnownPlan as InternalKnownPlan;
+use agentx_protocol::auth::PlanType as InternalPlanType;
+use agentx_protocol::protocol::SessionSource;
 
 use base64::Engine;
-use codex_protocol::config_types::ForcedLoginMethod;
-use codex_protocol::config_types::ModelProviderAuthInfo;
+use agentx_protocol::config_types::ForcedLoginMethod;
+use agentx_protocol::config_types::ModelProviderAuthInfo;
 use pretty_assertions::assert_eq;
 use serde::Serialize;
 use serde_json::json;
@@ -1915,7 +1915,7 @@ async fn enforce_login_restrictions_blocks_env_api_key_when_chatgpt_required() {
 
 fn agent_identity_record(account_id: &str) -> AgentIdentityAuthRecord {
     let key_material =
-        codex_agent_identity::generate_agent_key_material().expect("generate agent key material");
+        agentx_agent_identity::generate_agent_key_material().expect("generate agent key material");
     AgentIdentityAuthRecord {
         agent_runtime_id: "agent-runtime-id".to_string(),
         agent_private_key: key_material.private_key_pkcs8_base64,

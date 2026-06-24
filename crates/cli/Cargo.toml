@@ -1,5 +1,5 @@
 [package]
-name = "codex-cli"
+name = "agentx-cli"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -10,7 +10,7 @@ name = "codex"
 path = "src/main.rs"
 
 [lib]
-name = "codex_cli"
+name = "agentx_cli"
 path = "src/lib.rs"
 doctest = false
 
@@ -21,15 +21,15 @@ workspace = true
 anyhow = { workspace = true }
 clap = { workspace = true, features = ["derive", "env"] }
 clap_complete = { workspace = true }
-codex-agent-identity = { workspace = true }
-codex-api = { workspace = true }
-codex-app-server-protocol = { workspace = true }
-codex-arg0 = { workspace = true }
-codex-exec-server = { workspace = true }
-codex-login = { workspace = true }
-codex-protocol = { workspace = true }
-codex-sandboxing = { workspace = true }
-codex-utils-absolute-path = { workspace = true }
+agentx-agent-identity = { workspace = true }
+agentx-api = { workspace = true }
+agentx-app-server-protocol = { workspace = true }
+agentx-arg0 = { workspace = true }
+agentx-exec-server = { workspace = true }
+agentx-login = { workspace = true }
+agentx-protocol = { workspace = true }
+agentx-sandboxing = { workspace = true }
+agentx-utils-absolute-path = { workspace = true }
 crossterm = { workspace = true }
 http = { workspace = true }
 libc = { workspace = true }

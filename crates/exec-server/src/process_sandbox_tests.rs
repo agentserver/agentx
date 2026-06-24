@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
 #[cfg(unix)]
-use codex_protocol::models::PermissionProfile;
-use codex_utils_absolute_path::AbsolutePathBuf;
-use codex_utils_path_uri::PathUri;
+use agentx_protocol::models::PermissionProfile;
+use agentx_utils_absolute_path::AbsolutePathBuf;
+use agentx_utils_path_uri::PathUri;
 use pretty_assertions::assert_eq;
 
 use super::prepare_exec_request;

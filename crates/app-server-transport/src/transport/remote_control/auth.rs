@@ -1,6 +1,6 @@
-use codex_api::SharedAuthProvider;
-use codex_login::AuthManager;
-use codex_login::UnauthorizedRecovery;
+use agentx_api::SharedAuthProvider;
+use agentx_login::AuthManager;
+use agentx_login::UnauthorizedRecovery;
 use std::io;
 use std::io::ErrorKind;
 use std::sync::Arc;

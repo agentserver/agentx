@@ -1,6 +1,6 @@
 use super::*;
 use crate::PathUri;
-use codex_utils_absolute_path::AbsolutePathBuf;
+use agentx_utils_absolute_path::AbsolutePathBuf;
 use pretty_assertions::assert_eq;
 
 #[derive(Clone, Copy, Debug)]

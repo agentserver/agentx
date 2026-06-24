@@ -1,11 +1,11 @@
 [package]
-name = "codex-sandboxing"
+name = "agentx-sandboxing"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [lib]
-name = "codex_sandboxing"
+name = "agentx_sandboxing"
 path = "src/lib.rs"
 doctest = false
 
@@ -13,9 +13,9 @@ doctest = false
 workspace = true
 
 [dependencies]
-codex-protocol = { workspace = true }
-codex-utils-absolute-path = { workspace = true }
-codex-utils-path-uri = { workspace = true }
+agentx-protocol = { workspace = true }
+agentx-utils-absolute-path = { workspace = true }
+agentx-utils-path-uri = { workspace = true }
 dunce = { workspace = true }
 libc = { workspace = true }
 serde_json = { workspace = true }

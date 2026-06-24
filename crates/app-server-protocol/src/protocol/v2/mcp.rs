@@ -1,12 +1,12 @@
 use super::shared::v2_enum_from_core;
-use codex_protocol::approvals::ElicitationRequest as CoreElicitationRequest;
-use codex_protocol::items::McpToolCallError as CoreMcpToolCallError;
-use codex_protocol::mcp::CallToolResult as CoreMcpCallToolResult;
-use codex_protocol::mcp::McpServerInfo;
-use codex_protocol::mcp::Resource as McpResource;
-pub use codex_protocol::mcp::ResourceContent as McpResourceContent;
-use codex_protocol::mcp::ResourceTemplate as McpResourceTemplate;
-use codex_protocol::mcp::Tool as McpTool;
+use agentx_protocol::approvals::ElicitationRequest as CoreElicitationRequest;
+use agentx_protocol::items::McpToolCallError as CoreMcpToolCallError;
+use agentx_protocol::mcp::CallToolResult as CoreMcpCallToolResult;
+use agentx_protocol::mcp::McpServerInfo;
+use agentx_protocol::mcp::Resource as McpResource;
+pub use agentx_protocol::mcp::ResourceContent as McpResourceContent;
+use agentx_protocol::mcp::ResourceTemplate as McpResourceTemplate;
+use agentx_protocol::mcp::Tool as McpTool;
 use schemars::JsonSchema;
 use serde::Deserialize;
 use serde::Serialize;
@@ -15,7 +15,7 @@ use std::collections::BTreeMap;
 use ts_rs::TS;
 
 v2_enum_from_core!(
-    pub enum McpAuthStatus from codex_protocol::protocol::McpAuthStatus {
+    pub enum McpAuthStatus from agentx_protocol::protocol::McpAuthStatus {
         Unsupported,
         NotLoggedIn,
         BearerToken,
@@ -252,11 +252,11 @@ pub enum McpServerElicitationAction {
 }
 
 impl McpServerElicitationAction {
-    pub fn to_core(self) -> codex_protocol::approvals::ElicitationAction {
+    pub fn to_core(self) -> agentx_protocol::approvals::ElicitationAction {
         match self {
-            Self::Accept => codex_protocol::approvals::ElicitationAction::Accept,
-            Self::Decline => codex_protocol::approvals::ElicitationAction::Decline,
-            Self::Cancel => codex_protocol::approvals::ElicitationAction::Cancel,
+            Self::Accept => agentx_protocol::approvals::ElicitationAction::Accept,
+            Self::Decline => agentx_protocol::approvals::ElicitationAction::Decline,
+            Self::Cancel => agentx_protocol::approvals::ElicitationAction::Cancel,
         }
     }
 }

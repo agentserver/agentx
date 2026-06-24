@@ -5,7 +5,7 @@ use super::enroll::update_persisted_remote_control_enrollment;
 use super::protocol::normalize_remote_control_url;
 use super::publish_current_enrollment;
 use super::websocket::RemoteControlStatusPublisher;
-use codex_app_server_protocol::RemoteControlStatusChangedNotification;
+use agentx_app_server_protocol::RemoteControlStatusChangedNotification;
 use crate::stubs::RemoteControlEnrollmentRecord;
 use std::io;
 use tokio::sync::Semaphore;

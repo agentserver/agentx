@@ -7,8 +7,8 @@
 use serde::Serialize;
 use std::time::Duration;
 
-use codex_app_server_protocol::AuthMode as ApiAuthMode;
-use codex_client::CodexHttpClient;
+use agentx_app_server_protocol::AuthMode as ApiAuthMode;
+use agentx_client::CodexHttpClient;
 
 use super::manager::REFRESH_TOKEN_URL_OVERRIDE_ENV_VAR;
 use super::manager::REVOKE_TOKEN_URL;

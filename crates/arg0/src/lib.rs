@@ -9,10 +9,10 @@ use std::path::PathBuf;
 use crate::stubs::CODEX_CORE_APPLY_PATCH_ARG1;
 use crate::stubs::InstallContext;
 use crate::stubs::find_codex_home;
-use codex_exec_server::CODEX_FS_HELPER_ARG1;
-use codex_sandboxing::landlock::CODEX_LINUX_SANDBOX_ARG0;
+use agentx_exec_server::CODEX_FS_HELPER_ARG1;
+use agentx_sandboxing::landlock::CODEX_LINUX_SANDBOX_ARG0;
 #[cfg(target_os = "windows")]
-use codex_windows_sandbox::CODEX_WINDOWS_SANDBOX_ARG1;
+use agentx_windows_sandbox::CODEX_WINDOWS_SANDBOX_ARG1;
 #[cfg(unix)]
 use std::os::unix::fs::symlink;
 use tempfile::TempDir;
@@ -101,7 +101,7 @@ pub fn arg0_dispatch() -> Option<Arg0PathEntryGuard> {
 
     let argv1 = args.next().unwrap_or_default();
     if argv1 == CODEX_FS_HELPER_ARG1 {
-        codex_exec_server::run_fs_helper_main();
+        agentx_exec_server::run_fs_helper_main();
     }
     #[cfg(target_os = "windows")]
     if argv1 == CODEX_WINDOWS_SANDBOX_ARG1 {

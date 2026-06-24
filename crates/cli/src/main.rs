@@ -1,14 +1,14 @@
 use clap::Parser;
-use codex_api::SharedAuthProvider;
-use codex_arg0::Arg0DispatchPaths;
-use codex_arg0::arg0_dispatch_or_else;
-use codex_login::AuthCredentialsStoreMode;
-use codex_login::AuthKeyringBackendKind;
-use codex_login::AuthManager;
-use codex_login::AuthManagerConfig;
-use codex_login::AuthRouteConfig;
-use codex_login::CodexAuth;
-use codex_login::read_codex_access_token_from_env;
+use agentx_api::SharedAuthProvider;
+use agentx_arg0::Arg0DispatchPaths;
+use agentx_arg0::arg0_dispatch_or_else;
+use agentx_login::AuthCredentialsStoreMode;
+use agentx_login::AuthKeyringBackendKind;
+use agentx_login::AuthManager;
+use agentx_login::AuthManagerConfig;
+use agentx_login::AuthRouteConfig;
+use agentx_login::CodexAuth;
+use agentx_login::read_codex_access_token_from_env;
 use std::path::PathBuf;
 use std::sync::Arc;
 
@@ -111,7 +111,7 @@ async fn run_exec_server_command(
         .codex_self_exe
         .clone()
         .ok_or_else(|| anyhow::anyhow!("Codex executable path is not configured"))?;
-    let runtime_paths = codex_exec_server::ExecServerRuntimePaths::new(
+    let runtime_paths = agentx_exec_server::ExecServerRuntimePaths::new(
         codex_self_exe,
         arg0_paths.codex_linux_sandbox_exe.clone(),
     )?;
@@ -125,7 +125,7 @@ async fn run_exec_server_command(
     let auth_provider =
         load_exec_server_remote_auth_provider(&config, &base_url, cmd.use_agent_identity_auth)
             .await?;
-    let mut remote_config = codex_exec_server::RemoteEnvironmentConfig::new(
+    let mut remote_config = agentx_exec_server::RemoteEnvironmentConfig::new(
         base_url,
         environment_id,
         auth_provider,
@@ -133,7 +133,7 @@ async fn run_exec_server_command(
     if let Some(name) = cmd.name {
         remote_config.name = name;
     }
-    codex_exec_server::run_remote_environment(remote_config, runtime_paths).await?;
+    agentx_exec_server::run_remote_environment(remote_config, runtime_paths).await?;
     Ok(())
 }
 
@@ -141,7 +141,7 @@ async fn load_exec_server_remote_auth_provider(
     config: &ExecServerConfig,
     base_url: &str,
     use_agent_identity_auth: bool,
-) -> anyhow::Result<codex_api::SharedAuthProvider> {
+) -> anyhow::Result<agentx_api::SharedAuthProvider> {
     if use_agent_identity_auth {
         let agent_identity_jwt = read_codex_access_token_from_env().ok_or_else(|| {
             anyhow::anyhow!("CODEX_ACCESS_TOKEN is required when --use-agent-identity-auth is set")
@@ -216,7 +216,7 @@ fn validate_api_key_remote_host(base_url: &str) -> anyhow::Result<()> {
 async fn load_exec_server_remote_auth(
     config: &ExecServerConfig,
     missing_auth_error: &'static str,
-) -> anyhow::Result<codex_login::CodexAuth> {
+) -> anyhow::Result<agentx_login::CodexAuth> {
     let auth_manager =
         AuthManager::shared_from_config(config, /*enable_codex_api_key_env*/ true).await;
 
@@ -241,8 +241,8 @@ async fn load_exec_server_remote_auth(
 /// - All others (ApiKey / Chatgpt / ChatgptAuthTokens / PersonalAccessToken)
 ///   → `Authorization: Bearer <token>`
 fn auth_provider_from_auth(auth: &CodexAuth) -> SharedAuthProvider {
-    use codex_agent_identity::AgentIdentityKey;
-    use codex_agent_identity::authorization_header_for_agent_task;
+    use agentx_agent_identity::AgentIdentityKey;
+    use agentx_agent_identity::authorization_header_for_agent_task;
 
     // ------- AgentIdentity: signed AgentAssertion header -------
     struct AgentIdentityAuthProvider {
@@ -250,7 +250,7 @@ fn auth_provider_from_auth(auth: &CodexAuth) -> SharedAuthProvider {
         agent_private_key: String,
         task_id: String,
     }
-    impl codex_api::AuthProvider for AgentIdentityAuthProvider {
+    impl agentx_api::AuthProvider for AgentIdentityAuthProvider {
         fn add_auth_headers(&self, headers: &mut http::HeaderMap) {
             let key = AgentIdentityKey {
                 agent_runtime_id: &self.agent_runtime_id,
@@ -272,7 +272,7 @@ fn auth_provider_from_auth(auth: &CodexAuth) -> SharedAuthProvider {
         account_id: Option<String>,
         is_fedramp_account: bool,
     }
-    impl codex_api::AuthProvider for BearerAuthProvider {
+    impl agentx_api::AuthProvider for BearerAuthProvider {
         fn add_auth_headers(&self, headers: &mut http::HeaderMap) {
             if let Some(token) = self.token.as_ref()
                 && let Ok(header) = http::HeaderValue::from_str(&format!("Bearer {token}"))
@@ -376,7 +376,7 @@ mod tests {
 
     #[test]
     fn auth_provider_from_api_key_injects_bearer_header() {
-        use codex_api::AuthProvider as _;
+        use agentx_api::AuthProvider as _;
 
         let auth = CodexAuth::from_api_key("sk-test-key");
         let provider = auth_provider_from_auth(&auth);
@@ -399,7 +399,7 @@ mod tests {
 
     #[test]
     fn auth_provider_from_chatgpt_auth_injects_bearer_header() {
-        use codex_api::AuthProvider as _;
+        use agentx_api::AuthProvider as _;
 
         let auth = CodexAuth::create_dummy_chatgpt_auth_for_testing();
         let provider = auth_provider_from_auth(&auth);

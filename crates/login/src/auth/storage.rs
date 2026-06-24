@@ -19,14 +19,14 @@ use std::sync::Mutex;
 use tracing::warn;
 
 use crate::token_data::TokenData;
-use codex_agent_identity::AgentIdentityJwtClaims;
-use codex_agent_identity::decode_agent_identity_jwt;
-use codex_app_server_protocol::AuthMode;
+use agentx_agent_identity::AgentIdentityJwtClaims;
+use agentx_agent_identity::decode_agent_identity_jwt;
+use agentx_app_server_protocol::AuthMode;
 use crate::stubs::AuthCredentialsStoreMode;
 pub use crate::stubs::AuthKeyringBackendKind;
 use crate::stubs::DefaultKeyringStore;
 use crate::stubs::KeyringStore;
-use codex_protocol::account::PlanType as AccountPlanType;
+use agentx_protocol::account::PlanType as AccountPlanType;
 use crate::stubs::LocalSecretsNamespace;
 use crate::stubs::SecretName;
 use crate::stubs::SecretScope;
