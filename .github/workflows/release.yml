@@ -9,8 +9,35 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Single source of truth for version computation — derived once, consumed by
+  # every job that needs to know whether this is a stable release (no '-' in
+  # the version means winget + chocolatey jobs run; prereleases like
+  # v0.1.0-rc.1 publish a GitHub Release only).
+  version:
+    runs-on: ubuntu-24.04
+    outputs:
+      tag: ${{ steps.derive.outputs.tag }}
+      version: ${{ steps.derive.outputs.version }}
+      is_stable: ${{ steps.derive.outputs.is_stable }}
+    steps:
+      - id: derive
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF#refs/tags/}"
+          version="${tag#v}"
+          if [[ "$version" == *-* ]]; then
+            is_stable=false
+          else
+            is_stable=true
+          fi
+          echo "tag=$tag"          >> "$GITHUB_OUTPUT"
+          echo "version=$version"  >> "$GITHUB_OUTPUT"
+          echo "is_stable=$is_stable" >> "$GITHUB_OUTPUT"
+
   build:
     name: build-${{ matrix.target }}
+    needs: version
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 90
     permissions:
@@ -22,23 +49,32 @@ jobs:
           - target: aarch64-apple-darwin
             runner: macos-15
             artifact: agentx-aarch64-apple-darwin.tar.gz
+            archive: tar
             build_dmg: true
           - target: x86_64-apple-darwin
             runner: macos-15
             artifact: agentx-x86_64-apple-darwin.tar.gz
+            archive: tar
             build_dmg: true
           - target: x86_64-unknown-linux-musl
             runner: ubuntu-24.04
             artifact: agentx-x86_64-unknown-linux-musl.tar.gz
+            archive: tar
           - target: aarch64-unknown-linux-musl
             runner: ubuntu-24.04-arm
             artifact: agentx-aarch64-unknown-linux-musl.tar.gz
+            archive: tar
+          - target: x86_64-pc-windows-msvc
+            runner: windows-latest
+            artifact: agentx-x86_64-pc-windows-msvc.zip
+            archive: zip
     steps:
       - uses: actions/checkout@v4
 
       - uses: dtolnay/rust-toolchain@stable
 
       - name: Install rustup target
+        shell: bash
         run: rustup target add ${{ matrix.target }}
 
       - name: Install Linux musl tools (zig)
@@ -58,18 +94,19 @@ jobs:
           bash .github/scripts/install-musl-build-tools.sh
 
       - name: Build agentx
+        shell: bash
         env:
           # bwrap C sources are not yet vendored; skip the build script.
           # TODO: remove once bubblewrap sources are vendored (track in issue).
           AGENTX_SKIP_BWRAP_BUILD: "1"
         run: cargo build --release --target ${{ matrix.target }} --bin agentx
 
-      # bwrap helper is omitted from v0.0.1 Linux tarballs because the
-      # bubblewrap C sources are not yet vendored in this repository.
-      # The install.sh installer handles a missing bwrap gracefully.
-      # TODO: add bwrap back once sources are vendored (see tracking issue).
+      # bwrap helper is omitted from Linux tarballs because the bubblewrap C
+      # sources are not yet vendored in this repository. install.sh handles a
+      # missing bwrap gracefully. TODO: add bwrap back once sources are vendored.
 
-      - name: Stage tarball contents
+      - name: Stage tarball contents (Unix)
+        if: matrix.archive == 'tar'
         shell: bash
         run: |
           set -euo pipefail
@@ -78,18 +115,102 @@ jobs:
           cp "target/${{ matrix.target }}/release/agentx" "$stage/"
           cp README.md NOTICE LICENSE "$stage/"
 
-      - name: Create tarball + sha256
+      - name: Stage zip contents (Windows)
+        if: matrix.archive == 'zip'
+        shell: bash
+        run: |
+          set -euo pipefail
+          stage="agentx-${{ matrix.target }}"
+          mkdir -p "$stage"
+          cp "target/${{ matrix.target }}/release/agentx.exe" "$stage/"
+          cp README.md NOTICE LICENSE "$stage/"
+
+      # ----- macOS code-sign + notarize -----
+      # All sign/notarize steps gate on the presence of the secrets so forks
+      # without Apple credentials still ship unsigned (Gatekeeper warning;
+      # users run `xattr -d com.apple.quarantine`).
+
+      - name: Import Apple signing certificate
+        if: matrix.build_dmg == true && env.APPLE_CERTIFICATE_P12 != ''
+        env:
+          APPLE_CERTIFICATE_P12: ${{ secrets.APPLE_CERTIFICATE_P12 }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          KEYCHAIN_PASS="$(openssl rand -base64 24)"
+          security create-keychain -p "$KEYCHAIN_PASS" build.keychain
+          security set-keychain-settings -lut 21600 build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASS" build.keychain
+          security list-keychains -d user -s build.keychain login.keychain-db
+          echo "$APPLE_CERTIFICATE_P12" | base64 --decode > /tmp/cert.p12
+          security import /tmp/cert.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASS" build.keychain
+          rm -f /tmp/cert.p12
+
+      - name: Sign agentx binary (macOS)
+        if: matrix.build_dmg == true && env.APPLE_CERTIFICATE_P12 != ''
+        env:
+          APPLE_CERTIFICATE_P12: ${{ secrets.APPLE_CERTIFICATE_P12 }}
+        run: |
+          set -euo pipefail
+          stage="agentx-${{ matrix.target }}"
+          IDENTITY="$(security find-identity -v -p codesigning build.keychain | grep 'Developer ID Application' | head -1 | awk -F\" '{print $2}')"
+          echo "Signing with: $IDENTITY"
+          codesign --force --options runtime --timestamp --sign "$IDENTITY" "$stage/agentx"
+          codesign --verify --strict --verbose=2 "$stage/agentx"
+
+      - name: Create tarball + sha256 (Unix)
+        if: matrix.archive == 'tar'
         shell: bash
         run: |
           set -euo pipefail
           tar -czf "${{ matrix.artifact }}" "agentx-${{ matrix.target }}"
           sha256sum "${{ matrix.artifact }}" > "${{ matrix.artifact }}.sha256"
 
-      - name: Build .dmg (macOS only, unsigned)
+      - name: Create zip + sha256 (Windows)
+        if: matrix.archive == 'zip'
+        shell: bash
+        run: |
+          set -euo pipefail
+          7z a -tzip "${{ matrix.artifact }}" "agentx-${{ matrix.target }}"
+          sha256sum "${{ matrix.artifact }}" > "${{ matrix.artifact }}.sha256"
+
+      - name: Build .dmg (macOS)
         if: matrix.build_dmg == true
         run: |
           stage="agentx-${{ matrix.target }}"
           hdiutil create -volname agentx -srcfolder "$stage" -ov -format UDZO "agentx-${{ matrix.target }}.dmg"
+
+      - name: Sign .dmg (macOS)
+        if: matrix.build_dmg == true && env.APPLE_CERTIFICATE_P12 != ''
+        env:
+          APPLE_CERTIFICATE_P12: ${{ secrets.APPLE_CERTIFICATE_P12 }}
+        run: |
+          set -euo pipefail
+          IDENTITY="$(security find-identity -v -p codesigning build.keychain | grep 'Developer ID Application' | head -1 | awk -F\" '{print $2}')"
+          codesign --force --sign "$IDENTITY" --timestamp "agentx-${{ matrix.target }}.dmg"
+          codesign --verify --strict --verbose=2 "agentx-${{ matrix.target }}.dmg"
+
+      - name: Notarize .dmg (macOS)
+        if: matrix.build_dmg == true && env.APPLE_NOTARIZATION_KEY_P8 != ''
+        env:
+          APPLE_NOTARIZATION_KEY_P8: ${{ secrets.APPLE_NOTARIZATION_KEY_P8 }}
+          APPLE_NOTARIZATION_KEY_ID: ${{ secrets.APPLE_NOTARIZATION_KEY_ID }}
+          APPLE_NOTARIZATION_ISSUER_ID: ${{ secrets.APPLE_NOTARIZATION_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          echo "$APPLE_NOTARIZATION_KEY_P8" | base64 --decode > /tmp/key.p8
+          xcrun notarytool submit "agentx-${{ matrix.target }}.dmg" \
+            --key /tmp/key.p8 \
+            --key-id "$APPLE_NOTARIZATION_KEY_ID" \
+            --issuer "$APPLE_NOTARIZATION_ISSUER_ID" \
+            --wait --timeout 20m
+          xcrun stapler staple "agentx-${{ matrix.target }}.dmg"
+          xcrun stapler validate "agentx-${{ matrix.target }}.dmg"
+          rm -f /tmp/key.p8
+
+      # ----- end macOS signing block -----
 
       - uses: softprops/action-gh-release@v2
         with:
@@ -109,3 +230,152 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: scripts/install.sh
+
+  # ---------------------------------------------------------------------------
+  # Package-manager publishers — gated on stable versions (no '-' in tag).
+  # Pre-release tags (v0.1.0-rc.1, v0.2.0-beta) only produce a GitHub Release
+  # and are not pushed to Homebrew / WinGet / Chocolatey catalogs.
+  # ---------------------------------------------------------------------------
+
+  homebrew:
+    needs: [version, build, publish-installer]
+    if: needs.version.outputs.is_stable == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout agentx repo (for cask template)
+        uses: actions/checkout@v4
+        with:
+          path: agentx
+
+      - name: Wait for release assets to appear
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5 6; do
+            if gh release view "${{ needs.version.outputs.tag }}" --repo agentserver/agentx --json assets --jq '.assets[].name' | grep -q 'agentx-aarch64-apple-darwin.tar.gz.sha256'; then
+              echo "Release assets present."
+              break
+            fi
+            echo "Release assets not yet visible; waiting 30s (try $i/6)..."
+            sleep 30
+          done
+
+      - name: Fetch SHA-256s for the four kept tarball targets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${{ needs.version.outputs.tag }}"
+          base="https://github.com/agentserver/agentx/releases/download/$TAG"
+          for arch in aarch64-apple-darwin x86_64-apple-darwin aarch64-unknown-linux-musl x86_64-unknown-linux-musl; do
+            sha=$(curl -fsSL "$base/agentx-$arch.tar.gz.sha256" | awk '{print $1}')
+            # Sanitize the env-var name (replace - with _).
+            safe="${arch//-/_}"
+            echo "SHA_${safe}=$sha" >> "$GITHUB_ENV"
+          done
+
+      - name: Render Casks/agentx.rb from template
+        run: |
+          set -euo pipefail
+          mkdir -p out/Casks
+          VERSION="${{ needs.version.outputs.version }}"
+          sed \
+            -e "s|__VERSION__|$VERSION|g" \
+            -e "s|__SHA256_DARWIN_ARM64__|$SHA_aarch64_apple_darwin|g" \
+            -e "s|__SHA256_DARWIN_X86_64__|$SHA_x86_64_apple_darwin|g" \
+            -e "s|__SHA256_LINUX_ARM64__|$SHA_aarch64_unknown_linux_musl|g" \
+            -e "s|__SHA256_LINUX_X86_64__|$SHA_x86_64_unknown_linux_musl|g" \
+            agentx/.github/homebrew/agentx.rb.template > out/Casks/agentx.rb
+          echo "--- rendered cask ---"
+          cat out/Casks/agentx.rb
+
+      - name: Push cask to agentserver/homebrew-tap
+        env:
+          HOMEBREW_TAP_PAT: ${{ secrets.HOMEBREW_TAP_PAT }}
+        run: |
+          set -euo pipefail
+          git clone "https://x-access-token:${HOMEBREW_TAP_PAT}@github.com/agentserver/homebrew-tap.git" tap
+          mkdir -p tap/Casks
+          cp out/Casks/agentx.rb tap/Casks/agentx.rb
+          cd tap
+          git config user.email "agentx-release-bot@agentserver"
+          git config user.name "agentx release bot"
+          git add Casks/agentx.rb
+          if git diff --cached --quiet; then
+            echo "No cask changes; skipping commit."
+            exit 0
+          fi
+          git commit -m "agentx ${{ needs.version.outputs.version }}"
+          git push
+
+  winget:
+    needs: [version, build, publish-installer]
+    if: needs.version.outputs.is_stable == 'true'
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: vedantmgoyal9/winget-releaser@main
+        with:
+          identifier: Agentserver.AgentX
+          version: ${{ needs.version.outputs.version }}
+          installers-regex: '^agentx-x86_64-pc-windows-msvc\.zip$'
+          token: ${{ secrets.WINGET_PUBLISH_PAT }}
+          fork-user: agentserver
+
+  choco:
+    needs: [version, build, publish-installer]
+    if: needs.version.outputs.is_stable == 'true'
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch Windows zip SHA-256
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${{ needs.version.outputs.tag }}"
+          for i in 1 2 3 4 5 6; do
+            if curl -fsSI "https://github.com/agentserver/agentx/releases/download/$TAG/agentx-x86_64-pc-windows-msvc.zip.sha256" >/dev/null 2>&1; then break; fi
+            sleep 30
+          done
+          sha=$(curl -fsSL "https://github.com/agentserver/agentx/releases/download/$TAG/agentx-x86_64-pc-windows-msvc.zip.sha256" | awk '{print $1}')
+          echo "WIN_ZIP_SHA=$sha" >> "$GITHUB_ENV"
+
+      - name: Render Chocolatey package
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.version.outputs.version }}"
+          TAG="${{ needs.version.outputs.tag }}"
+          mkdir -p choco-build/tools
+          sed -e "s|__VERSION__|$VERSION|g" \
+              .github/chocolatey/agentx.nuspec.template > choco-build/agentx.nuspec
+          sed -e "s|__VERSION__|$VERSION|g" \
+              -e "s|__TAG__|$TAG|g" \
+              -e "s|__SHA256__|$WIN_ZIP_SHA|g" \
+              .github/chocolatey/tools/chocolateyinstall.ps1.template > choco-build/tools/chocolateyinstall.ps1
+          cp .github/chocolatey/tools/chocolateyuninstall.ps1 choco-build/tools/
+          cp .github/chocolatey/tools/LICENSE.txt choco-build/tools/
+          cp .github/chocolatey/tools/VERIFICATION.txt choco-build/tools/
+          echo "--- rendered nuspec ---"
+          cat choco-build/agentx.nuspec
+          echo "--- rendered chocolateyinstall.ps1 ---"
+          cat choco-build/tools/chocolateyinstall.ps1
+
+      - name: choco pack + push
+        shell: pwsh
+        env:
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+        run: |
+          cd choco-build
+          choco pack
+          choco apikey --api-key "$env:CHOCO_API_KEY" --source https://push.chocolatey.org/
+          choco push agentx.${{ needs.version.outputs.version }}.nupkg --source https://push.chocolatey.org/

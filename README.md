@@ -8,21 +8,47 @@ case removed. See `NOTICE` for derivation details.
 
 ## Install
 
+### macOS / Linux — Homebrew (recommended)
+
+```bash
+brew install agentserver/tap/agentx
+```
+
+### macOS / Linux — install.sh
+
 ```bash
 curl -fsSL https://github.com/agentserver/agentx/releases/latest/download/install.sh | sh
 ```
 
-Or download a tarball from
+### Windows — WinGet
+
+```powershell
+winget install Agentserver.AgentX
+```
+
+### Windows — Chocolatey
+
+```powershell
+choco install agentx
+```
+
+### Manual
+
+Download a tarball or `.dmg` / `.zip` from
 [releases](https://github.com/agentserver/agentx/releases/latest) and put
 `agentx` on your `PATH`.
 
-### macOS
+### macOS — unsigned builds
 
-Binaries are unsigned in v0.x. After download:
+When installing a release for which Apple signing was not configured
+(typically self-built or community forks), Gatekeeper will block the binary
+on first run. After download:
 
 ```bash
 xattr -d com.apple.quarantine /usr/local/bin/agentx
 ```
+
+Stable releases from `agentserver/agentx` are signed and notarized.
 
 ## Usage
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>agentx</id>
+    <version>__VERSION__</version>
+    <packageSourceUrl>https://github.com/agentserver/agentx/tree/main/.github/chocolatey</packageSourceUrl>
+    <owners>agentserver</owners>
+    <title>agentx</title>
+    <authors>agentserver</authors>
+    <projectUrl>https://github.com/agentserver/agentx</projectUrl>
+    <projectSourceUrl>https://github.com/agentserver/agentx</projectSourceUrl>
+    <docsUrl>https://github.com/agentserver/agentx#readme</docsUrl>
+    <bugTrackerUrl>https://github.com/agentserver/agentx/issues</bugTrackerUrl>
+    <licenseUrl>https://github.com/agentserver/agentx/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>agentx remote-executor cli developer-tools</tags>
+    <summary>Single-binary remote process/fs executor (hard-fork of codex exec-server)</summary>
+    <description>
+agentx is a single-binary remote process / filesystem executor — a hard fork
+of `codex exec-server` from openai/codex rust-v0.142.0, owned by the
+agentserver project. It registers a host with a control-plane URL via
+WebSocket and streams process / fs RPCs.
+
+See https://github.com/agentserver/agentx for usage.
+    </description>
+    <releaseNotes>https://github.com/agentserver/agentx/releases/tag/v__VERSION__</releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

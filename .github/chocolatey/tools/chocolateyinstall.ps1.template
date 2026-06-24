@@ -1,0 +1,20 @@
+$ErrorActionPreference = 'Stop'
+
+$packageName  = 'agentx'
+$toolsDir     = "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)"
+$url64        = 'https://github.com/agentserver/agentx/releases/download/__TAG__/agentx-x86_64-pc-windows-msvc.zip'
+$checksum64   = '__SHA256__'
+
+$packageArgs = @{
+  packageName    = $packageName
+  unzipLocation  = $toolsDir
+  url64bit       = $url64
+  checksumType64 = 'sha256'
+  checksum64     = $checksum64
+}
+
+Install-ChocolateyZipPackage @packageArgs
+
+# Shim the binary so `agentx` is on PATH after install. The zip extracts to
+# tools\agentx-x86_64-pc-windows-msvc\agentx.exe; Chocolatey auto-shims any
+# .exe under tools\ unless we exclude it explicitly.

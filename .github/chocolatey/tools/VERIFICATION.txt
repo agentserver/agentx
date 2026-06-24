@@ -1,0 +1,32 @@
+VERIFICATION
+============
+
+agentx is open-source. The Windows binary distributed in this Chocolatey
+package is the x86_64-pc-windows-msvc artifact built and published by the
+official agentx release workflow at:
+
+  https://github.com/agentserver/agentx/blob/main/.github/workflows/release.yml
+
+The artifact, its sha256 checksum, and the source commit it was built from
+are all visible on the corresponding GitHub Release page:
+
+  https://github.com/agentserver/agentx/releases
+
+Verification:
+
+  1. Download the same artifact from the GitHub Release directly:
+     https://github.com/agentserver/agentx/releases/download/v<version>/agentx-x86_64-pc-windows-msvc.zip
+  2. Compute its SHA-256 (Get-FileHash agentx-x86_64-pc-windows-msvc.zip -Algorithm SHA256)
+     and compare to the official sha256 published alongside the zip at
+     https://github.com/agentserver/agentx/releases/download/v<version>/agentx-x86_64-pc-windows-msvc.zip.sha256
+  3. The same sha256 is also recorded in tools\chocolateyinstall.ps1 of this
+     Chocolatey package (the value passed to Install-ChocolateyZipPackage).
+
+The package is built and pushed from CI; the workflow run that produced any
+given version is visible at https://github.com/agentserver/agentx/actions
+under the release tag.
+
+LICENSE
+=======
+
+Apache-2.0. See tools\LICENSE.txt.
